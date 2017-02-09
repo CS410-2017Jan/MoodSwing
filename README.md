@@ -1,1 +1,3 @@
 # MoodSwing
+
+***INSPIRED BY WHAT MAKES YOU, YOU***
