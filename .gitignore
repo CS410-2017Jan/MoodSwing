@@ -46,3 +46,6 @@ build
 /build
 /captures
 .externalNativeBuild
+
+# BE
+/be/node_modules/
