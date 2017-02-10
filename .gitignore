@@ -1,51 +1,51 @@
 .DS_Store
 
 # built application files
-*.apk
-*.ap_
+/fe/*.apk
+/fe/*.ap_
 
 # files for the dex VM
-*.dex
+/fe/*.dex
 
 # Java class files
-*.class
+/fe/*.class
 
 # generated files
-bin/  
-gen/
+/fe/bin/
+/fe/gen/
 
 # Local configuration file (sdk path, etc)
-local.properties
+/fe/local.properties
 
 # Eclipse project files
-.classpath
-.project
+/fe/.classpath
+/fe/.project
 
 # Android Studio
-.idea/
-.gradle
-gradle  
-/*/local.properties
-/*/out
-/*/*/build
-build  
-/*/*/production
-*.iml
-*.iws
-*.ipr
-*~
-*.swp
+/fe/.idea/
+/fe/.gradle
+/fe/gradle  
+/fe/*/local.properties
+/fe/*/out
+/fe/*/*/build
+/fe/build  
+/fe/*/*/production
+/fe/*.iml
+/fe/*.iws
+/fe/*.ipr
+/fe/*~
+/fe/*.swp
 
 # Default
-*.iml
-.gradle
-/local.properties
-/.idea/workspace.xml
-/.idea/libraries
+/fe/*.iml
+/fe/.gradle
+/fe/local.properties
+/fe/.idea/workspace.xml
+/fe/.idea/libraries
 .DS_Store
-/build
-/captures
-.externalNativeBuild
+/fe/build
+/fe/captures
+/fe/.externalNativeBuild
 
 # BE
 /be/node_modules/
