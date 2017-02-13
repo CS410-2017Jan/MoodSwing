@@ -1,8 +1,10 @@
-package com.moodswing;
+package com.moodswing.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.moodswing.R;
 import com.mvp.mvp.model.JournalEntry;
 import com.mvp.mvp.view.JournalView;
 
@@ -14,6 +16,22 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //if (!isLoggedIn()) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        //}
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // TODO: check shared preferences
+        //if (!isLoggedIn()) {
+//        Intent intent = new Intent(this, LoginActivity.class);
+//        startActivity(intent);
+        //}
     }
 
     @Override
@@ -30,4 +48,5 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     public void showError() {
 
     }
+
 }

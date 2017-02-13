@@ -6,7 +6,7 @@ import com.mvp.mvp.view.JournalView;
  * Created by daniel on 11/02/17.
  */
 
-public class JournalPresenter implements  Presenter<JournalView> {
+public class JournalPresenter implements Presenter<JournalView> {
     @Override
     public void onCreate() {
 
@@ -23,7 +23,7 @@ public class JournalPresenter implements  Presenter<JournalView> {
     }
 
     @Override
-    public void onPasue() {
+    public void onPause() {
 
     }
 

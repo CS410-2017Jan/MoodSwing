@@ -13,7 +13,7 @@ public interface Presenter<T> extends View {
 
     void onStop();
 
-    void onPasue();
+    void onPause();
 
     void attachView(T view);
 }
