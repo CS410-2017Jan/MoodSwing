@@ -11,7 +11,7 @@ const config = require('./config')
 */
 
 router.use(function(req, res, next) {
-	var token = req.body.token || req.params('token') || req.headers['x-access-token']
+	var token = req.body.token || req.headers['x-access-token']
 
 	if (token) {
 		jwt.verify(token, config.secret, function(err, decoded) {
