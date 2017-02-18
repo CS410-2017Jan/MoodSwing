@@ -1,6 +1,6 @@
-package com.mvp.mvp.view;
+package com.moodswing.mvp.mvp.view;
 
-import com.mvp.mvp.model.JournalEntry;
+import com.moodswing.mvp.mvp.model.JournalEntry;
 import java.util.List;
 
 /**

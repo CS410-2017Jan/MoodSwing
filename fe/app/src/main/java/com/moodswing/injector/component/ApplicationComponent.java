@@ -6,7 +6,7 @@ import com.moodswing.MoodSwingApplication;
 import com.moodswing.injector.module.ApplicationModule;
 import com.moodswing.injector.module.NetworkModule;
 import com.moodswing.injector.scope.PerApplication;
-import com.mvp.network.Repository;
+import com.moodswing.mvp.network.Repository;
 
 import dagger.Component;
 

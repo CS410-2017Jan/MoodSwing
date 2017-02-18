@@ -1,8 +1,8 @@
 package com.moodswing.rest;
 
-import com.mvp.mvp.model.ResponseWrapper;
-import com.mvp.mvp.model.User;
-import com.mvp.network.Repository;
+import com.moodswing.mvp.mvp.model.LoginResponse;
+import com.moodswing.mvp.mvp.model.User;
+import com.moodswing.mvp.network.Repository;
 
 import io.reactivex.Observable;
 import retrofit2.Retrofit;
@@ -18,13 +18,14 @@ public class MoodSwingRestRepository implements Repository {
         apiService = retrofit.create(ApiService.class);
     }
 
+    // TODO: Not sure about if ResponseWrapper is needed.. or retrofit Response<> I think they are the same?
     @Override
-    public Observable<ResponseWrapper<User>> postUser(User user) {
+    public Observable<User> postUser(User user) {
         return apiService.postUser(user);
     }
 
     @Override
-    public Observable<ResponseWrapper<Boolean>> postLogin(User user) {
+    public Observable<LoginResponse> postLogin(User user) {
         return apiService.postLogin(user);
     }
 }

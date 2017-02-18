@@ -1,6 +1,6 @@
-package com.mvp.mvp.presenter;
+package com.moodswing.mvp.mvp.presenter;
 
-import com.mvp.mvp.view.View;
+import com.moodswing.mvp.mvp.view.View;
 
 /**
  * Created by daniel on 11/02/17.

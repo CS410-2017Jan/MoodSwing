@@ -7,6 +7,11 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
+    // Connection permissions
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
     <application
         android:name=".MoodSwingApplication"
         android:allowBackup="true"
@@ -24,11 +29,11 @@
         <activity
             android:name=".activity.LoginActivity"
             android:label="@string/title_activity_login"
-            android:noHistory="true"></activity>
+            ></activity>
         <activity
             android:name=".activity.SignupActivity"
             android:label="@string/title_activity_signup"
-            android:noHistory="true"></activity>
+            ></activity>
     </application>
 
 </manifest>

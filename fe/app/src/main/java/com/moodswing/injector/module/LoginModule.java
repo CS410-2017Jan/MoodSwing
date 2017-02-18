@@ -1,9 +1,9 @@
 package com.moodswing.injector.module;
 
 import com.moodswing.injector.scope.PerActivity;
-import com.mvp.domain.LoginUsecase;
-import com.mvp.mvp.presenter.LoginPresenter;
-import com.mvp.network.Repository;
+import com.moodswing.mvp.domain.LoginUsecase;
+import com.moodswing.mvp.mvp.presenter.LoginPresenter;
+import com.moodswing.mvp.network.Repository;
 
 import dagger.Module;
 import dagger.Provides;

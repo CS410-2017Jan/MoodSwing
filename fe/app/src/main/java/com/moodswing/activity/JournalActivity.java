@@ -5,8 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.moodswing.R;
-import com.mvp.mvp.model.JournalEntry;
-import com.mvp.mvp.view.JournalView;
+import com.moodswing.mvp.mvp.model.JournalEntry;
+import com.moodswing.mvp.mvp.view.JournalView;
 
 import java.util.List;
 

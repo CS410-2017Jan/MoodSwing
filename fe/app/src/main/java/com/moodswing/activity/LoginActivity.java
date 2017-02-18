@@ -1,6 +1,5 @@
 package com.moodswing.activity;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,8 +16,8 @@ import com.moodswing.injector.component.DaggerLoginComponent;
 import com.moodswing.injector.component.LoginComponent;
 import com.moodswing.injector.module.ActivityModule;
 import com.moodswing.injector.module.LoginModule;
-import com.mvp.mvp.presenter.LoginPresenter;
-import com.mvp.mvp.view.LoginView;
+import com.moodswing.mvp.mvp.presenter.LoginPresenter;
+import com.moodswing.mvp.mvp.view.LoginView;
 
 import javax.inject.Inject;
 
@@ -68,6 +67,49 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         initializeSignupLink();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        _loginPresenter.onStop();
+    }
+
+
+    public void onLoginFailure() {
+        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+        _loginButton.setEnabled(true);
+    }
+
+    @Override
+    public void showError() {
+        Toast.makeText(LoginActivity.this, R.string.login_error, Toast.LENGTH_LONG).show();
+    }
+
+    public void onLoginSuccess() {
+        _loginButton.setEnabled(true);
+        finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        final int REQUEST_SIGNUP = 0;
+
+        Toast.makeText(LoginActivity.this, R.string.request_login, Toast.LENGTH_LONG).show();
+
+        if (requestCode == REQUEST_SIGNUP) {
+            if (resultCode == RESULT_OK) {
+                String username = data.getStringExtra("USERNAME");
+                _usernameText.setText(username);
+                _passwordText.setText(null);
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        // disable going back to the main activity
+        moveTaskToBack(true);
+    }
+
     private void initializeSignupLink() {
         _signupLink.setOnClickListener(new View.OnClickListener() {
             public static final int REQUEST_SIGNUP = 0;
@@ -91,50 +133,21 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
     }
 
     private void login() {
-        if (!validate()) {
-             onLoginFailure();
+        if (!valid()) {
+            onLoginFailure();
             return;
         }
 
         _loginButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this, R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Authenticating...");
-        progressDialog.show();
-
         String username = _usernameText.getText().toString();
         String password = _passwordText.getText().toString();
 
-        // authenticate
-        // TODO
         _loginPresenter.login(username, password);
-
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        // On complete call either onLoginSuccess or onLoginFailure
-                        // onLoginSuccess()
-                        // TODO: Fix this
-                        onLoginFailure();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
-
     }
 
-    public void onLoginFailure() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-        _loginButton.setEnabled(true);
-    }
 
-    public void onLoginSuccess() {
-        _loginButton.setEnabled(true);
-        finish();
-    }
-
-    private boolean validate() {
+    private boolean valid() {
         boolean valid = true;
 
         String username = _usernameText.getText().toString();
@@ -147,26 +160,13 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
             _usernameText.setError(null);
         }
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 20) { // TODO: Do we want something like this?
+        if (password.isEmpty() || password.length() < 4 || password.length() > 20) {
             _passwordText.setError("Password must be between 4 and 20 characters");
             valid = false;
         } else {
-            _usernameText.setError(null);
+            _passwordText.setError(null);
         }
-
         return valid;
-    }
-
-    @Override
-    public void onBackPressed() {
-        // disable going back to the main activity
-        moveTaskToBack(true);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        _loginPresenter.onStop();
     }
 
     private void initializePresenter() {

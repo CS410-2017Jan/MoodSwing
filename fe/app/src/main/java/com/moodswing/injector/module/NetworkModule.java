@@ -1,13 +1,17 @@
 package com.moodswing.injector.module;
 
-import com.moodswing.BuildConfig;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.moodswing.injector.scope.PerApplication;
 import com.moodswing.rest.MoodSwingRestRepository;
-import com.mvp.network.Repository;
+import com.moodswing.mvp.network.Repository;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by daniel on 13/02/17.
@@ -15,6 +19,7 @@ import retrofit2.Retrofit;
 
 @Module
 public class NetworkModule {
+    private String apiEndpointUrl = "http://172.16.42.14:3000";
 
     @Provides
     @PerApplication
@@ -23,11 +28,22 @@ public class NetworkModule {
     @Provides
     @PerApplication
     Retrofit provideRetrofit() {
-        String endpointUrl = BuildConfig.apiEndpointUrl;
-        // TODO: Gson ...
-        // TODO: Client ...
+        // Gson
+        String endpointUrl = apiEndpointUrl;
+        Gson gson = new GsonBuilder().create(); // TODO: setDateFormat
+        GsonConverterFactory gsonConverterFactory = GsonConverterFactory.create(gson);
+
+        // Client
+        OkHttpClient client = new OkHttpClient();
+
+        // Rx
+        RxJava2CallAdapterFactory rxJavaCallAdapterFactory = RxJava2CallAdapterFactory.create();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(endpointUrl)
+                .client(client)
+                .addConverterFactory(gsonConverterFactory)
+                .addCallAdapterFactory(rxJavaCallAdapterFactory)
                 .build();
         return retrofit;
     }

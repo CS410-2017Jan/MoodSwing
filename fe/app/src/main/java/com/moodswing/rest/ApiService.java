@@ -1,10 +1,11 @@
 package com.moodswing.rest;
 
-import com.mvp.mvp.model.ResponseWrapper;
-import com.mvp.mvp.model.User;
+import com.moodswing.mvp.mvp.model.LoginResponse;
+import com.moodswing.mvp.mvp.model.User;
 
 import io.reactivex.Observable;
 import retrofit2.http.Body;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 /**
@@ -13,9 +14,11 @@ import retrofit2.http.POST;
 
 public interface ApiService {
 
-    @POST("public/users") // TODO is this right?
-    Observable<ResponseWrapper<User>> postUser(@Body User user);
+    @Headers("Content-Type: application/json")
+    @POST("public/users")
+    Observable<User> postUser(@Body User user);
 
-    @POST("public/users/login") // TODO is this right?
-    Observable<ResponseWrapper<Boolean>> postLogin(@Body User user); // TODO not Boolean... LoginResponse etc...
+    @Headers("Content-Type: application/json")
+    @POST("public/users/login")
+    Observable<LoginResponse> postLogin(@Body User user);
 }

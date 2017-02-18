@@ -1,4 +1,4 @@
-package com.mvp.domain;
+package com.moodswing.mvp.domain;
 
 import io.reactivex.*;
 
