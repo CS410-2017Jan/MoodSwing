@@ -16,6 +16,7 @@ import com.moodswing.injector.component.DaggerLoginComponent;
 import com.moodswing.injector.component.LoginComponent;
 import com.moodswing.injector.module.ActivityModule;
 import com.moodswing.injector.module.LoginModule;
+import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.presenter.LoginPresenter;
 import com.moodswing.mvp.mvp.view.LoginView;
 
@@ -32,6 +33,9 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
 
     @Inject
     LoginPresenter _loginPresenter;
+
+    @Inject
+    SharedPreferencesManager _sharedPreferencesManager;
 
     @BindView(R.id.input_username)
     EditText _usernameText;
@@ -63,6 +67,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         _loginComponent.inject(this);
 
         initializePresenter();
+        initializeUsernameText();
         initializeLoginButton();
         initializeSignupLink();
     }
@@ -71,6 +76,12 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
     protected void onStop() {
         super.onStop();
         _loginPresenter.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initializeUsernameText();
     }
 
 
@@ -137,7 +148,6 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
             onLoginFailure();
             return;
         }
-
         _loginButton.setEnabled(false);
 
         String username = _usernameText.getText().toString();
@@ -171,5 +181,13 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
 
     private void initializePresenter() {
         _loginPresenter.attachView(this);
+        _loginPresenter.attachSharedPreferencesManager(_sharedPreferencesManager);
+    }
+
+    private void initializeUsernameText() {
+        if (_sharedPreferencesManager.getLastUser() != null) {
+            _usernameText.setText(_sharedPreferencesManager.getLastUser());
+            _passwordText.requestFocus();
+        }
     }
 }

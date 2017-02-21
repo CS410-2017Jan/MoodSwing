@@ -58,20 +58,18 @@ public class SignupPresenter implements Presenter<SignupView> {
         signupSubscription = signupUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnError(new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        signupView.showError();
-                    }
-                })
                 .subscribe(new Consumer<User>() {
                     @Override
                     public void accept(User user) throws Exception {
                         progressDialog.dismiss();
                         signupView.onSignupSuccess();
-                        // TODO: do something with user..?
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        progressDialog.dismiss();
+                        signupView.showError();
                     }
                 });
     }
-
 }

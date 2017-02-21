@@ -4,12 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.moodswing.injector.scope.PerApplication;
-import com.moodswing.rest.MoodSwingRestRepository;
 import com.moodswing.mvp.network.Repository;
+import com.moodswing.rest.MoodSwingRestRepository;
 
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -33,11 +34,16 @@ public class NetworkModule {
         Gson gson = new GsonBuilder().create(); // TODO: setDateFormat
         GsonConverterFactory gsonConverterFactory = GsonConverterFactory.create(gson);
 
+        // Logging
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
         // Client
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(loggingInterceptor).build();
 
         // Rx
         RxJava2CallAdapterFactory rxJavaCallAdapterFactory = RxJava2CallAdapterFactory.create();
+
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(endpointUrl)

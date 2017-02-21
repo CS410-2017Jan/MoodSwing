@@ -18,7 +18,6 @@ public class MoodSwingRestRepository implements Repository {
         apiService = retrofit.create(ApiService.class);
     }
 
-    // TODO: Not sure about if ResponseWrapper is needed.. or retrofit Response<> I think they are the same?
     @Override
     public Observable<User> postUser(User user) {
         return apiService.postUser(user);

@@ -1,9 +1,13 @@
 package com.moodswing.injector.module;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.moodswing.MoodSwingApplication;
 import com.moodswing.injector.scope.PerApplication;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -25,4 +29,5 @@ public class ApplicationModule {
     @Provides
     @PerApplication
     public Application provideApplication() {return application;}
+
 }
