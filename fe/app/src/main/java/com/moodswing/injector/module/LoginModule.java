@@ -5,23 +5,23 @@ import com.moodswing.mvp.domain.LoginUsecase;
 import com.moodswing.mvp.mvp.presenter.LoginPresenter;
 import com.moodswing.mvp.network.Repository;
 
-import dagger.Module;
-import dagger.Provides;
+import dagger.Module2;
+import dagger.Provides2;
 
 /**
  * Created by daniel on 12/02/17.
  */
 
-@Module
+@Module2
 public class LoginModule {
 
     @PerActivity
-    @Provides
+    @Provides2
     public LoginUsecase provideGetLoginUsecase(Repository repository) {
         return new LoginUsecase(repository);
     }
 
     @PerActivity
-    @Provides
+    @Provides2
     public LoginPresenter provideLoginPresenter(LoginUsecase loginUsecase) {return new LoginPresenter(loginUsecase);}
 }

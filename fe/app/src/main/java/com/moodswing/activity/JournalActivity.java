@@ -20,16 +20,16 @@ import com.moodswing.mvp.mvp.view.JournalView;
 
 import java.util.List;
 
-import javax.inject.Inject;
+import javax.inject.Inject2;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class JournalActivity extends AppCompatActivity implements JournalView {
-    @Inject
+    @Inject2
     JournalPresenter _journalPresenter;
 
-    @Inject
+    @Inject2
     SharedPreferencesManager _sharedPreferencesManager;
 
     @BindView(R.id.btn_logout)
@@ -41,6 +41,7 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.setDebug(true);
         ButterKnife.bind(this);
         ApplicationComponent applicationComponent = ((MoodSwingApplication) getApplication()).getApplicationComponent();
 

@@ -20,7 +20,7 @@ import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.presenter.LoginPresenter;
 import com.moodswing.mvp.mvp.view.LoginView;
 
-import javax.inject.Inject;
+import javax.inject.Inject2;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,10 +31,10 @@ import butterknife.ButterKnife;
 
 public class LoginActivity extends AppCompatActivity implements LoginView {
 
-    @Inject
+    @Inject2
     LoginPresenter _loginPresenter;
 
-    @Inject
+    @Inject2
     SharedPreferencesManager _sharedPreferencesManager;
 
     @BindView(R.id.input_username)

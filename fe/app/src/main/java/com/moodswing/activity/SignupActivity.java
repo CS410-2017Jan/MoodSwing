@@ -19,7 +19,7 @@ import com.moodswing.injector.module.SignupModule;
 import com.moodswing.mvp.mvp.presenter.SignupPresenter;
 import com.moodswing.mvp.mvp.view.SignupView;
 
-import javax.inject.Inject;
+import javax.inject.Inject2;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,7 +29,7 @@ import butterknife.ButterKnife;
  */
 
 public class SignupActivity extends AppCompatActivity implements SignupView {
-    @Inject
+    @Inject2
     SignupPresenter _signupPresenter;
 
     @BindView(R.id.signup_name)

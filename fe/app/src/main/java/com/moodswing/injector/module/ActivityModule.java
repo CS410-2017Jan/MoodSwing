@@ -5,20 +5,20 @@ import android.content.Context;
 
 import com.moodswing.injector.scope.PerActivity;
 
-import dagger.Module;
-import dagger.Provides;
+import dagger.Module2;
+import dagger.Provides2;
 
 /**
  * Created by daniel on 12/02/17.
  */
 
-@Module
+@Module2
 public class ActivityModule {
     private final Activity activity;
 
     public ActivityModule(Activity activity) {this.activity = activity;}
 
-    @Provides
+    @Provides2
     @PerActivity
     public Context context() {return activity;}
 }

@@ -7,8 +7,8 @@ import com.moodswing.injector.scope.PerApplication;
 import com.moodswing.mvp.network.Repository;
 import com.moodswing.rest.MoodSwingRestRepository;
 
-import dagger.Module;
-import dagger.Provides;
+import dagger.Module2;
+import dagger.Provides2;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -18,15 +18,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by daniel on 13/02/17.
  */
 
-@Module
+@Module2
 public class NetworkModule {
     private String apiEndpointUrl = "http://172.16.42.14:3000";
 
-    @Provides
+    @Provides2
     @PerApplication
     Repository provideRepository(Retrofit retrofit) {return new MoodSwingRestRepository(retrofit);}
 
-    @Provides
+    @Provides2
     @PerApplication
     Retrofit provideRetrofit() {
         // Gson

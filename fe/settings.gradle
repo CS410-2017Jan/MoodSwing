@@ -1,1 +1,1 @@
-include ':app'
+include ':app', ':dagger2-compiler-2.9', ':dagger2-library-2.9'

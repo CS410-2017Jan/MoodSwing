@@ -1,0 +1,2 @@
+configurations.maybeCreate("default")
+artifacts.add("default", file('dagger2-compiler-2.9.jar'))
