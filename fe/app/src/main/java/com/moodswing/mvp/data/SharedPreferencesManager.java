@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.affectiva.android.affdex.sdk.detector.CameraDetector;
+
 /**
  * Created by daniel on 21/02/17.
  */
@@ -14,6 +16,7 @@ public class SharedPreferencesManager implements DataStore {
     private String CURRENT_USER = "current_user";
     private String CURRENT_USER_TOKEN = "current_user_token";
     private String LAST_USER = "last_user";
+    private String LAST_CAMERA_TYPE = "last_camera_type";
 
     public SharedPreferencesManager(Application application) {
         sharedPreferences = application.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -60,5 +63,15 @@ public class SharedPreferencesManager implements DataStore {
     @Override
     public void clearDataStore() {
         sharedPreferences.edit().clear().apply();
+    }
+
+    @Override
+    public void setCameraType(String cameraType) {
+        sharedPreferences.edit().putString(LAST_CAMERA_TYPE, cameraType).apply();
+    }
+
+    @Override
+    public String getCameraType() {
+        return sharedPreferences.getString(LAST_CAMERA_TYPE, CameraDetector.CameraType.CAMERA_FRONT.name());
     }
 }

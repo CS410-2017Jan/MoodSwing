@@ -43,6 +43,9 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     ImageButton _editprofileButton;
 
 
+    @BindView(R.id.btn_camera)
+    Button _cameraButton;
+
     private JournalComponent _journalComponent;
 
     @Override
@@ -64,6 +67,7 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
         initializeLogoutButton();
         initializeAddEntryButton();
         initializeEditProfileButton();
+        initializeCameraButton();
 
         if (!_journalPresenter.isUserLoggedIn()) {
             Intent intent = new Intent(this, LoginActivity.class);
@@ -114,7 +118,6 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
         });
     }
 
-
     private void initializeAddEntryButton() {
         _addEntryButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -133,6 +136,16 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
             public void onClick(View view) {
                 //TODO: set some restrictions on editing profile
                 Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
+            }
+        });
+    }
+
+    private void initializeCameraButton() {
+        _cameraButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
                 startActivity(intent);
             }
         });

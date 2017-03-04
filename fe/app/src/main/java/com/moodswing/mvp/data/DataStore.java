@@ -13,4 +13,6 @@ public interface DataStore {
     void setLastUser(String lastUser);
     String getLastUser();
     void clearDataStore();
+    void setCameraType(String cameraType);
+    String getCameraType();
 }

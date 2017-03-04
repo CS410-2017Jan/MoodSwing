@@ -3,16 +3,25 @@
     package="com.moodswing"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-
     // Connection permissions
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.SET_DEBUG_APP" />
+
+    // Camera related permissions
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="false" />
 
     <application
         android:name=".MoodSwingApplication"
@@ -31,18 +40,22 @@
         <activity
             android:name=".activity.LoginActivity"
             android:label="@string/title_activity_login"
-            ></activity>
+            />
         <activity
             android:name=".activity.SignupActivity"
             android:label="@string/title_activity_signup"
-            ></activity>
+            />
         <activity android:name=".activity.EditProfileActivity"
             android:label="Edit Profile"
-            ></activity>
+            />
         <activity
             android:name=".activity.NewEntryActivity"
             android:label="New Entry"
-            ></activity>
+            />
+            />
+        <activity
+            android:name=".activity.CameraActivity"
+            android:label="@string/title_activity_camera"/>
     </application>
 
 </manifest>

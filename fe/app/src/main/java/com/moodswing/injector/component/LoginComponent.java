@@ -19,5 +19,4 @@ import dagger.Component;
 public interface LoginComponent {
 
     void inject(LoginActivity loginActivity);
-    // TODO: inject fragment...?
 }

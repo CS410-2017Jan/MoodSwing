@@ -19,7 +19,7 @@
         android:src="@drawable/logout"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />/>
+        android:layout_alignParentEnd="true" />
 
     <ImageButton
         android:id="@+id/btn_addnew"
@@ -40,7 +40,7 @@
         android:src="@drawable/edit"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />/>
+        android:layout_alignParentStart="true" />
 
     <!-- A RecyclerView with some commonly used attributes -->
     <android.support.v7.widget.RecyclerView
@@ -53,5 +53,15 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="13dp" />
 
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_camera"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:text="Camera"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
