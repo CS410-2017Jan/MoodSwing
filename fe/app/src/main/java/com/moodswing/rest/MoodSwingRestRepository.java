@@ -1,6 +1,7 @@
 package com.moodswing.rest;
 
 import com.moodswing.mvp.mvp.model.LoginResponse;
+import com.moodswing.mvp.mvp.model.SignupResponse;
 import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.network.Repository;
 
@@ -19,7 +20,7 @@ public class MoodSwingRestRepository implements Repository {
     }
 
     @Override
-    public Observable<User> postUser(User user) {
+    public Observable<SignupResponse> postUser(User user) {
         return apiService.postUser(user);
     }
 

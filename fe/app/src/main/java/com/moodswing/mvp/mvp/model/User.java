@@ -8,11 +8,16 @@ public class User {
     private String displayName;
     private String username;
     private String password;
-    private String token;
 
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public User(String displayName, String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.displayName = displayName;
     }
 
     public String getDisplayName() {
@@ -27,5 +32,4 @@ public class User {
         return password;
     }
 
-    public String getToken() { return token; }
 }

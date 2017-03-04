@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.moodswing.R;
 import com.moodswing.mvp.domain.SignupUsecase;
+import com.moodswing.mvp.mvp.model.SignupResponse;
 import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.mvp.view.SignupView;
 
@@ -47,8 +48,8 @@ public class SignupPresenter implements Presenter<SignupView> {
         this.signupView = signupView;
     }
 
-    public void signup(String username, String password) {
-        signupUsecase.setUser(new User(username, password));
+    public void signup(String displayName, String username, String password) {
+        signupUsecase.setUser(new User(displayName, username, password));
 
         final ProgressDialog progressDialog = new ProgressDialog((Context) signupView, R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
@@ -58,11 +59,15 @@ public class SignupPresenter implements Presenter<SignupView> {
         signupSubscription = signupUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<User>() {
+                .subscribe(new Consumer<SignupResponse>() {
                     @Override
-                    public void accept(User user) throws Exception {
+                    public void accept(SignupResponse signupResponse) throws Exception {
                         progressDialog.dismiss();
-                        signupView.onSignupSuccess();
+                        if (signupResponse.isSuccessful()) {
+                            signupView.onSignupSuccess();
+                        } else {
+                            signupView.onSignupFailure(signupResponse.getMessage());
+                        }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
