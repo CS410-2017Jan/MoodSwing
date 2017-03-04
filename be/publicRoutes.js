@@ -3,17 +3,19 @@ const app = express()
 const router = express.Router()
 const jwt = require('jsonwebtoken')
 const User   = require('./app/models/user')
+const JournalEntry   = require('./app/models/journalentry')
 const config = require('./config')
 
 /*
 ---------------------------------------------------------
- Test public /public/hello
+ Test public /hello
 ---------------------------------------------------------
 */
 
 router.get('/hello', (req, res) => {
   res.send('Hello World')
 })
+
 
 
 /*
