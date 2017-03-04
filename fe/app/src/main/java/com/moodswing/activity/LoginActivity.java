@@ -92,6 +92,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
     @Override
     public void showError() {
         Toast.makeText(LoginActivity.this, R.string.login_error, Toast.LENGTH_LONG).show();
+        _loginButton.setEnabled(true);
     }
 
     public void onLoginSuccess() {
