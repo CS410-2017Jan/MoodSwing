@@ -17,10 +17,10 @@ import retrofit2.http.POST;
 public interface ApiService {
 
     @Headers("Content-Type: application/json")
-    @POST("public/users")
+    @POST("users")
     Observable<User> postUser(@Body User user);
 
     @Headers("Content-Type: application/json")
-    @POST("public/users/login")
+    @POST("users/login")
     Observable<LoginResponse> postLogin(@Body User user);
 }

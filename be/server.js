@@ -16,8 +16,8 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 app.use(morgan('dev'))
 
-app.use('/private', authenticatedRoutes)
-app.use('/public', publicRoutes)
+app.use(authenticatedRoutes)
+app.use(publicRoutes)
 
 
 mongoose.connect(config.database, function(err, db) {
@@ -29,4 +29,3 @@ mongoose.connect(config.database, function(err, db) {
     console.log('listening on ' + port)
   })
 })
-

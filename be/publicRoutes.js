@@ -25,23 +25,36 @@ router.get('/hello', (req, res) => {
 router.post('/users', function(req, res) {
   let username = req.body.username
   let password = req.body.password
+  let displayName = req.body.displayName || ""
 
-  let newUser = new User({
-    username: username,
-    password: password
+  User.findOne({
+    username: req.body.username
+  }, function(err, user) {
+    if (err) throw err
+
+    if (user) {
+      return res.json({ success: false, message: 'Username already exists'})
+    }
+
+    let newUser = new User({
+      username: username,
+      password: password,
+      displayName: displayName
+    })
+
+    newUser.save()
+      .then(function (doc) {
+        let token = createToken(doc)
+        return res.json({ success: true, token: token})
+      })
+      .catch(function(err) {
+        return res.json({ success: false })
+      })
   })
-
-  newUser.save()
-		.then(function (doc) {
-			console.log(doc)
-			res.json({ success: true })
-		})
-		.catch(function(err) {
-			res.json({ success: false })
-		})
 })
 
-// http header should be Authentication: Bearer <token>
+
+
 router.post('/users/login', function(req, res) {
 
   User.findOne({
@@ -50,25 +63,28 @@ router.post('/users/login', function(req, res) {
     if (err) throw err
 
     if (!user) {
-      res.json({ success: false, message: 'Error: User not found.' })
-    } else if (user) {
-
-      if (user.password != req.body.password) {
-        res.json({ success: false, message: 'Error: Wrong password.' })
-      } else {
-        var token = jwt.sign(user, config.secret, {
-          expiresIn: 86400  // 24 hours
-        })
-
-        res.json({
-          success: true,
-          message: 'Enjoy your token!',
-          token: token
-        })
-      }
+      return res.json({ success: false, message: 'Error: User not found.' })
     }
+
+    if (user.password != req.body.password) {
+      return res.json({ success: false, message: 'Error: Wrong password.' })
+    }
+
+    let token = createToken(user)
+
+    return res.json({
+      success: true,
+      message: 'Enjoy your token!',
+      token: token
+    })
   })
 })
+
+function createToken(user) {
+  return jwt.sign(user, config.secret, {
+    expiresIn: 86400  // 24 hours
+  })
+}
 
 
  /*
