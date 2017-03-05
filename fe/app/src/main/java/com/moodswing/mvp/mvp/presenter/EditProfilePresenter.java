@@ -1,6 +1,7 @@
 package com.moodswing.mvp.mvp.presenter;
 
 import android.media.Image;
+import android.net.Uri;
 
 import com.moodswing.activity.EditProfileActivity;
 import com.moodswing.mvp.domain.EditProfilePictureUsecase;
@@ -43,7 +44,7 @@ public class EditProfilePresenter implements Presenter<EditProfileView> {
         this.editProfileView = view;
     }
 
-    public void changePicture(Image picture) {
+    public void changePicture(Uri picture) {
 
     }
 }

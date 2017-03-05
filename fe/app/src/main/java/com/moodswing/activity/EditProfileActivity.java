@@ -2,12 +2,14 @@ package com.moodswing.activity;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.moodswing.MoodSwingApplication;
 import com.moodswing.R;
@@ -28,6 +30,10 @@ import butterknife.ButterKnife;
  */
 
 public class EditProfileActivity extends AppCompatActivity implements EditProfileView {
+    //------- variables used for gallery image selection -------------
+    // Action code used for gallery selection showing the result of our action
+    private static final int SELECT_PICTURE = 1;
+    private String selectedImagePath;
 
     @Inject2
     EditProfilePresenter _editProfilePresenter;
@@ -36,11 +42,6 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
     Button _editProfilePictureButton;
 
     private EditProfileComponent _editProfileComponent;
-
-    //------- variables used for gallery image selection -------------
-    // Action code used for gallery selection showing the result of our action
-    private static final int SELECT_PICTURE = 1;
-    private String selectedImagePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +57,6 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
                 .applicationComponent(applicationComponent)
                 .build();
         _editProfileComponent.inject(this);
-
 
         initializePresenter();
         initializeEditProfilePictureButton();
@@ -89,6 +89,12 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
             if (requestCode == SELECT_PICTURE) {
                 Uri selectedImageUri = data.getData();
                 selectedImagePath = getPath(selectedImageUri);
+                ImageView mImageView;
+                mImageView = (ImageView) findViewById(R.id.profilepicture);
+                mImageView.setImageURI(selectedImageUri);
+
+                //Pass to Presenter
+                _editProfilePresenter.changePicture(selectedImageUri);
             }
         }
     }
