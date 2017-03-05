@@ -89,8 +89,15 @@ public class SignupActivity extends AppCompatActivity implements SignupView {
     }
 
     @Override
+    public void onSignupFailure(String message) {
+        Toast.makeText(SignupActivity.this, "Error during signup: " + message, Toast.LENGTH_LONG).show();
+        _signupButton.setEnabled(true);
+    }
+
+    @Override
     public void showError() {
         Toast.makeText(SignupActivity.this, R.string.signup_error, Toast.LENGTH_LONG).show();
+        _signupButton.setEnabled(true);
     }
 
     private void initializeSignupButton() {
@@ -103,22 +110,29 @@ public class SignupActivity extends AppCompatActivity implements SignupView {
     }
 
     private void signup() {
-        String name = _nameText.getText().toString();
+        String displayName= _nameText.getText().toString();
         String username = _usernameText.getText().toString();
         String password = _passwordText.getText().toString();
         String confirmPassword = _confirmPasswordText.getText().toString();
 
-        if (!valid(username, password, confirmPassword)) {
+        if (!valid(displayName, username, password, confirmPassword)) {
             onSignupFailure();
             return;
         }
 
         _signupButton.setEnabled(false);
-        _signupPresenter.signup(username, password); // TODO: Not actually using name
+        _signupPresenter.signup(displayName, username, password);
     }
 
-    private boolean valid(String username, String password, String confirmPassword) {
+    private boolean valid(String displayName, String username, String password, String confirmPassword) {
         boolean valid = true;
+
+        if (displayName.isEmpty()) {
+            _nameText.setError("Enter a valid display name");
+            valid = false;
+        } else {
+            _nameText.setError(null);
+        }
 
         if (username.isEmpty()) {
             _usernameText.setError("Enter a valid username");

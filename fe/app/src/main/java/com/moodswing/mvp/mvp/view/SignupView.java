@@ -7,5 +7,6 @@ package com.moodswing.mvp.mvp.view;
 public interface SignupView extends View {
     void onSignupSuccess();
     void onSignupFailure();
+    void onSignupFailure(String message);
     void showError();
 }

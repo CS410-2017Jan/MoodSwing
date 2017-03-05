@@ -81,7 +81,6 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
     @Override
     protected void onResume() {
         super.onResume();
-        initializeUsernameText();
     }
 
 
@@ -93,6 +92,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
     @Override
     public void showError() {
         Toast.makeText(LoginActivity.this, R.string.login_error, Toast.LENGTH_LONG).show();
+        _loginButton.setEnabled(true);
     }
 
     public void onLoginSuccess() {
@@ -109,6 +109,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
                 String username = data.getStringExtra("USERNAME");
+                System.err.println("DATA: " + username);
                 _usernameText.setText(username);
                 _passwordText.setText(null);
             }

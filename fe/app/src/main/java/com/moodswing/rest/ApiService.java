@@ -1,6 +1,7 @@
 package com.moodswing.rest;
 
 import com.moodswing.mvp.mvp.model.LoginResponse;
+import com.moodswing.mvp.mvp.model.SignupResponse;
 import com.moodswing.mvp.mvp.model.User;
 
 import io.reactivex.Observable;
@@ -18,7 +19,7 @@ public interface ApiService {
 
     @Headers("Content-Type: application/json")
     @POST("users")
-    Observable<User> postUser(@Body User user);
+    Observable<SignupResponse> postUser(@Body User user);
 
     @Headers("Content-Type: application/json")
     @POST("users/login")
