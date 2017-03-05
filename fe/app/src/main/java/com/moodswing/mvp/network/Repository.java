@@ -2,6 +2,8 @@ package com.moodswing.mvp.network;
 
 import com.moodswing.mvp.mvp.model.LoginResponse;
 import com.moodswing.mvp.mvp.model.SignupResponse;
+import com.moodswing.mvp.mvp.model.ProfilePicture;
+import com.moodswing.mvp.mvp.model.ProfilePictureResponse;
 import com.moodswing.mvp.mvp.model.User;
 
 import io.reactivex.Observable;
@@ -16,4 +18,5 @@ public interface Repository {
     // getJournalEntries etc...
     Observable<SignupResponse> postUser(User user);
     Observable<LoginResponse> postLogin(User user);
+    Observable<ProfilePictureResponse> postProfilePicture(ProfilePicture profilePicture);
 }

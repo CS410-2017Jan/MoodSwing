@@ -39,6 +39,10 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     @BindView(R.id.btn_addnew)
     ImageButton _addEntryButton;
 
+    @BindView(R.id.btn_edit_profile)
+    Button _editprofileButton;
+
+
     private JournalComponent _journalComponent;
 
     @Override
@@ -59,6 +63,7 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
         initializePresenter();
         initializeLogoutButton();
         initializeAddEntryButton();
+        initializeEditProfileButton();
 
         if (!_journalPresenter.isUserLoggedIn()) {
             Intent intent = new Intent(this, LoginActivity.class);
@@ -72,7 +77,7 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     }
 
     @Override
-    protected void onStop(){
+    protected void onStop() {
         super.onStop();
     }
 
@@ -118,8 +123,22 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
         });
     }
 
+
+    private void initializeEditProfileButton() {
+        _editprofileButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                //TODO: set some restrictions on editing profile
+                Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
     private void initializePresenter() {
         _journalPresenter.attachView(this);
         _journalPresenter.attachSharedPreferencesManager(_sharedPreferencesManager);
     }
 }
+

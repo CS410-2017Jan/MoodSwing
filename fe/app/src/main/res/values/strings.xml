@@ -20,4 +20,9 @@
     <!-- Strings related to signup -->
     <string name="signup_error">Error during signup</string>
     <string name="signup_failure">Signup failed</string>
+
+
+    <!-- Strings related to profile editiing -->>
+    <string name="editprofile"> Edit Profile</string>
+    <string name="editprofilepicture">Change Your Profle Picture!</string>
 </resources>
