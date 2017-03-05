@@ -39,6 +39,10 @@
         <activity android:name=".activity.EditProfileActivity"
             android:label="Edit Profile"
             ></activity>
+        <activity
+            android:name=".activity.NewEntryActivity"
+            android:label="New Entry"
+            ></activity>
     </application>
 
 </manifest>

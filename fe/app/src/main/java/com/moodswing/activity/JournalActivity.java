@@ -119,6 +119,8 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
         _addEntryButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Do something in response to button click
+                Intent intent = new Intent(getApplicationContext(), NewEntryActivity.class);
+                startActivity(intent);
             }
         });
     }
