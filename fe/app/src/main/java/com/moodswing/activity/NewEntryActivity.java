@@ -135,6 +135,17 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
         return true;
     }
 
+
+    @Override
+    public void onBackPressed() {
+        String title = _titleText.getText().toString();
+        String description = _descText.getText().toString();
+        if(!isEmpty(title) && !isEmpty(description)){
+            displayDiscardWarning();
+        }
+    }
+
+
     private void displayError() {
         AlertDialog alertDialog = new AlertDialog.Builder(NewEntryActivity.this).create();
         alertDialog.setTitle("Warning");
@@ -145,6 +156,28 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
                         dialog.dismiss();
                     }
                 });
+        alertDialog.show();
+    }
+
+
+    private void displayDiscardWarning() {
+        AlertDialog alertDialog = new AlertDialog.Builder(NewEntryActivity.this).create();
+        alertDialog.setTitle("Warning");
+        alertDialog.setMessage("Are you sure you want to discard your post?");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        Intent intent = new Intent(getApplicationContext(), JournalActivity.class);
+                        startActivity(intent);
+                    }
+                });
+//        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "No",
+//                new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                    }
+//                });
         alertDialog.show();
     }
 }
