@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.moodswing.MoodSwingApplication;
 import com.moodswing.R;
@@ -35,6 +36,9 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     @BindView(R.id.btn_logout)
     Button _logoutButton;
 
+    @BindView(R.id.btn_addnew)
+    ImageButton _addEntryButton;
+
     private JournalComponent _journalComponent;
 
     @Override
@@ -54,6 +58,7 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
 
         initializePresenter();
         initializeLogoutButton();
+        initializeAddEntryButton();
 
         if (!_journalPresenter.isUserLoggedIn()) {
             Intent intent = new Intent(this, LoginActivity.class);
@@ -100,6 +105,15 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
                 } else {
                     // TODO: ERROR... App should shutdown
                 }
+            }
+        });
+    }
+
+
+    private void initializeAddEntryButton() {
+        _addEntryButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Do something in response to button click
             }
         });
     }
