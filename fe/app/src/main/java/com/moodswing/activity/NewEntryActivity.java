@@ -3,6 +3,7 @@ package com.moodswing.activity;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.app.AlertDialog.Builder;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -123,8 +124,9 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
 
 
     private void shareEntry() {
-        Intent intent = new Intent(getApplicationContext(), JournalActivity.class);
-        startActivity(intent);
+        // TODO: this is stubbed
+
+        exitToJounal();
     }
 
 
@@ -140,8 +142,11 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
     public void onBackPressed() {
         String title = _titleText.getText().toString();
         String description = _descText.getText().toString();
-        if(!isEmpty(title) && !isEmpty(description)){
+        if(!isEmpty(title) || !isEmpty(description)){
             displayDiscardWarning();
+        }
+        else{
+            exitToJounal();
         }
     }
 
@@ -161,23 +166,27 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
 
 
     private void displayDiscardWarning() {
-        AlertDialog alertDialog = new AlertDialog.Builder(NewEntryActivity.this).create();
-        alertDialog.setTitle("Warning");
-        alertDialog.setMessage("Are you sure you want to discard your post?");
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Yes",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        Intent intent = new Intent(getApplicationContext(), JournalActivity.class);
-                        startActivity(intent);
-                    }
-                });
-//        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "No",
-//                new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.dismiss();
-//                    }
-//                });
-        alertDialog.show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(NewEntryActivity.this);
+        builder.setTitle("Warning");
+        builder.setMessage("Are you sure you want to discard your post?");
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                exitToJounal();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+
+    public void exitToJounal(){
+        Intent intent = new Intent(getApplicationContext(), JournalActivity.class);
+        startActivity(intent);
     }
 }
