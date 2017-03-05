@@ -1,11 +1,17 @@
 package com.moodswing.activity;
 
 
+import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.app.AlertDialog;
+import android.widget.ImageButton;
 
 import com.moodswing.MoodSwingApplication;
 import com.moodswing.R;
@@ -18,6 +24,8 @@ import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.presenter.NewEntryPresenter;
 import com.moodswing.mvp.mvp.view.NewEntryView;
 
+import java.util.Calendar;
+
 import javax.inject.Inject2;
 
 import butterknife.BindView;
@@ -29,14 +37,24 @@ import butterknife.ButterKnife;
 
 public class NewEntryActivity extends AppCompatActivity implements NewEntryView {
 
+
     @Inject2
     NewEntryPresenter _newEntryPresenter;
 
     @Inject2
     SharedPreferencesManager _sharedPreferencesManager;
 
-    @BindView(R.id.btn_create)
-    Button _createButton;
+    @BindView(R.id.btn_share)
+    Button _shareButton;
+
+    @BindView(R.id.btn_date)
+    ImageButton _dateButton;
+
+    @BindView(R.id.entry_title)
+    EditText _titleText;
+
+    @BindView(R.id.entry_desc)
+    EditText _descText;
 
     private NewEntryComponent _newEntryComponent;
 
@@ -56,7 +74,8 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
         _newEntryComponent.inject(this);
 
         initializePresenter();
-        initializeCreateButton();
+        initializeShareButton();
+        initializeDateButton();
     }
 
 
@@ -65,21 +84,67 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
         super.onResume();
     }
 
+
     @Override
     protected void onStop(){
         super.onStop();
     }
 
-    private void initializeCreateButton() {
-        _createButton.setOnClickListener(new View.OnClickListener() {
+
+    private void initializeShareButton() {
+        _shareButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // Do something in response to button click
+                String title = _titleText.getText().toString();
+                String description = _descText.getText().toString();
+                if(!isEmpty(title) && !isEmpty(description)){
+                    shareEntry();
+                }
+                else{
+                    displayError();
+                }
             }
         });
     }
 
+
+    private void initializeDateButton() {
+        _dateButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+            }
+        });
+    }
+
+
     private void initializePresenter() {
         _newEntryPresenter.attachView(this);
         _newEntryPresenter.attachSharedPreferencesManager(_sharedPreferencesManager);
+    }
+
+
+    private void shareEntry() {
+        Intent intent = new Intent(getApplicationContext(), JournalActivity.class);
+        startActivity(intent);
+    }
+
+
+    private boolean isEmpty(String s) {
+        if(s != null && !s.isEmpty()){
+            return false;
+        }
+        return true;
+    }
+
+    private void displayError() {
+        AlertDialog alertDialog = new AlertDialog.Builder(NewEntryActivity.this).create();
+        alertDialog.setTitle("Warning");
+        alertDialog.setMessage("The title and description cannot have an empty value.");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
     }
 }

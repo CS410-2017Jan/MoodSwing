@@ -34,13 +34,13 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     SharedPreferencesManager _sharedPreferencesManager;
 
     @BindView(R.id.btn_logout)
-    Button _logoutButton;
+    ImageButton _logoutButton;
 
     @BindView(R.id.btn_addnew)
     ImageButton _addEntryButton;
 
     @BindView(R.id.btn_edit_profile)
-    Button _editprofileButton;
+    ImageButton _editprofileButton;
 
 
     private JournalComponent _journalComponent;

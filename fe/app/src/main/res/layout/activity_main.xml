@@ -10,40 +10,37 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.moodswing.activity.JournalActivity">
 
-    <TextView
+    <ImageButton
+        android:id="@+id/btn_logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        android:id="@+id/textView" />
-
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/btn_logout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
         android:padding="12dp"
-        android:text="@string/logout"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:background="@null"
+        android:src="@drawable/logout"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />/>
 
     <ImageButton
         android:id="@+id/btn_addnew"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
         android:background="@null"
-        android:src="@drawable/addnew" />
+        android:src="@drawable/addnew"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="11dp" />
 
-    <android.support.v7.widget.AppCompatButton
+    <ImageButton
         android:id="@+id/btn_edit_profile"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
-        android:layout_marginBottom="24dp"
         android:padding="12dp"
-        android:text="@string/editprofile"/>
+        android:background="@null"
+        android:src="@drawable/edit"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />/>
 
 
 </RelativeLayout>
