@@ -4,6 +4,10 @@ const jwt = require('jsonwebtoken')
 const User   = require('./app/models/user')
 const JournalEntry   = require('./app/models/journalentry')
 const config = require('./config')
+const multer = require('multer')
+
+const KB = 1024
+const MB = KB*KB
 
 /*
 ---------------------------------------------------------
@@ -41,6 +45,70 @@ router.get('/self/hi', function(req, res) {
 	console.log(req.user) //how you get user information
 	res.json({ message: 'Welcome to the coolest API on earth!' })
 })
+
+
+var upload = multer({ storage: multer.memoryStorage({}) })
+
+router.post('/users/self/picture', upload.single('profilePicture'), (req, res) => {
+
+	if (req.file.size > 16*MB) {
+		return res.json({ success: false, message: 'File too large' })
+	}
+
+	switch (req.file.mimetype) {
+		case 'image/bpm':
+		case 'image/gif':
+		case 'image/jpeg':
+		case 'image/png':
+		case 'image/tiff':
+			break
+		default:
+			return res.json({ success: false, message: 'File type not supported' })
+	}
+
+  let username = req.user.username
+
+	User.findOne({
+	  username: username
+	}, function(err, user) {
+		if (err) throw err
+
+		if (!user) {
+			return res.json({success: false, message: 'User not found'})
+		}
+
+		user.profilePicture = {data: req.file.buffer, contentType: req.file.mimetype}
+
+		user.save()
+	    .then(function (doc) {
+	      return res.json({ success: true })
+	    })
+	    .catch(function(err) {
+	      return res.json({ success: false })
+	    })
+	})
+})
+
+router.get('/users/self/picture', (req, res) => {
+
+	let username = req.user.username
+
+  User.findOne({
+    username: username
+  }, function(err, user) {
+
+    let imageBuffer = user.profilePicture.data
+    let imageType = user.profilePicture.contentType
+
+    let img = new Buffer(imageBuffer, 'base64')
+    res.writeHead(200, {
+      'Content-Type': imageType,
+      'Content-Length': img.length
+    })
+    res.end(img)
+  })
+})
+
 
 
 router.post('/users/self/captures', function(req, res) {

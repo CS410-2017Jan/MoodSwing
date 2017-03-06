@@ -27,7 +27,11 @@ router.get('/hello', (req, res) => {
 router.post('/users', function(req, res) {
   let username = req.body.username
   let password = req.body.password
-  let displayName = req.body.displayName || ""
+  let displayName = req.body.displayName || ''
+
+  if (!username || !password) {
+    return res.json({ success: false, message: 'Malformed http body'})
+  }
 
   User.findOne({
     username: req.body.username

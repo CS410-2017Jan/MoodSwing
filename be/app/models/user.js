@@ -6,7 +6,8 @@ mongoose.Promise = Promise
 module.exports = mongoose.model('User', new Schema({
 	username: String,
 	password: String,
-	displayName: String
+	displayName: String,
+	profilePicture: { data: Buffer, contentType: String }
 }, {
 	versionKey: '1'
 }))
