@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -20,6 +21,8 @@ import com.moodswing.injector.module.EditProfileModule;
 import com.moodswing.mvp.mvp.presenter.EditProfilePresenter;
 import com.moodswing.injector.component.DaggerEditProfileComponent;
 import com.moodswing.mvp.mvp.view.EditProfileView;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject2;
 import butterknife.BindView;
@@ -41,6 +44,7 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
     @BindView(R.id.btn_editprofilepicture)
     Button _editProfilePictureButton;
 
+
     private EditProfileComponent _editProfileComponent;
 
     @Override
@@ -59,11 +63,11 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
         _editProfileComponent.inject(this);
 
         initializePresenter();
-        initializeEditProfilePictureButton();
+        initializeButtons();
 
     }
 
-    private void initializeEditProfilePictureButton() {
+    private void initializeButtons() {
         _editProfilePictureButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -80,6 +84,8 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
+        //allows multiple strings tobe
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         startActivityForResult(Intent.createChooser(intent,
                 "Select Picture"), SELECT_PICTURE);
     }
@@ -89,12 +95,24 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
             if (requestCode == SELECT_PICTURE) {
                 Uri selectedImageUri = data.getData();
                 selectedImagePath = getPath(selectedImageUri);
-                ImageView mImageView;
-                mImageView = (ImageView) findViewById(R.id.profilepicture);
-                mImageView.setImageURI(selectedImageUri);
+                ImageView profileImageView;
+                profileImageView= (ImageView) findViewById(R.id.profilepicture);
+                profileImageView.setImageURI(selectedImageUri);
 
                 //Pass to Presenter
                 _editProfilePresenter.changePicture(selectedImageUri);
+            }
+        }
+
+        if (Intent.ACTION_SEND_MULTIPLE.equals(data.getAction()) && data.hasExtra(Intent.EXTRA_STREAM)) {
+            // retrieve a collection of selected images
+            ArrayList<Parcelable> list = data.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+            // iterate over these images
+            if( list != null ) {
+                for (Parcelable parcel : list) {
+                    Uri uri = (Uri) parcel;
+                    // TODO handle the images one by one here
+                }
             }
         }
     }
