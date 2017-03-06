@@ -7,11 +7,15 @@ package com.moodswing.mvp.mvp.model;
 public class Post {
 
     String title;
-    String description;
+//    String description;
+    String date;
+    String token;
 
-    public Post(String title, String desc) {
+    public Post(String title, String date, String token) {
         this.title = title;
-        this.description = desc;
+//        this.description = desc;
+        this.date = date;
+        this.token = token;
     }
 
 
@@ -20,15 +24,27 @@ public class Post {
         return title;
     }
 
-    public String getDescription(){
-        return description;
+//    public String getDescription(){
+//        return description;
+//    }
+
+    public String getDate(){
+        return date;
+    }
+
+    public String getToken(){
+        return token;
     }
 
     public void setTitle(String newtitle){
         title = newtitle;
     }
 
-    public void setDescription(String newdesc){
-        description = newdesc;
+//    public void setDescription(String newdesc){
+//        description = newdesc;
+//    }
+
+    public void setDate(String d){
+        date = d;
     }
 }

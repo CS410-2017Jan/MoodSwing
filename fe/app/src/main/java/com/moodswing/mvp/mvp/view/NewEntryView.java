@@ -5,4 +5,7 @@ package com.moodswing.mvp.mvp.view;
  */
 
 public interface NewEntryView extends View {
+    void onNewEntrySuccess();
+    void onNewEntryFailure();
+    void showError();
 }

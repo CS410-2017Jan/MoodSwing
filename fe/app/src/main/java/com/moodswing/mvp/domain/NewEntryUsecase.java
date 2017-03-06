@@ -17,6 +17,8 @@ public class NewEntryUsecase implements Usecase<NewEntryResponse> {
 
     public NewEntryUsecase(Repository repository) {this.repository = repository;}
 
+    public void setPost(Post post) {this.post = post;}
+
     @Override
     public Observable<NewEntryResponse> execute() {
         return repository.postNewEntry(post);

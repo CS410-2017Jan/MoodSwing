@@ -28,6 +28,6 @@ public interface ApiService {
     Observable<LoginResponse> postLogin(@Body User user);
 
     @Headers("Content-Type: application/json")
-    @POST("users")
+    @POST("/users/self/entries/:{entryDate}")
     Observable<NewEntryResponse> postNewEntry(@Body Post post);
 }

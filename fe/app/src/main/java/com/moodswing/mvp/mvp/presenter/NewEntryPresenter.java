@@ -1,8 +1,21 @@
 package com.moodswing.mvp.mvp.presenter;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+
+import com.moodswing.R;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.NewEntryUsecase;
+import com.moodswing.mvp.mvp.model.LoginResponse;
+import com.moodswing.mvp.mvp.model.NewEntryResponse;
+import com.moodswing.mvp.mvp.model.Post;
+import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.mvp.view.NewEntryView;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Matthew on 2017-03-04.
@@ -11,6 +24,7 @@ import com.moodswing.mvp.mvp.view.NewEntryView;
 public class NewEntryPresenter implements Presenter<NewEntryView> {
     private NewEntryView newEntryView;
     private NewEntryUsecase newEntryUsecase;
+    private Disposable newEntrySubscription;
     private SharedPreferencesManager sharedPreferencesManager;
 
     public NewEntryPresenter(NewEntryUsecase newEntryUsecase) {
@@ -42,11 +56,32 @@ public class NewEntryPresenter implements Presenter<NewEntryView> {
         this.newEntryView = view;
     }
 
-    public void attachSharedPreferencesManager(SharedPreferencesManager sharedPreferencesManager) {
-        this.sharedPreferencesManager = sharedPreferencesManager;
+
+    public void uploadPost(String title, String date, String token) {
+        newEntryUsecase.setPost(new Post(title, date, token));
+
+        newEntrySubscription = newEntryUsecase.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<NewEntryResponse>() {
+                    @Override
+                    public void accept(NewEntryResponse newEntryResponse) throws Exception {
+                        if (newEntryResponse.isSuccessful()) {
+                            newEntryView.onNewEntrySuccess();
+                        } else {
+                            newEntryView.onNewEntryFailure();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        newEntryView.showError();
+                    }
+                });
     }
 
-    public boolean isUserLoggedIn() {
-        return sharedPreferencesManager.isUserLoggedIn();
+
+    public void attachSharedPreferencesManager(SharedPreferencesManager sharedPreferencesManager) {
+        this.sharedPreferencesManager = sharedPreferencesManager;
     }
 }

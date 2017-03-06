@@ -5,11 +5,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.app.AlertDialog;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.moodswing.MoodSwingApplication;
 import com.moodswing.R;
@@ -23,6 +25,8 @@ import com.moodswing.mvp.mvp.presenter.NewEntryPresenter;
 import com.moodswing.mvp.mvp.view.NewEntryView;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.inject.Inject2;
 
@@ -87,6 +91,19 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
         super.onStop();
     }
 
+    public void onNewEntryFailure() {
+        Toast.makeText(getBaseContext(), "Entry failed", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showError() {
+        Toast.makeText(NewEntryActivity.this, "Error creating entry", Toast.LENGTH_LONG).show();
+    }
+
+    public void onNewEntrySuccess() {
+        // TODO: What does finish() do in the same method in loginActivity??
+    }
+
 
     private void initializeShareButton() {
         _shareButton.setOnClickListener(new View.OnClickListener() {
@@ -120,11 +137,13 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
 
 
     private void shareEntry(String title) {
-        // TODO: this is stubbed
+        // TODO: This is a simplified entry
+        Date dateO = new Date();
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        String date = df.format(dateO);
+        String token = _sharedPreferencesManager.getToken();
 
-
-
-
+        _newEntryPresenter.uploadPost(title, date, token);
         exitToJounal();
     }
 
