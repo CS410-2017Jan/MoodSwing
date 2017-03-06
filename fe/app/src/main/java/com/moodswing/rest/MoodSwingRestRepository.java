@@ -1,6 +1,8 @@
 package com.moodswing.rest;
 
 import com.moodswing.mvp.mvp.model.LoginResponse;
+import com.moodswing.mvp.mvp.model.NewEntryResponse;
+import com.moodswing.mvp.mvp.model.Post;
 import com.moodswing.mvp.mvp.model.SignupResponse;
 import com.moodswing.mvp.mvp.model.ProfilePicture;
 import com.moodswing.mvp.mvp.model.ProfilePictureResponse;
@@ -34,5 +36,10 @@ public class MoodSwingRestRepository implements Repository {
     @Override
     public Observable<ProfilePictureResponse> postProfilePicture(ProfilePicture profilePicture) {
         return null;
+    }
+
+    @Override
+    public Observable<NewEntryResponse> postNewEntry(Post post) {
+        return apiService.postNewEntry(post);
     }
 }

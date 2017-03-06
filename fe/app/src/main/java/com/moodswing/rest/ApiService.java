@@ -1,6 +1,8 @@
 package com.moodswing.rest;
 
 import com.moodswing.mvp.mvp.model.LoginResponse;
+import com.moodswing.mvp.mvp.model.NewEntryResponse;
+import com.moodswing.mvp.mvp.model.Post;
 import com.moodswing.mvp.mvp.model.SignupResponse;
 import com.moodswing.mvp.mvp.model.User;
 
@@ -24,4 +26,8 @@ public interface ApiService {
     @Headers("Content-Type: application/json")
     @POST("users/login")
     Observable<LoginResponse> postLogin(@Body User user);
+
+    @Headers("Content-Type: application/json")
+    @POST("users")
+    Observable<NewEntryResponse> postNewEntry(@Body Post post);
 }
