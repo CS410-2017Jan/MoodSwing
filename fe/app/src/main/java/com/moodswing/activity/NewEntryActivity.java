@@ -1,15 +1,12 @@
 package com.moodswing.activity;
 
 
-import android.app.DatePickerDialog;
 import android.content.DialogInterface;
-import android.app.AlertDialog.Builder;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.app.AlertDialog;
 import android.widget.ImageButton;
@@ -25,7 +22,7 @@ import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.presenter.NewEntryPresenter;
 import com.moodswing.mvp.mvp.view.NewEntryView;
 
-import java.util.Calendar;
+import java.text.DateFormat;
 
 import javax.inject.Inject2;
 
@@ -37,7 +34,6 @@ import butterknife.ButterKnife;
  */
 
 public class NewEntryActivity extends AppCompatActivity implements NewEntryView {
-
 
     @Inject2
     NewEntryPresenter _newEntryPresenter;
@@ -98,7 +94,7 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
                 String title = _titleText.getText().toString();
                 String description = _descText.getText().toString();
                 if(!isEmpty(title) && !isEmpty(description)){
-                    shareEntry();
+                    shareEntry(title);
                 }
                 else{
                     displayError();
@@ -123,8 +119,11 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
     }
 
 
-    private void shareEntry() {
+    private void shareEntry(String title) {
         // TODO: this is stubbed
+
+
+
 
         exitToJounal();
     }

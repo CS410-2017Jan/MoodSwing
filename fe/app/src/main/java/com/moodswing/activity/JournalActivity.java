@@ -3,6 +3,8 @@ package com.moodswing.activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -16,9 +18,11 @@ import com.moodswing.injector.module.ActivityModule;
 import com.moodswing.injector.module.JournalModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.model.JournalEntry;
+import com.moodswing.mvp.mvp.model.MyAdapter;
 import com.moodswing.mvp.mvp.presenter.JournalPresenter;
 import com.moodswing.mvp.mvp.view.JournalView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject2;
@@ -27,6 +31,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class JournalActivity extends AppCompatActivity implements JournalView {
+
+
+    List<String> tempEntries = new ArrayList<>();
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+
+
     @Inject2
     JournalPresenter _journalPresenter;
 
@@ -73,6 +86,14 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
+
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        //mAdapter = new MyAdapter(tempEntries);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -154,6 +175,10 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     private void initializePresenter() {
         _journalPresenter.attachView(this);
         _journalPresenter.attachSharedPreferencesManager(_sharedPreferencesManager);
+    }
+
+    public void TempAddEntry(String s){
+        tempEntries.add(s);
     }
 }
 
