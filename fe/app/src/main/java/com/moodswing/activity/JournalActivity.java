@@ -157,6 +157,7 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
             public void onClick(View view) {
                 //TODO: set some restrictions on editing profile
                 Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
+                startActivity(intent);
             }
         });
     }

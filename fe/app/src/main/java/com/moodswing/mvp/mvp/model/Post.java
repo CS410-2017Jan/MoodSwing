@@ -18,8 +18,6 @@ public class Post {
         this.token = token;
     }
 
-
-
     public String getTitle(){
         return title;
     }

@@ -5,7 +5,6 @@ package com.moodswing.mvp.mvp.model;
  */
 
 public class NewEntryResponse {
-
     private boolean success;
     private String message;
 

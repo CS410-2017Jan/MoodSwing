@@ -3,6 +3,7 @@ package com.moodswing.activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -18,15 +19,21 @@ import com.moodswing.injector.component.ApplicationComponent;
 import com.moodswing.injector.component.EditProfileComponent;
 import com.moodswing.injector.module.ActivityModule;
 import com.moodswing.injector.module.EditProfileModule;
+import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.presenter.EditProfilePresenter;
 import com.moodswing.injector.component.DaggerEditProfileComponent;
 import com.moodswing.mvp.mvp.view.EditProfileView;
 
+import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 
 import javax.inject.Inject2;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 /**
  * Created by Kenny on 2017-02-27.
@@ -40,6 +47,9 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
 
     @Inject2
     EditProfilePresenter _editProfilePresenter;
+
+    @Inject2
+    SharedPreferencesManager _sharedPreferencesManager;
 
     @BindView(R.id.btn_editprofilepicture)
     Button _editProfilePictureButton;
@@ -98,9 +108,26 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
                 ImageView profileImageView;
                 profileImageView= (ImageView) findViewById(R.id.profilepicture);
                 profileImageView.setImageURI(selectedImageUri);
+                File picture = new File(selectedImageUri.getPath());
+
+                // create RequestBody instance from file
+                RequestBody requestFile =
+                        RequestBody.create(
+                                MediaType.parse(getContentResolver().getType(selectedImageUri)),
+                                picture
+                        );
+
+                MultipartBody.Part body =
+                        MultipartBody.Part.createFormData("picture", picture.getName(), requestFile);
+
+                String descriptionString = "hello, this is description string of our profile picture";
+                RequestBody description =
+                        RequestBody.create(
+                                okhttp3.MultipartBody.FORM, descriptionString);
 
                 //Pass to Presenter
-                _editProfilePresenter.changePicture(selectedImageUri);
+                _editProfilePresenter.setPicture(description, body, picture);
+
             }
         }
 
@@ -145,6 +172,7 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
 
     private void initializePresenter() {
         _editProfilePresenter.attachView(this);
+        _editProfilePresenter.attachSharedPreferencesManager(_sharedPreferencesManager);
     }
 
 }

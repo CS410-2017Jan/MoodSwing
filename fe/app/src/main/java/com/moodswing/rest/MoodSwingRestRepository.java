@@ -35,7 +35,7 @@ public class MoodSwingRestRepository implements Repository {
 
     @Override
     public Observable<ProfilePictureResponse> postProfilePicture(ProfilePicture profilePicture) {
-        return null;
+        return apiService.postProfilePicture(profilePicture);
     }
 
     @Override
