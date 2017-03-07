@@ -5,14 +5,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.os.Process;
+import android.util.Pair;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Toast;
@@ -269,13 +272,11 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
 
         private void drawFaceAttributes(Canvas c, Face nextFaceToDraw) {
             //Draw the Emoji markers
+            drawEmotionProgressCircle(c, getDominantEmojiScore(nextFaceToDraw));
             drawDominantEmoji(c, nextFaceToDraw);
-            // TODO: Do something with the dominant emoji scores
-            float tmp = getDominantEmojiScore(nextFaceToDraw);
         }
 
         private float getDominantEmojiScore(Face face) {
-            // TODO: Do something with the dominant emoji scores
             String dominantEmoji = face.emojis.getDominantEmoji().name();
             switch (dominantEmoji) {
                 case "RELAXED":
@@ -307,15 +308,41 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
             }
         }
 
+        private void drawEmotionProgressCircle(Canvas c, float dominantEmojiScore) {
+            if (dominantEmojiScore == -1) {
+                return;
+            }
+
+            Bitmap b = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(b);
+            Paint paint = new Paint();
+
+            paint.setStrokeWidth(10);
+            paint.setAntiAlias(true);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setColor(Color.parseColor("#FFDB4C"));
+            paint.setStrokeWidth(10);
+            paint.setStyle(Paint.Style.FILL);
+            final RectF oval = new RectF();
+            paint.setStyle(Paint.Style.STROKE);
+            oval.set(10, 10, 290, 290);
+            canvas.drawArc(oval, 270, ((dominantEmojiScore * 360) / 100), false, paint);
+
+            float padding = getResources().getDimension(R.dimen.circleProgressPadding);
+            float markerPosX = c.getWidth() - b.getWidth() - padding;
+            float markerPosY = c.getHeight() - b.getHeight() - padding;
+            c.drawBitmap(b, markerPosX, markerPosY, null);
+        }
+
         private void drawDominantEmoji(Canvas c, Face f) {
             drawEmojiFromCache(c, f.emojis.getDominantEmoji().name());
         }
 
-        void drawEmojiFromCache(Canvas c, String emojiName) {
+        private void drawEmojiFromCache(Canvas c, String emojiName) {
             Bitmap emojiBitmap;
-            float markerPosX = 0;
-            float markerPosY = 0;
-            float padding = 0;
+            float markerPosX;
+            float markerPosY;
+            float padding;
 
             try {
                 emojiBitmap = getEmojiBitmapByName(emojiName);
