@@ -22,6 +22,8 @@ import retrofit2.http.POST;
 
 public interface ApiService {
 
+
+
     @Headers("Content-Type: application/json")
     @POST("users")
     Observable<SignupResponse> postUser(@Body User user);
@@ -31,8 +33,10 @@ public interface ApiService {
     Observable<LoginResponse> postLogin(@Body User user);
 
     @Headers("Content-Type: application/json")
-    @POST("/users/self/entries/:{entryDate}")
-    Observable<NewEntryResponse> postNewEntry(@Body Post post);
+    @POST("users/self/captures")
+    Observable<NewEntryResponse> postNewEntry(@Body Post post,
+                                              @Header("x-access-token") String accessToken);
+
 
     @Multipart
     @Headers("Content-Type: application/json")

@@ -51,9 +51,6 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
     @BindView(R.id.btn_date)
     ImageButton _dateButton;
 
-    @BindView(R.id.entry_title)
-    EditText _titleText;
-
     @BindView(R.id.entry_desc)
     EditText _descText;
 
@@ -108,10 +105,9 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
     private void initializeShareButton() {
         _shareButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String title = _titleText.getText().toString();
                 String description = _descText.getText().toString();
-                if(!isEmpty(title) && !isEmpty(description)){
-                    shareEntry(title);
+                if(!isEmpty(description)){
+                    shareEntry(description);
                 }
                 else{
                     displayError();
@@ -136,14 +132,14 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
     }
 
 
-    private void shareEntry(String title) {
+    private void shareEntry(String description) {
         // TODO: This is a simplified entry
         Date dateO = new Date();
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         String date = df.format(dateO);
         String token = _sharedPreferencesManager.getToken();
 
-        _newEntryPresenter.uploadPost(title, date, token);
+        _newEntryPresenter.uploadPost(description, date, token);
         exitToJounal();
     }
 
@@ -158,9 +154,8 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
 
     @Override
     public void onBackPressed() {
-        String title = _titleText.getText().toString();
         String description = _descText.getText().toString();
-        if(!isEmpty(title) || !isEmpty(description)){
+        if(!isEmpty(description)){
             displayDiscardWarning();
         }
         else{
@@ -172,7 +167,7 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
     private void displayError() {
         AlertDialog alertDialog = new AlertDialog.Builder(NewEntryActivity.this).create();
         alertDialog.setTitle("Warning");
-        alertDialog.setMessage("The title and description cannot have an empty value.");
+        alertDialog.setMessage("The description cannot have an empty value.");
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {

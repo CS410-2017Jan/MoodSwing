@@ -177,9 +177,5 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
         _journalPresenter.attachView(this);
         _journalPresenter.attachSharedPreferencesManager(_sharedPreferencesManager);
     }
-
-    public void TempAddEntry(String s){
-        tempEntries.add(s);
-    }
 }
 

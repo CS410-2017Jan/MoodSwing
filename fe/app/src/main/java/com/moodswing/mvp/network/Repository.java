@@ -18,7 +18,7 @@ import io.reactivex.Observable;
 
 public interface Repository {
     // getJournalEntries etc...
-    Observable<NewEntryResponse> postNewEntry(Post post);
+    Observable<NewEntryResponse> postNewEntry(Post post, String accessToken);
     Observable<SignupResponse> postUser(User user);
     Observable<LoginResponse> postLogin(User user);
     Observable<ProfilePictureResponse> postProfilePicture(ProfilePicture profilePicture);

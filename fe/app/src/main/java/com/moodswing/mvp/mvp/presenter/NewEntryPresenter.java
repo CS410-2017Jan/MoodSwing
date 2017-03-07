@@ -57,8 +57,9 @@ public class NewEntryPresenter implements Presenter<NewEntryView> {
     }
 
 
-    public void uploadPost(String title, String date, String token) {
-        newEntryUsecase.setPost(new Post(title, date, token));
+    public void uploadPost(String description, String date, String token) {
+        newEntryUsecase.setPost(new Post(description, date));
+        newEntryUsecase.setToken(sharedPreferencesManager.getToken());
 
         newEntrySubscription = newEntryUsecase.execute()
                 .subscribeOn(Schedulers.io())

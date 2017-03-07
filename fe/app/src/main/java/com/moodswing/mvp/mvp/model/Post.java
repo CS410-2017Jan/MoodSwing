@@ -6,43 +6,24 @@ package com.moodswing.mvp.mvp.model;
 
 public class Post {
 
-    String title;
-//    String description;
-    String date;
-    String token;
+    String text;
+    String entryDate;
 
-    public Post(String title, String date, String token) {
-        this.title = title;
-//        this.description = desc;
-        this.date = date;
-        this.token = token;
+    public Post(String desc, String entryDate) {
+        this.text = desc;
+        this.entryDate = entryDate;
     }
 
-    public String getTitle(){
-        return title;
-    }
 
-//    public String getDescription(){
-//        return description;
-//    }
+    public String getDescription(){ return text; }
 
     public String getDate(){
-        return date;
+        return entryDate;
     }
 
-    public String getToken(){
-        return token;
-    }
-
-    public void setTitle(String newtitle){
-        title = newtitle;
-    }
-
-//    public void setDescription(String newdesc){
-//        description = newdesc;
-//    }
+    public void setDescription(String newdesc){ text = newdesc; }
 
     public void setDate(String d){
-        date = d;
+        entryDate = d;
     }
 }
