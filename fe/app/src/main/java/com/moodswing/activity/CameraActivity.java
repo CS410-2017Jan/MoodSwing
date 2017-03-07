@@ -5,19 +5,30 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -40,6 +51,9 @@ import com.moodswing.injector.module.CameraModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.presenter.CameraPresenter;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -47,6 +61,7 @@ import javax.inject.Inject2;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Optional;
 
 /**
  * Created by daniel on 03/03/17.
@@ -92,7 +107,6 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
     ImageButton _cameraSwitchButton;
 
     public static final int MAX_SUPPORTED_FACES = 1;
-    public static final boolean STORE_RAW_SCREENSHOTS = false; // setting to enable saving the raw images when taking screenshots
     private static final String LOG_TAG = "MoodSwing Camera";
     private static final int CAMERA_PERMISSIONS_REQUEST = 42;  //value is arbitrary (between 0 and 255)
     private static final int EXTERNAL_STORAGE_PERMISSIONS_REQUEST = 73;
@@ -213,15 +227,24 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
 
             @Override
             public void onClick(View v) {
-                // TODO: take screenshot
-                Toast.makeText(v.getContext(), "SNAP!", Toast.LENGTH_SHORT).show();
                 takeScreenshot();
             }
         });
     }
 
     private void takeScreenshot() {
-        // TODO: take screenshot
+        // Check the permissions to see if we are allowed to save the screenshot
+        if (!storagePermissionsAvailable) {
+            checkForStoragePermissions();
+            return;
+        }
+
+        emotionView.requestBitmap();
+
+        /**
+         * A screenshot of the drawing view is generated and processing continues via the callback
+         * onBitmapGenerated() which calls processScreenshot().
+         */
     }
 
     private void checkForCameraPermissions() {
@@ -508,8 +531,103 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
     }
 
     @Override
-    public void onBitmapGenerated(Bitmap bitmap) {
+    public void onBitmapGenerated(@NonNull final Bitmap bitmap) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                processScreenshot(bitmap);
+            }
+        });
+    }
 
+    private void processScreenshot(Bitmap emotionViewBitmap) {
+        if (mostRecentFrame == null) {
+            Toast.makeText(getApplicationContext(), "No frame detected, aborting screenshot", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!storagePermissionsAvailable) {
+            checkForStoragePermissions();
+            return;
+        }
+
+        final Bitmap faceBitmap = ImageHelper.getBitmapFromFrame(mostRecentFrame);
+
+        if (faceBitmap == null) {
+            Log.e(LOG_TAG, "Unable to generate bitmap for frame, aborting screenshot");
+            return;
+        }
+
+        final Bitmap finalScreenshot = Bitmap.createBitmap(faceBitmap.getWidth(), faceBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(finalScreenshot);
+        Paint paint = new Paint(Paint.FILTER_BITMAP_FLAG);
+
+        canvas.drawBitmap(faceBitmap, 0, 0, paint);
+
+        float scaleFactor = ((float) faceBitmap.getWidth()) / ((float) emotionViewBitmap.getWidth());
+        int scaledHeight = Math.round(emotionViewBitmap.getHeight() * scaleFactor);
+        canvas.drawBitmap(emotionViewBitmap, null, new Rect(0, 0, faceBitmap.getWidth(), scaledHeight), paint);
+
+        emotionViewBitmap.recycle();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setPositiveButton("Keep", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        saveImage(finalScreenshot);
+                        faceBitmap.recycle();
+                        finalScreenshot.recycle();
+                    }
+                }).setNegativeButton("Discard", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO: Do nothing for now
+                        faceBitmap.recycle();
+                        finalScreenshot.recycle();
+                    }
+                });
+
+        final AlertDialog dialog = builder.create();
+        LayoutInflater inflater = getLayoutInflater();
+        final View dialogLayout = inflater.inflate(R.layout.dialog_camera_preview, null);
+        final ImageView cameraPreviewImageView = (ImageView) dialogLayout.findViewById(R.id.camera_preview_dialog);
+        Bitmap previewImage = finalScreenshot.copy(finalScreenshot.getConfig(), true);
+        cameraPreviewImageView.setImageBitmap(previewImage);
+
+        dialog.setView(dialogLayout);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        dialog.show();
+    }
+
+    private void saveImage(Bitmap finalScreenshot) {
+        Date now = new Date();
+        String timestamp = DateFormat.format("yyyy-MM-dd_hh-mm-ss", now).toString();
+        File pictureFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "MoodSwing");
+        if (!pictureFolder.exists()) {
+            if (!pictureFolder.mkdir()) {
+                Log.e(LOG_TAG, "Unable to create directory: " + pictureFolder.getAbsolutePath());
+                return;
+            }
+        }
+
+        String screenshotFileName = timestamp + ".png";
+        File screenshotFile = new File(pictureFolder, screenshotFileName);
+
+        try {
+            ImageHelper.saveBitmapToFileAsPng(finalScreenshot, screenshotFile);
+        } catch (IOException e) {
+            String msg = "Unable to save screenshot";
+            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+            Log.e(LOG_TAG, msg, e);
+            return;
+        }
+        ImageHelper.addPngToGallery(getApplicationContext(), screenshotFile);
+
+        String fileSavedMessage = "Capture saved to: " + screenshotFile.getPath();
+        Toast.makeText(getApplicationContext(), fileSavedMessage, Toast.LENGTH_SHORT).show();
+        Log.d(LOG_TAG, fileSavedMessage);
     }
 
     private void preproccessImages() {

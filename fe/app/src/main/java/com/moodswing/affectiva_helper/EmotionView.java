@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.os.Process;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 import com.affectiva.android.affdex.sdk.detector.Face;
 import com.moodswing.R;
@@ -122,6 +124,22 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
         emotionViewThread.invalidatePoints();
     }
 
+    public void requestBitmap() {
+        if (emotionThreadEventListener == null) {
+            String msg = "Attempted to request screenshot without first attaching event listener";
+            Log.e(LOG_TAG, msg);
+            Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (emotionViewThread == null || emotionViewThread.isStopped()) {
+            String msg = "Attempted to request screenshot without a running drawing thread";
+            Log.e(LOG_TAG, msg);
+            Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        emotionViewThread.requestCaptureBitmap = true;
+    }
+
     class FacesSharer {
         List<Face> facesToDraw;
 
@@ -193,10 +211,10 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
                     c = surfaceHolder.lockCanvas();
 
                     if (requestCaptureBitmap) {
-//                        Rect surfaceBounds = surfaceHolder.getSurfaceFrame();
-//                        screenshotBitmap = Bitmap.createBitmap(surfaceBounds.width(), surfaceBounds.height(), Bitmap.Config.ARGB_8888);
-//                        screenshotCanvas = new Canvas(screenshotBitmap);
-//                        requestCaptureBitmap = false;
+                        Rect surfaceBounds = surfaceHolder.getSurfaceFrame();
+                        screenshotBitmap = Bitmap.createBitmap(surfaceBounds.width(), surfaceBounds.height(), Bitmap.Config.ARGB_8888);
+                        screenshotCanvas = new Canvas(screenshotBitmap);
+                        requestCaptureBitmap = false;
                     }
 
                     if (c != null) {
@@ -252,6 +270,41 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
         private void drawFaceAttributes(Canvas c, Face nextFaceToDraw) {
             //Draw the Emoji markers
             drawDominantEmoji(c, nextFaceToDraw);
+            // TODO: Do something with the dominant emoji scores
+            float tmp = getDominantEmojiScore(nextFaceToDraw);
+        }
+
+        private float getDominantEmojiScore(Face face) {
+            // TODO: Do something with the dominant emoji scores
+            String dominantEmoji = face.emojis.getDominantEmoji().name();
+            switch (dominantEmoji) {
+                case "RELAXED":
+                    return face.emojis.getRelaxed();
+                case "SMILEY":
+                    return face.emojis.getSmiley();
+                case "LAUGHING":
+                    return face.emojis.getLaughing();
+                case "WINK":
+                    return face.emojis.getWink();
+                case "SMIRK":
+                    return face.emojis.getSmirk();
+                case "KISSING":
+                    return face.emojis.getKissing();
+                case "STUCK_OUT_TONGUE":
+                    return face.emojis.getStuckOutTongue();
+                case "STUCK_OUT_TONGUE_WINKING_EYE":
+                    return face.emojis.getStuckOutTongueWinkingEye();
+                case "DISAPPOINTED":
+                    return face.emojis.getDisappointed();
+                case "RAGE":
+                    return face.emojis.getRage();
+                case "SCREAM":
+                    return face.emojis.getScream();
+                case "FLUSHED":
+                    return face.emojis.getFlushed();
+                default: // UNKNOWN
+                    return -1;
+            }
         }
 
         private void drawDominantEmoji(Canvas c, Face f) {
