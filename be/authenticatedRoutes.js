@@ -155,7 +155,7 @@ router.post('/users/self/captures', function(req, res) {
   })
 })
 
-router.get('/users/self/captures', function(req, res) {
+router.get('/users/self/entries', function(req, res) {
 	let username = req.username
 	res.redirect('/users/' + username + '/captures')
 })

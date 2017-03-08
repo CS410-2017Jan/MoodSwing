@@ -96,7 +96,7 @@ Captures
 ---------------------------------------------------------
  */
 
-router.get('/users/:username/captures', function(req, res) {
+router.get('/users/:username/entries', function(req, res) {
   let username = req.params.username
 
   JournalEntry.find({
