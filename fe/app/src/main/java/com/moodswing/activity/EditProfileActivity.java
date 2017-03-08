@@ -2,8 +2,6 @@ package com.moodswing.activity;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -53,6 +51,9 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
 
     @BindView(R.id.btn_editprofilepicture)
     Button _editProfilePictureButton;
+
+    @BindView(R.id.profilepicture)
+    ImageView profilePictureView;
 
 
     private EditProfileComponent _editProfileComponent;
@@ -104,29 +105,28 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PICTURE) {
                 Uri selectedImageUri = data.getData();
-                selectedImagePath = getPath(selectedImageUri);
-                ImageView profileImageView;
-                profileImageView= (ImageView) findViewById(R.id.profilepicture);
-                profileImageView.setImageURI(selectedImageUri);
-                File picture = new File(selectedImageUri.getPath());
+                profilePictureView.setImageURI(selectedImageUri);
+                File picture = new File(getPath(selectedImageUri));
 
-                // create RequestBody instance from file
                 RequestBody requestFile =
                         RequestBody.create(
                                 MediaType.parse(getContentResolver().getType(selectedImageUri)),
                                 picture
                         );
 
+                // MultipartBody.Part is used to send also the actual file name
                 MultipartBody.Part body =
-                        MultipartBody.Part.createFormData("picture", picture.getName(), requestFile);
+                        MultipartBody.Part.createFormData("profilePicture", picture.getName(), requestFile);
 
-                String descriptionString = "hello, this is description string of our profile picture";
+                // add another part within the multipart request
+                String descriptionString = "hello, this is description speaking";
+
                 RequestBody description =
                         RequestBody.create(
                                 okhttp3.MultipartBody.FORM, descriptionString);
 
                 //Pass to Presenter
-                _editProfilePresenter.setPicture(description, body, picture);
+                _editProfilePresenter.postPicture(body, description);
 
             }
         }

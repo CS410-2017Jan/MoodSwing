@@ -9,20 +9,14 @@ import java.io.File;
  */
 
 public class ProfilePictureResponse {
-    private File picture;
     private boolean success;
 
-    public ProfilePictureResponse(File picture, boolean success) {
-        this.picture = picture;
+    public ProfilePictureResponse(boolean success) {
         this.success = success;
     }
 
     public boolean isSuccessful() {
         return success;
-    }
-
-    public File getPicture() {
-        return picture;
     }
 
 }

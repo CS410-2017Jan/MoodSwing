@@ -67,8 +67,10 @@ public class EditProfilePresenter implements Presenter<EditProfileView> {
         this.sharedPreferencesManager = sharedPreferencesManager;
     }
 
-    public void setPicture(RequestBody description, MultipartBody.Part body, File picture) {
-        editProfilePictureUseCase.setPicture(new ProfilePicture(picture, sharedPreferencesManager.getToken()));
+    public void postPicture(MultipartBody.Part picture, RequestBody description) {
+        String token = sharedPreferencesManager.getToken();
+        editProfilePictureUseCase.setToken(token);
+        editProfilePictureUseCase.setPicture(new ProfilePicture(picture));
 
         newProfilePictureSubscription = editProfilePictureUseCase.execute()
                 .subscribeOn(Schedulers.io())
@@ -76,6 +78,7 @@ public class EditProfilePresenter implements Presenter<EditProfileView> {
                 .subscribe(new Consumer<ProfilePictureResponse>() {
                     @Override
                     public void accept(ProfilePictureResponse profilePictureResponse) throws Exception {
+
                     }
 
                 }, new Consumer<Throwable>() {

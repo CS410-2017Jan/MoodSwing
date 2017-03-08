@@ -1,28 +1,31 @@
 package com.moodswing.mvp.mvp.model;
 
-import android.media.Image;
-import android.net.Uri;
+import android.app.DownloadManager;
 
 import java.io.File;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 /**
  * Created by Kenny on 2017-02-27.
  */
 
 public class ProfilePicture {
-    private File picture;
-    private String token;
+    private MultipartBody.Part picture;
+    //private RequestBody description;
 
-    public ProfilePicture(File picture, String token) {
+    public ProfilePicture(MultipartBody.Part picture) {
         this.picture = picture;
-        this.token = token;
+     //   this.description = description;
     }
 
-    public File getPicture(){
+    public MultipartBody.Part getPicture(){
         return picture;
     }
-
-    public String getToken() {
-        return token;
+/*
+    public RequestBody getDescription() {
+        return description;
     }
+*/
 }

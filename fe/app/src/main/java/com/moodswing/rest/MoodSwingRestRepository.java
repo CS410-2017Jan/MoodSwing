@@ -9,6 +9,8 @@ import com.moodswing.mvp.mvp.model.ProfilePictureResponse;
 import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.network.Repository;
 
+import java.io.File;
+
 import io.reactivex.Observable;
 import retrofit2.Retrofit;
 
@@ -34,8 +36,8 @@ public class MoodSwingRestRepository implements Repository {
     }
 
     @Override
-    public Observable<ProfilePictureResponse> postProfilePicture(ProfilePicture profilePicture) {
-        return apiService.postProfilePicture(profilePicture);
+    public Observable<ProfilePictureResponse> postProfilePicture(String token, ProfilePicture profilePicture) {
+        return apiService.postProfilePicture(token, profilePicture.getPicture());
     }
 
     @Override

@@ -12,14 +12,19 @@ import io.reactivex.Observable;
 
 public class EditProfilePictureUsecase implements Usecase<ProfilePictureResponse> {
     private Repository repository;
+    private String token;
     private ProfilePicture picture;
 
     public EditProfilePictureUsecase(Repository repository) {this.repository = repository;}
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     public void setPicture(ProfilePicture picture) {this.picture = picture;}
 
     @Override
     public Observable<ProfilePictureResponse> execute() {
-        return repository.postProfilePicture(picture);
+        return repository.postProfilePicture(token, picture);
     }
 }

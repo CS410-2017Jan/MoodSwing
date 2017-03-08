@@ -8,7 +8,11 @@ import com.moodswing.mvp.mvp.model.ProfilePicture;
 import com.moodswing.mvp.mvp.model.ProfilePictureResponse;
 import com.moodswing.mvp.mvp.model.User;
 
+import java.io.File;
+
 import io.reactivex.Observable;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 /**
  * Interface for API repository
@@ -21,5 +25,5 @@ public interface Repository {
     Observable<NewEntryResponse> postNewEntry(Post post, String accessToken);
     Observable<SignupResponse> postUser(User user);
     Observable<LoginResponse> postLogin(User user);
-    Observable<ProfilePictureResponse> postProfilePicture(ProfilePicture profilePicture);
+    Observable<ProfilePictureResponse> postProfilePicture(String token, ProfilePicture profilePicture);
 }
