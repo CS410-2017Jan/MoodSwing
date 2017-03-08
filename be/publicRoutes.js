@@ -13,10 +13,8 @@ const config = require('./config')
 */
 
 router.get('/hello', (req, res) => {
-  res.send('Hello World')
+  res.status(200).send('Hello World')
 })
-
-
 
 /*
 ---------------------------------------------------------
@@ -30,7 +28,7 @@ router.post('/users', function(req, res) {
   let displayName = req.body.displayName || ''
 
   if (!username || !password) {
-    return res.json({ success: false, message: 'Malformed http body'})
+    return res.status(400).json({ success: false, message: 'Malformed http body'})
   }
 
   User.findOne({
@@ -39,7 +37,7 @@ router.post('/users', function(req, res) {
     if (err) throw err
 
     if (user) {
-      return res.json({ success: false, message: 'Username already exists'})
+      return res.status(409).json({ success: false, message: 'Username already exists'})
     }
 
     let newUser = new User({
@@ -51,10 +49,10 @@ router.post('/users', function(req, res) {
     newUser.save()
       .then(function (doc) {
         let token = createToken(doc)
-        return res.json({ success: true, token: token})
+        return res.status(201).json({ success: true, token: token})
       })
       .catch(function(err) {
-        return res.json({ success: false })
+        return res.status(400).json({ success: false })
       })
   })
 })
@@ -69,16 +67,16 @@ router.post('/users/login', function(req, res) {
     if (err) throw err
 
     if (!user) {
-      return res.json({ success: false, message: 'Error: User not found.' })
+      return res.status(400).json({ success: false, message: 'Error: User not found.' })
     }
 
     if (user.password != req.body.password) {
-      return res.json({ success: false, message: 'Error: Wrong password.' })
+      return res.status(400).json({ success: false, message: 'Error: Wrong password.' })
     }
 
     let token = createToken(user)
 
-    return res.json({
+    return res.status(200).json({
       success: true,
       message: 'Enjoy your token!',
       token: token
@@ -87,7 +85,7 @@ router.post('/users/login', function(req, res) {
 })
 
 function createToken(user) {
-  return jwt.sign(user, config.secret, {
+  return jwt.sign({username: user.username}, config.secret, {
     expiresIn: 86400  // 24 hours
   })
 }
@@ -107,7 +105,7 @@ router.get('/users/:username/captures', function(req, res) {
     if (err) throw err
 
     if (!journalEntries) {
-      return res.json({ success: false, message: 'No entries found'})
+      return res.status(400).json({ success: false, message: 'No entries found'})
     }
 
     let sortedEntries = journalEntries.sort(function(a, b) {
@@ -116,9 +114,7 @@ router.get('/users/:username/captures', function(req, res) {
       return aDate < bDate
     })
 
-    console.log(sortedEntries)
-
-    return res.json(sortedEntries)
+    return res.status(200).json(sortedEntries)
   })
 })
 

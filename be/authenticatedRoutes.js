@@ -24,7 +24,7 @@ router.use(/.*\/self\/.*/, function(req, res, next) {
 				return res.json({ success: false, message: 'Failed to authenticate token.' })
 			}
 
-			req.user = decoded['_doc']
+			req.username = decoded.username
 			next()
 		})
 
@@ -42,7 +42,7 @@ router.use(/.*\/self\/.*/, function(req, res, next) {
 ---------------------------------------------------------
 */
 router.get('/self/hi', function(req, res) {
-	console.log(req.user) //how you get user information
+	console.log(req.username) //how you get user information
 	res.json({ message: 'Welcome to the coolest API on earth!' })
 })
 
@@ -52,7 +52,7 @@ var upload = multer({ storage: multer.memoryStorage({}) })
 router.post('/users/self/picture', upload.single('profilePicture'), (req, res) => {
 
 	if (req.file.size > 16*MB) {
-		return res.json({ success: false, message: 'File too large' })
+		return res.status(400).json({ success: false, message: 'File too large' })
 	}
 
 	switch (req.file.mimetype) {
@@ -63,10 +63,10 @@ router.post('/users/self/picture', upload.single('profilePicture'), (req, res) =
 		case 'image/tiff':
 			break
 		default:
-			return res.json({ success: false, message: 'File type not supported' })
+			return res.status(415).json({ success: false, message: 'File type not supported' })
 	}
 
-  let username = req.user.username
+  let username = req.username
 
 	User.findOne({
 	  username: username
@@ -74,28 +74,36 @@ router.post('/users/self/picture', upload.single('profilePicture'), (req, res) =
 		if (err) throw err
 
 		if (!user) {
-			return res.json({success: false, message: 'User not found'})
+			return res.status(400).json({success: false, message: 'User not found'})
 		}
 
 		user.profilePicture = {data: req.file.buffer, contentType: req.file.mimetype}
 
 		user.save()
 	    .then(function (doc) {
-	      return res.json({ success: true })
+	      return res.status(200).json({ success: true })
 	    })
 	    .catch(function(err) {
-	      return res.json({ success: false })
+	      return res.status(400).json({ success: false })
 	    })
 	})
 })
 
 router.get('/users/self/picture', (req, res) => {
 
-	let username = req.user.username
+	let username = req.username
 
   User.findOne({
     username: username
   }, function(err, user) {
+
+		if (err || !user) {
+			return res.status(404).send({ success: false })
+		}
+
+		if (!user.profilePicture) {
+			return res.status(404).send({ success: false, message: 'User does not have a profile picture'})
+		}
 
     let imageBuffer = user.profilePicture.data
     let imageType = user.profilePicture.contentType
@@ -105,14 +113,14 @@ router.get('/users/self/picture', (req, res) => {
       'Content-Type': imageType,
       'Content-Length': img.length
     })
-    res.end(img)
+    res.status(200).end(img)
   })
 })
 
 
 
 router.post('/users/self/captures', function(req, res) {
-  let username = req.user.username
+  let username = req.username
   let text = req.body.text
   let captureDate = req.body.captureDate
 
@@ -125,7 +133,7 @@ router.post('/users/self/captures', function(req, res) {
 			entry.captures.push({text: text})
 			entry.save()
 				.then(function(doc) {
-					return res.json({ success: true, message: "Added to existing date"})
+					return res.status(200).json({ success: true, message: "Added to existing date"})
 				})
 		} else {
 
@@ -137,18 +145,18 @@ router.post('/users/self/captures', function(req, res) {
 
 			newEntry.save()
 			  .then(function (doc) {
-			    return res.json({ success: true })
+			    return res.status(200).json({ success: true })
 			  })
 			  .catch(function(err) {
 			    console.log(err)
-			    return res.json({ success: false })
+			    return res.status(400).json({ success: false })
 			  })
 		}
   })
 })
 
 router.get('/users/self/captures', function(req, res) {
-	let username = req.user.username
+	let username = req.username
 	res.redirect('/users/' + username + '/captures')
 })
 
