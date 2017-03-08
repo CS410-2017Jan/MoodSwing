@@ -3,6 +3,7 @@ package com.moodswing.activity;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -51,6 +52,7 @@ import com.moodswing.injector.module.CameraModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.presenter.CameraPresenter;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -540,7 +542,7 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
         });
     }
 
-    private void processScreenshot(Bitmap emotionViewBitmap) {
+    private void processScreenshot(final Bitmap emotionViewBitmap) {
         if (mostRecentFrame == null) {
             Toast.makeText(getApplicationContext(), "No frame detected, aborting screenshot", Toast.LENGTH_SHORT).show();
             return;
@@ -571,20 +573,35 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
 
         emotionViewBitmap.recycle();
 
+        final Bitmap previewImage = finalScreenshot.copy(finalScreenshot.getConfig(), true);
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setPositiveButton("Keep", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Save to device", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         saveImage(finalScreenshot);
                         faceBitmap.recycle();
                         finalScreenshot.recycle();
+                        previewImage.recycle();
                     }
-                }).setNegativeButton("Discard", new DialogInterface.OnClickListener() {
+                }).setNeutralButton("Post", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // TODO: Do nothing for now
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        previewImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        byte[] byteArray = stream.toByteArray();
+
                         faceBitmap.recycle();
                         finalScreenshot.recycle();
+                        previewImage.recycle();
+
+                        forwardBitmap(byteArray);
+                    }
+                }).setPositiveButton("Discard", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        faceBitmap.recycle();
+                        finalScreenshot.recycle();
+                        previewImage.recycle();
                     }
                 });
 
@@ -592,7 +609,6 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
         LayoutInflater inflater = getLayoutInflater();
         final View dialogLayout = inflater.inflate(R.layout.dialog_camera_preview, null);
         final ImageView cameraPreviewImageView = (ImageView) dialogLayout.findViewById(R.id.camera_preview_dialog);
-        Bitmap previewImage = finalScreenshot.copy(finalScreenshot.getConfig(), true);
         cameraPreviewImageView.setImageBitmap(previewImage);
 
         dialog.setView(dialogLayout);
@@ -601,16 +617,19 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
         dialog.show();
     }
 
+    private void forwardBitmap(byte[] byteArray) {
+        Intent intent = new Intent(this, NewEntryActivity.class);
+        intent.putExtra("CAPTURE", byteArray);
+        startActivity(intent);
+    }
+
     private void saveImage(Bitmap finalScreenshot) {
         Date now = new Date();
         String timestamp = DateFormat.format("yyyy-MM-dd_hh-mm-ss", now).toString();
         File pictureFolder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "MoodSwing");
         if (!pictureFolder.exists()) {
             if (!pictureFolder.mkdir()) {
-                Log.e(LOG_TAG, "Unable to create directory: " + pictureFolder.getAbsolutePath());
-                return;
-            }
-        }
+                Log.e(LOG_TAG, "Unable to create directory: " + pictureFolder.getAbsolutePath()); return; } }
 
         String screenshotFileName = timestamp + ".png";
         File screenshotFile = new File(pictureFolder, screenshotFileName);

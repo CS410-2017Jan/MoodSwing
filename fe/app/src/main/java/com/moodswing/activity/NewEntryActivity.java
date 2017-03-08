@@ -3,6 +3,8 @@ package com.moodswing.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -55,6 +57,7 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
     EditText _descText;
 
     private NewEntryComponent _newEntryComponent;
+    private Bitmap capture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +77,18 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
         initializePresenter();
         initializeShareButton();
         initializeDateButton();
+        
+        checkIntent();
+    }
+
+    private void checkIntent() {
+        // TODO: Verify that this works
+        Bundle extras = getIntent().getExtras();
+        byte[] byteArray = extras.getByteArray("CAPTURE");
+
+        if (byteArray != null) {
+            capture = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+        }
     }
 
 
