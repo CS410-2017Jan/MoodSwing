@@ -92,6 +92,36 @@ function createToken(user) {
   })
 }
 
+ /*
+---------------------------------------------------------
+Captures
+---------------------------------------------------------
+ */
+
+router.get('/users/:username/captures', function(req, res) {
+  let username = req.params.username
+
+  JournalEntry.find({
+    username: username
+  }, function(err, journalEntries) {
+    if (err) throw err
+
+    if (!journalEntries) {
+      return res.json({ success: false, message: 'No entries found'})
+    }
+
+    let sortedEntries = journalEntries.sort(function(a, b) {
+      let aDate = new Date(a.entryDate)
+      let bDate = new Date(b.entryDate)
+      return aDate < bDate
+    })
+
+    console.log(sortedEntries)
+
+    return res.json(sortedEntries)
+  })
+})
+
 
  /*
 ---------------------------------------------------------
