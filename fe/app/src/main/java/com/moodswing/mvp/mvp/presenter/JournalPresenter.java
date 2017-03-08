@@ -2,11 +2,9 @@ package com.moodswing.mvp.mvp.presenter;
 
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.GetJournalsUsecase;
-import com.moodswing.mvp.mvp.model.GetEntriesResponse;
-import com.moodswing.mvp.mvp.model.Post;
+import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.view.JournalView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -59,11 +57,11 @@ public class JournalPresenter implements Presenter<JournalView> {
         getJounalsSubscription = getJournalsUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<GetEntriesResponse>() {
+                .subscribe(new Consumer<List<JournalEntries>>() {
                     @Override
-                    public void accept(GetEntriesResponse getEntriesResponse) throws Exception {
-                        if (getEntriesResponse.isSuccessful()) {
-                            journalView.showEntries();
+                    public void accept(List<JournalEntries> journalEntries) throws Exception {
+                        if (true) {
+                            journalView.showEntries(journalEntries);
                         } else {
                             journalView.onEntryFailure();
                         }

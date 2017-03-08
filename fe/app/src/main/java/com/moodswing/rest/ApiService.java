@@ -1,6 +1,6 @@
 package com.moodswing.rest;
 
-import com.moodswing.mvp.mvp.model.GetEntriesResponse;
+import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.LoginResponse;
 import com.moodswing.mvp.mvp.model.NewEntryResponse;
 import com.moodswing.mvp.mvp.model.Post;
@@ -42,7 +42,7 @@ public interface ApiService {
 
     @Headers("Content-Type: application/json")
     @GET("users/{username}/entries")
-    Observable<GetEntriesResponse> getJournalEntries(@Path("username") String username);
+    Observable<List<JournalEntries>> getJournalEntries(@Path("username") String username);
 
     @Multipart
     @POST("users/self/picture")

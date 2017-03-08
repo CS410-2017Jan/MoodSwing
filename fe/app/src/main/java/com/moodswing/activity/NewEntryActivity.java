@@ -104,7 +104,7 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
     }
 
     public void onNewEntryFailure() {
-        Toast.makeText(getBaseContext(), "Entry failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), "Capture failed", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -148,7 +148,6 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
 
 
     private void shareEntry(String description) {
-        // TODO: This is a simplified entry
         Date dateO = new Date();
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         String date = df.format(dateO);

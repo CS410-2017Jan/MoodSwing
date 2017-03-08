@@ -3,8 +3,6 @@ package com.moodswing.activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,11 +17,11 @@ import com.moodswing.injector.component.JournalComponent;
 import com.moodswing.injector.module.ActivityModule;
 import com.moodswing.injector.module.JournalModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
-import com.moodswing.mvp.mvp.model.Post;
+import com.moodswing.mvp.mvp.model.Capture;
+import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.presenter.JournalPresenter;
 import com.moodswing.mvp.mvp.view.JournalView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject2;
@@ -33,9 +31,9 @@ import butterknife.ButterKnife;
 
 public class JournalActivity extends AppCompatActivity implements JournalView {
 
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+//    private RecyclerView mRecyclerView;
+//    private RecyclerView.Adapter mAdapter;
+//    private RecyclerView.LayoutManager mLayoutManager;
 
 
     @Inject2
@@ -87,20 +85,18 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
 
 
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+//        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+//        mRecyclerView.setHasFixedSize(true);
+//        mLayoutManager = new LinearLayoutManager(this);
+//        mRecyclerView.setLayoutManager(mLayoutManager);
 //        mAdapter = new MyAdapter(tempEntries);
-        mRecyclerView.setAdapter(mAdapter);
+//        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
     protected void onResume() {
 
         super.onResume();
-
-        // TODO: GET descriptions of journal entries
         _journalPresenter.getEntries();
     }
 
@@ -110,13 +106,18 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     }
 
     @Override
-    public void showEntries(){
-
+    public void showEntries(List<JournalEntries> journalEntries){
+        for(JournalEntries je: journalEntries){
+            List<Capture> capture = je.getEntry();
+            for(Capture e: capture){
+                Log.i(e.getText(), "************************************************************");
+            }
+        }
     }
 
     @Override
     public void onEntryFailure(){
-        Toast.makeText(JournalActivity.this, "Entry fetch Failure", Toast.LENGTH_LONG).show();
+        Toast.makeText(JournalActivity.this, "Capture fetch Failure", Toast.LENGTH_LONG).show();
     }
 
     @Override

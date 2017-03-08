@@ -1,6 +1,6 @@
 package com.moodswing.rest;
 
-import com.moodswing.mvp.mvp.model.GetEntriesResponse;
+import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.LoginResponse;
 import com.moodswing.mvp.mvp.model.NewEntryResponse;
 import com.moodswing.mvp.mvp.model.Post;
@@ -48,7 +48,7 @@ public class MoodSwingRestRepository implements Repository {
     }
 
     @Override
-    public Observable<GetEntriesResponse> getJournalEntries(String username){
+    public Observable<List<JournalEntries>> getJournalEntries(String username){
         return apiService.getJournalEntries(username);
     }
 }

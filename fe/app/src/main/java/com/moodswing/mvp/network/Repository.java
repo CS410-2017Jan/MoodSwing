@@ -1,6 +1,6 @@
 package com.moodswing.mvp.network;
 
-import com.moodswing.mvp.mvp.model.GetEntriesResponse;
+import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.LoginResponse;
 import com.moodswing.mvp.mvp.model.NewEntryResponse;
 import com.moodswing.mvp.mvp.model.Post;
@@ -20,7 +20,7 @@ import io.reactivex.Observable;
 public interface Repository {
     // getJournalEntries etc...
     Observable<NewEntryResponse> postNewEntry(Post post, String accessToken);
-    Observable<GetEntriesResponse> getJournalEntries(String username);
+    Observable<List<JournalEntries>> getJournalEntries(String username);
     Observable<SignupResponse> postUser(User user);
     Observable<LoginResponse> postLogin(User user);
     Observable<ProfilePictureResponse> postProfilePicture(String token, ProfilePicture profilePicture);

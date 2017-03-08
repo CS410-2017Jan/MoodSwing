@@ -1,12 +1,16 @@
 package com.moodswing.mvp.mvp.view;
 
+import com.moodswing.mvp.mvp.model.JournalEntries;
+
+import java.util.List;
+
 /**
  * Created by daniel on 11/02/17.
  */
 
 public interface JournalView extends View {
 
-    void showEntries();
+    void showEntries(List<JournalEntries> je);
     void onEntryFailure();
     void showError();
 }
