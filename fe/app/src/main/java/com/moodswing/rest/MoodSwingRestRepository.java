@@ -1,5 +1,6 @@
 package com.moodswing.rest;
 
+import com.moodswing.mvp.mvp.model.GetEntriesResponse;
 import com.moodswing.mvp.mvp.model.LoginResponse;
 import com.moodswing.mvp.mvp.model.NewEntryResponse;
 import com.moodswing.mvp.mvp.model.Post;
@@ -9,7 +10,8 @@ import com.moodswing.mvp.mvp.model.ProfilePictureResponse;
 import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.network.Repository;
 
-import java.io.File;
+
+import java.util.List;
 
 import io.reactivex.Observable;
 import retrofit2.Retrofit;
@@ -43,5 +45,10 @@ public class MoodSwingRestRepository implements Repository {
     @Override
     public Observable<NewEntryResponse> postNewEntry(Post post, String accessToken) {
         return apiService.postNewEntry(post, accessToken);
+    }
+
+    @Override
+    public Observable<GetEntriesResponse> getJournalEntries(String username){
+        return apiService.getJournalEntries(username);
     }
 }

@@ -5,9 +5,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.moodswing.MoodSwingApplication;
 import com.moodswing.R;
@@ -17,8 +19,7 @@ import com.moodswing.injector.component.JournalComponent;
 import com.moodswing.injector.module.ActivityModule;
 import com.moodswing.injector.module.JournalModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
-import com.moodswing.mvp.mvp.model.JournalEntry;
-import com.moodswing.mvp.mvp.model.MyAdapter;
+import com.moodswing.mvp.mvp.model.Post;
 import com.moodswing.mvp.mvp.presenter.JournalPresenter;
 import com.moodswing.mvp.mvp.view.JournalView;
 
@@ -31,9 +32,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class JournalActivity extends AppCompatActivity implements JournalView {
-
-
-    List<String> tempEntries = new ArrayList<>();
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -88,17 +86,22 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
         }
 
 
+
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        //mAdapter = new MyAdapter(tempEntries);
+//        mAdapter = new MyAdapter(tempEntries);
         mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
     protected void onResume() {
+
         super.onResume();
+
+        // TODO: GET descriptions of journal entries
+        _journalPresenter.getEntries();
     }
 
     @Override
@@ -107,18 +110,18 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     }
 
     @Override
-    public void showJournals(List<JournalEntry> journalEntries) {
+    public void showEntries(){
 
     }
 
     @Override
-    public void showLoading() {
-
+    public void onEntryFailure(){
+        Toast.makeText(JournalActivity.this, "Entry fetch Failure", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void showError() {
-
+        Toast.makeText(JournalActivity.this, "Error fetching entries", Toast.LENGTH_LONG).show();
     }
 
     private void initializeLogoutButton() {

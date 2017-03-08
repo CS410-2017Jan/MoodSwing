@@ -57,7 +57,7 @@ public class NewEntryPresenter implements Presenter<NewEntryView> {
     }
 
 
-    public void uploadPost(String description, String date, String token) {
+    public void uploadPost(String description, String date) {
         newEntryUsecase.setPost(new Post(description, date));
         newEntryUsecase.setToken(sharedPreferencesManager.getToken());
 

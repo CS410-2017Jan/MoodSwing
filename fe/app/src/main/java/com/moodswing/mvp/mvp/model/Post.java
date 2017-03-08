@@ -7,23 +7,23 @@ package com.moodswing.mvp.mvp.model;
 public class Post {
 
     String text;
-    String entryDate;
+    String captureDate;
 
     public Post(String desc, String entryDate) {
         this.text = desc;
-        this.entryDate = entryDate;
+        this.captureDate = entryDate;
     }
 
 
     public String getDescription(){ return text; }
 
     public String getDate(){
-        return entryDate;
+        return captureDate;
     }
 
     public void setDescription(String newdesc){ text = newdesc; }
 
     public void setDate(String d){
-        entryDate = d;
+        captureDate = d;
     }
 }

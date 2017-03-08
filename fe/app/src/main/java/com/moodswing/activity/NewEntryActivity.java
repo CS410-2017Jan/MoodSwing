@@ -81,6 +81,7 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
         checkIntent();
     }
 
+
     private void checkIntent() {
         // TODO: Verify that this works
         byte[] byteArray = getIntent().getByteArrayExtra("CAPTURE");
@@ -151,9 +152,8 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
         Date dateO = new Date();
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         String date = df.format(dateO);
-        String token = _sharedPreferencesManager.getToken();
 
-        _newEntryPresenter.uploadPost(description, date, token);
+        _newEntryPresenter.uploadPost(description, date);
         exitToJounal();
     }
 
