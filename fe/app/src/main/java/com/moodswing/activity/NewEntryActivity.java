@@ -83,8 +83,7 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
 
     private void checkIntent() {
         // TODO: Verify that this works
-        Bundle extras = getIntent().getExtras();
-        byte[] byteArray = extras.getByteArray("CAPTURE");
+        byte[] byteArray = getIntent().getByteArrayExtra("CAPTURE");
 
         if (byteArray != null) {
             capture = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
