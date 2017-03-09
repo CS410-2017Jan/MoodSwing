@@ -21,7 +21,6 @@
     <string name="signup_error">Error during signup</string>
     <string name="signup_failure">Signup failed</string>
 
-
     <!-- Strings related to profile editiing -->>
     <string name="editprofile"> Edit Profile</string>
     <string name="editprofilepicture">Change Your Profle Picture!</string>
@@ -38,6 +37,13 @@
     <string name="retry">Retry</string>
     <string name="not_found">Sorry, MoodSwing requires the use of a front-facing camera, which was not found on your device.</string>
     <string name="loading">Loading</string>
+    
+    
+    <!-- Bottom Menu strings -->
+    <string name="text_camera">Camera</string>
+    <string name="text_search">Search</string>
+    <string name="text_followers">Followers</string>
+    <string name="text_follows">Follows</string>
 
 
 </resources>

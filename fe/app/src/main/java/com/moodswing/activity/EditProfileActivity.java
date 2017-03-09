@@ -6,7 +6,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -55,6 +58,9 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
     @BindView(R.id.profilepicture)
     ImageView profilePictureView;
 
+    @BindView(R.id.bottom_navigation)
+    BottomNavigationView bottomNavigationView;
+
 
     private EditProfileComponent _editProfileComponent;
 
@@ -75,7 +81,7 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
 
         initializePresenter();
         initializeButtons();
-
+        initializeBottomNavigationView();
     }
 
     private void initializeButtons() {
@@ -175,4 +181,27 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
         _editProfilePresenter.attachSharedPreferencesManager(_sharedPreferencesManager);
     }
 
+    private void initializeBottomNavigationView() {
+        bottomNavigationView.setOnNavigationItemSelectedListener( new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_search:
+                        // TODO: Re-direct to search
+                        break;
+                    case R.id.action_camera:
+                        Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.action_follows:
+                        // TODO: Re-direct to follows
+                        break;
+                    default:
+                        return false;
+                }
+                return true;
+            }
+        });
+    }
 }

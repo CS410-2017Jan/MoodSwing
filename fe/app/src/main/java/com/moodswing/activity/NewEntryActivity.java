@@ -6,8 +6,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -56,6 +59,9 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
     @BindView(R.id.entry_desc)
     EditText _descText;
 
+    @BindView(R.id.bottom_navigation)
+    BottomNavigationView bottomNavigationView;
+
     private NewEntryComponent _newEntryComponent;
     private Bitmap capture;
 
@@ -77,7 +83,8 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
         initializePresenter();
         initializeShareButton();
         initializeDateButton();
-        
+        initializeBottomNavigationView();
+
         checkIntent();
     }
 
@@ -214,5 +221,29 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
     public void exitToJounal(){
         Intent intent = new Intent(getApplicationContext(), JournalActivity.class);
         startActivity(intent);
+    }
+
+    private void initializeBottomNavigationView() {
+        bottomNavigationView.setOnNavigationItemSelectedListener( new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_search:
+                        // TODO: Re-direct to search
+                        break;
+                    case R.id.action_camera:
+                        Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.action_follows:
+                        // TODO: Re-direct to follows
+                        break;
+                    default:
+                        return false;
+                }
+                return true;
+            }
+        });
     }
 }

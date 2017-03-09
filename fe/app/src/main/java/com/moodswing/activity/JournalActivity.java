@@ -1,9 +1,14 @@
 package com.moodswing.activity;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -35,7 +40,6 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
 //    private RecyclerView.Adapter mAdapter;
 //    private RecyclerView.LayoutManager mLayoutManager;
 
-
     @Inject2
     JournalPresenter _journalPresenter;
 
@@ -51,10 +55,14 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     @BindView(R.id.btn_edit_profile)
     ImageButton _editprofileButton;
 
+    @BindView(R.id.bottom_navigation)
+    BottomNavigationView bottomNavigationView;
 
-    @BindView(R.id.btn_camera)
-    Button _cameraButton;
+    @BindView(R.id.my_recycler_view)
+    RecyclerView mRecyclerView;
 
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
     private JournalComponent _journalComponent;
 
     @Override
@@ -76,14 +84,12 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
         initializeLogoutButton();
         initializeAddEntryButton();
         initializeEditProfileButton();
-        initializeCameraButton();
+        initializeBottomNavigationView();
 
         if (!_journalPresenter.isUserLoggedIn()) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
-
-
 
 //        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
 //        mRecyclerView.setHasFixedSize(true);
@@ -166,20 +172,33 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
         });
     }
 
-    private void initializeCameraButton() {
-        _cameraButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
-                startActivity(intent);
-            }
-        });
-    }
-
     private void initializePresenter() {
         _journalPresenter.attachView(this);
         _journalPresenter.attachSharedPreferencesManager(_sharedPreferencesManager);
+    }
+
+    private void initializeBottomNavigationView() {
+        bottomNavigationView.setOnNavigationItemSelectedListener( new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_search:
+                        // TODO: Re-direct to search
+                        break;
+                    case R.id.action_camera:
+                        Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.action_follows:
+                        // TODO: Re-direct to follows
+                        break;
+                    default:
+                        return false;
+                }
+                return true;
+            }
+        });
     }
 }
 
