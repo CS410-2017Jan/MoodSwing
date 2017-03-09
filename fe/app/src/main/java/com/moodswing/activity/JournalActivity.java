@@ -1,5 +1,7 @@
 package com.moodswing.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -121,7 +123,11 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
 
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
-                        Toast.makeText(JournalActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
+                        if(item.getTitle().equals("Delete")){
+                            displayWarning("Are you sure you want to delete your post?");
+                        }else{
+                            Toast.makeText(JournalActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
+                        }
                         return true;
                     }
                 });
@@ -245,6 +251,25 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
 
     private void showToast(String s){
         Toast.makeText(JournalActivity.this, s, Toast.LENGTH_LONG).show();
+    }
+
+    private void displayWarning(String s) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(JournalActivity.this);
+        builder.setTitle("Warning");
+        builder.setMessage(s);
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                Toast.makeText(JournalActivity.this, "Delete", Toast.LENGTH_SHORT).show();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }
 
