@@ -159,7 +159,7 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         String date = df.format(dateO);
 
-        _newEntryPresenter.uploadPost(description, date);
+        _newEntryPresenter.uploadCapture(description, date);
         exitToJounal();
     }
 

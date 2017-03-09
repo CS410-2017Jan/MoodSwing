@@ -7,10 +7,11 @@ package com.moodswing.mvp.mvp.model;
 public class Capture {
 
     String text;
+    String captureDate;
 
     public Capture(){};
 
-    public Capture(String text){
+    public Capture(String text, String capturedate){
         this.text = text;
     }
 
@@ -18,7 +19,15 @@ public class Capture {
         return text;
     }
 
-    public void seText(String t){
+    public String getDate(){
+        return captureDate;
+    }
+
+    public void setText(String t){
         text = t;
+    }
+
+    public void setCaptureDate(String d){
+        captureDate = d;
     }
 }

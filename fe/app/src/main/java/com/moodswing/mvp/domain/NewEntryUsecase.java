@@ -1,7 +1,7 @@
 package com.moodswing.mvp.domain;
 
+import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.NewEntryResponse;
-import com.moodswing.mvp.mvp.model.Post;
 import com.moodswing.mvp.network.Repository;
 
 import io.reactivex.Observable;
@@ -13,12 +13,12 @@ import io.reactivex.Observable;
 public class NewEntryUsecase implements Usecase<NewEntryResponse> {
 
     private Repository repository;
-    private Post post;
+    private Capture capture;
     private String accessToken;
 
     public NewEntryUsecase(Repository repository) {this.repository = repository;}
 
-    public void setPost(Post post) {this.post = post;}
+    public void setCapture(Capture capture) {this.capture = capture;}
 
     public void setToken(String token){
         this.accessToken = token;
@@ -26,6 +26,6 @@ public class NewEntryUsecase implements Usecase<NewEntryResponse> {
 
     @Override
     public Observable<NewEntryResponse> execute() {
-        return repository.postNewEntry(post, accessToken);
+        return repository.postNewEntry(capture, accessToken);
     }
 }

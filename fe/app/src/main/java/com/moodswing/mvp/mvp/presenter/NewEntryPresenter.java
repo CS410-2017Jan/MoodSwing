@@ -1,15 +1,9 @@
 package com.moodswing.mvp.mvp.presenter;
 
-import android.app.ProgressDialog;
-import android.content.Context;
-
-import com.moodswing.R;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.NewEntryUsecase;
-import com.moodswing.mvp.mvp.model.LoginResponse;
+import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.NewEntryResponse;
-import com.moodswing.mvp.mvp.model.Post;
-import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.mvp.view.NewEntryView;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -57,8 +51,8 @@ public class NewEntryPresenter implements Presenter<NewEntryView> {
     }
 
 
-    public void uploadPost(String description, String date) {
-        newEntryUsecase.setPost(new Post(description, date));
+    public void uploadCapture(String description, String date) {
+        newEntryUsecase.setCapture(new Capture(description, date));
         newEntryUsecase.setToken(sharedPreferencesManager.getToken());
 
         newEntrySubscription = newEntryUsecase.execute()

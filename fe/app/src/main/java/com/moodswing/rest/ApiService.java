@@ -1,9 +1,9 @@
 package com.moodswing.rest;
 
+import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.LoginResponse;
 import com.moodswing.mvp.mvp.model.NewEntryResponse;
-import com.moodswing.mvp.mvp.model.Post;
 import com.moodswing.mvp.mvp.model.ProfilePictureResponse;
 import com.moodswing.mvp.mvp.model.SignupResponse;
 import com.moodswing.mvp.mvp.model.User;
@@ -37,7 +37,7 @@ public interface ApiService {
 
     @Headers("Content-Type: application/json")
     @POST("users/self/captures")
-    Observable<NewEntryResponse> postNewEntry(@Body Post post,
+    Observable<NewEntryResponse> postNewEntry(@Body Capture capture,
                                               @Header("x-access-token") String accessToken);
 
     @Headers("Content-Type: application/json")

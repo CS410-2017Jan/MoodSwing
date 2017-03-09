@@ -1,9 +1,9 @@
 package com.moodswing.rest;
 
+import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.LoginResponse;
 import com.moodswing.mvp.mvp.model.NewEntryResponse;
-import com.moodswing.mvp.mvp.model.Post;
 import com.moodswing.mvp.mvp.model.SignupResponse;
 import com.moodswing.mvp.mvp.model.ProfilePicture;
 import com.moodswing.mvp.mvp.model.ProfilePictureResponse;
@@ -43,8 +43,8 @@ public class MoodSwingRestRepository implements Repository {
     }
 
     @Override
-    public Observable<NewEntryResponse> postNewEntry(Post post, String accessToken) {
-        return apiService.postNewEntry(post, accessToken);
+    public Observable<NewEntryResponse> postNewEntry(Capture capture, String accessToken) {
+        return apiService.postNewEntry(capture, accessToken);
     }
 
     @Override
