@@ -17,6 +17,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -114,7 +115,7 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
             }
 
             @Override
-            public void onLongClick(View view, int position) {
+            public void onLongClick(final View view, final int position) {
 
                 PopupMenu popup = new PopupMenu(JournalActivity.this, view);
                 popup.getMenuInflater().inflate(R.menu.entry_popup_menu, popup.getMenu());
@@ -122,7 +123,10 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
                         if(item.getTitle().equals("Delete")){
-                            displayWarning("Are you sure you want to delete your post?");
+                            Log.i("CHECK", "*************************************************************");
+                            Capture capture = captures.get(position);
+                            Toast.makeText(getApplicationContext(), capture.getText() + capture.getDate(), Toast.LENGTH_SHORT).show();
+                            displayDeleteWarning(view, "Are you sure you want to delete your post?");
                         }else{
                             Toast.makeText(JournalActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
                         }
@@ -162,7 +166,13 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
         cAdapter.notifyDataSetChanged();
     }
 
-    @Override
+//    private void deleteEntry(View view) {
+//        view.
+//        _journalPresenter.deleteCapture(capture);
+//    }
+
+
+        @Override
     public void onEntryFailure(){
         String message = "Capture fetch Failure";
         showToast(message);
@@ -213,7 +223,7 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     }
 
 
-    private void displayWarning(String s) {
+    private void displayDeleteWarning(final View view, String s) {
         AlertDialog.Builder builder = new AlertDialog.Builder(JournalActivity.this);
         builder.setTitle("Warning");
         builder.setMessage(s);
@@ -225,6 +235,7 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+//                deleteEntry(view);
                 Toast.makeText(JournalActivity.this, "Delete", Toast.LENGTH_SHORT).show();
             }
         });
