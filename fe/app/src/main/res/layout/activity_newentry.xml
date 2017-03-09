@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="58dp"
             android:background="@null"
-            android:src="@drawable/calendar"
+            android:src="@drawable/ic_calendar"
             android:layout_below="@+id/descInput"
             android:layout_centerHorizontal="true" />
 

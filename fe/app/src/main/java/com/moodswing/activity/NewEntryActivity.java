@@ -1,8 +1,5 @@
 package com.moodswing.activity;
 
-
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -29,9 +26,11 @@ import com.moodswing.injector.module.NewEntryModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.presenter.NewEntryPresenter;
 import com.moodswing.mvp.mvp.view.NewEntryView;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.inject.Inject2;
@@ -43,10 +42,9 @@ import butterknife.ButterKnife;
  * Created by Matthew on 2017-03-04.
  */
 
-public class NewEntryActivity extends AppCompatActivity implements NewEntryView {
+public class NewEntryActivity extends AppCompatActivity implements NewEntryView, DatePickerDialog.OnDateSetListener{
 
     private NewEntryView newEntryView;
-//    public ProgressDialog pd;
 
     @Inject2
     NewEntryPresenter _newEntryPresenter;
@@ -68,6 +66,7 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
 
     private NewEntryComponent _newEntryComponent;
     private Bitmap capture;
+//    private Date date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +91,6 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
         checkIntent();
     }
 
-
     private void checkIntent() {
         // TODO: Verify that this works
         byte[] byteArray = getIntent().getByteArrayExtra("CAPTURE");
@@ -102,12 +100,10 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
         }
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
     }
-
 
     @Override
     protected void onStop(){
@@ -124,10 +120,8 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
     }
 
     public void onNewEntrySuccess() {
-//        pd.dismiss();
         exitToJounal();
     }
-
 
     private void initializeShareButton() {
         _shareButton.setOnClickListener(new View.OnClickListener() {
@@ -143,22 +137,31 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
         });
     }
 
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        // TODO: use date
+//        date = new Date(year, monthOfYear, dayOfMonth);
+    }
 
     private void initializeDateButton() {
         _dateButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // TODO: INSERT DATEPICKER DIALOG HERE
-//                pd = ProgressDialog.show(this, "Working..", "Calculating Pi", true, false);
+                Calendar now = Calendar.getInstance();
+                DatePickerDialog dpd = DatePickerDialog.newInstance(
+                        NewEntryActivity.this,
+                        now.get(Calendar.YEAR),
+                        now.get(Calendar.MONTH),
+                        now.get(Calendar.DAY_OF_MONTH)
+                );
+                dpd.show(getFragmentManager(), "Datepickerdialog");
             }
         });
     }
-
 
     private void initializePresenter() {
         _newEntryPresenter.attachView(this);
         _newEntryPresenter.attachSharedPreferencesManager(_sharedPreferencesManager);
     }
-
 
     private void shareEntry(String description) {
         Date dateO = new Date();
@@ -167,14 +170,12 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
         _newEntryPresenter.uploadCapture(description, date);
     }
 
-
     private boolean isEmpty(String s) {
         if(s != null && !s.isEmpty()){
             return false;
         }
         return true;
     }
-
 
     @Override
     public void onBackPressed() {
@@ -186,7 +187,6 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
             exitToJounal();
         }
     }
-
 
     private void displayError() {
         AlertDialog alertDialog = new AlertDialog.Builder(NewEntryActivity.this).create();
@@ -200,7 +200,6 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
                 });
         alertDialog.show();
     }
-
 
     private void displayWarning(String s) {
         AlertDialog.Builder builder = new AlertDialog.Builder(NewEntryActivity.this);
@@ -220,7 +219,6 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
         AlertDialog alert = builder.create();
         alert.show();
     }
-
 
     public void exitToJounal(){
         Intent intent = new Intent(getApplicationContext(), JournalActivity.class);

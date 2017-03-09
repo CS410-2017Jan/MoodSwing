@@ -68,9 +68,6 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     @BindView(R.id.newentry_fab)
     FloatingActionButton newEntryFab;
 
-//    @BindView(R.id.btn_menu)
-//    ImageButton menuButton;
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -244,45 +241,6 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
             }
         });
     }
-
-//    private void initializeSettingsButton() {
-//        menuButton.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                Context wrapper = new ContextThemeWrapper(JournalActivity.this, R.style.popupMenuStyle);
-//                final PopupMenu popupMenu = new PopupMenu(wrapper, v);
-//
-//                MenuInflater inflater = popupMenu.getMenuInflater();
-//                inflater.inflate(R.menu.toolbar_menu, popupMenu.getMenu());
-//                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//                    @Override
-//                    public boolean onMenuItemClick(MenuItem item) {
-//                        switch (item.getItemId()) {
-//                            case R.id.settings:
-//                                Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
-//                                startActivity(intent);
-//                                break;
-//                            case R.id.logout:
-//                                String currentUser = _sharedPreferencesManager.getCurrentUser();
-//                                if (currentUser != null) {
-//                                    _sharedPreferencesManager.logout(currentUser);
-//                                    Intent intent2 = new Intent(getApplicationContext(), LoginActivity.class);
-//                                    startActivity(intent2);
-//                                } else {
-//                                    // TODO: ERROR... App should shutdown
-//                                }
-//                                break;
-//                            default:
-//                                return true;
-//                        }
-//                        return true;
-//                    }
-//                });
-//                popupMenu.show();
-//            }
-//        });
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
