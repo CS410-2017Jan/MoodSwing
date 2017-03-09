@@ -1,5 +1,7 @@
 package com.moodswing.mvp.mvp.presenter;
 
+import android.app.ProgressDialog;
+
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.NewEntryUsecase;
 import com.moodswing.mvp.mvp.model.Capture;

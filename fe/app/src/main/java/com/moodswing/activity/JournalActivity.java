@@ -28,6 +28,8 @@ import com.moodswing.injector.module.ActivityModule;
 import com.moodswing.injector.module.JournalModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.model.Capture;
+import com.moodswing.mvp.mvp.model.CaptureDivider;
+import com.moodswing.mvp.mvp.model.CaptureTouchListener;
 import com.moodswing.mvp.mvp.model.CapturesAdapter;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.presenter.JournalPresenter;
@@ -101,7 +103,21 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         _recyclerView.setLayoutManager(layoutManager);
         _recyclerView.setItemAnimator(new DefaultItemAnimator());
+        _recyclerView.addItemDecoration(new CaptureDivider(this, LinearLayoutManager.VERTICAL));
         _recyclerView.setAdapter(cAdapter);
+
+        _recyclerView.addOnItemTouchListener(new CaptureTouchListener(getApplicationContext(), _recyclerView, new CaptureTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                // Don't think anything should happen here
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+                Capture capture = captures.get(position);
+                Toast.makeText(getApplicationContext(), "Add Delete and Edit functionality here", Toast.LENGTH_SHORT).show();
+            }
+        }));
     }
 
     @Override
@@ -121,8 +137,10 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     @Override
     public void showEntries(List<JournalEntries> journalEntries){
         for(JournalEntries je: journalEntries){
+            Log.i(je.getDate(), "***********************************");
             List<Capture> capture = je.getEntry();
             for(Capture e: capture){
+                e.setCaptureDate(je.getDate());
                 captures.add(e);
             }
         }
@@ -139,6 +157,11 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     public void showError() {
         String message = "Error fetching entries";
         showToast(message);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
     }
 
     private void initializeLogoutButton() {

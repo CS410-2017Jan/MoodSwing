@@ -1,6 +1,8 @@
 package com.moodswing.activity;
 
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,7 +11,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -43,6 +44,9 @@ import butterknife.ButterKnife;
  */
 
 public class NewEntryActivity extends AppCompatActivity implements NewEntryView {
+
+    private NewEntryView newEntryView;
+    public ProgressDialog pd;
 
     @Inject2
     NewEntryPresenter _newEntryPresenter;
@@ -120,7 +124,8 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
     }
 
     public void onNewEntrySuccess() {
-        // TODO: What does finish() do in the same method in loginActivity??
+        pd.dismiss();
+        exitToJounal();
     }
 
 
@@ -142,7 +147,7 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
     private void initializeDateButton() {
         _dateButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+                // TODO:
             }
         });
     }
@@ -158,9 +163,8 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
         Date dateO = new Date();
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         String date = df.format(dateO);
-
         _newEntryPresenter.uploadCapture(description, date);
-        exitToJounal();
+        pd = ProgressDialog.show(this, "Working..", "Calculating Pi", true, false);
     }
 
 

@@ -11,8 +11,9 @@ public class Capture {
 
     public Capture(){};
 
-    public Capture(String text, String capturedate){
+    public Capture(String text, String captureDate){
         this.text = text;
+        this.captureDate = captureDate;
     }
 
     public String getText(){

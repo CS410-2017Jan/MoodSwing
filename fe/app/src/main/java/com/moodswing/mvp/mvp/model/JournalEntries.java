@@ -11,16 +11,28 @@ public class JournalEntries {
     String username;
     List<Capture> captures;
     String title;
-    String date;
+    String entryDate;
 
-    public JournalEntries(String username, List<Capture> captures, String title, String data){
+    public JournalEntries(String username, List<Capture> captures, String title, String date){
         this.username = username;
         this.captures = captures;
         this.title = title;
-        this.date = date;
+        this.entryDate = date;
     }
 
     public List<Capture> getEntry(){
         return captures;
+    }
+
+    public String getDate(){
+        return entryDate;
+    }
+
+    public String getTitle(){
+        return title;
+    }
+
+    public String getUsername(){
+        return username;
     }
 }

@@ -19,14 +19,14 @@ public class CapturesAdapter extends RecyclerView.Adapter<CapturesAdapter.MyView
     private List<Capture> captures;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView description;
+        public TextView description, date;
 
         public MyViewHolder(View view) {
             super(view);
             description = (TextView) view.findViewById(R.id.description);
+            date = (TextView) view.findViewById(R.id.date);
         }
     }
-
 
     public CapturesAdapter(List<Capture> captures) {
         this.captures = captures;
@@ -44,6 +44,7 @@ public class CapturesAdapter extends RecyclerView.Adapter<CapturesAdapter.MyView
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Capture capture = captures.get(position);
         holder.description.setText(capture.getText());
+        holder.date.setText(capture.getDate());
     }
 
     @Override
