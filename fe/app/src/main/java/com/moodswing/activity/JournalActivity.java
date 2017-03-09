@@ -126,7 +126,7 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
                             Log.i("CHECK", "*************************************************************");
                             Capture capture = captures.get(position);
                             Toast.makeText(getApplicationContext(), capture.getText() + capture.getDate(), Toast.LENGTH_SHORT).show();
-                            displayDeleteWarning(view, "Are you sure you want to delete your post?");
+                            displayDeleteWarning("Are you sure you want to delete your post?");
                         }else{
                             Toast.makeText(JournalActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
                         }
@@ -223,7 +223,7 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     }
 
 
-    private void displayDeleteWarning(final View view, String s) {
+    private void displayDeleteWarning(String s) {
         AlertDialog.Builder builder = new AlertDialog.Builder(JournalActivity.this);
         builder.setTitle("Warning");
         builder.setMessage(s);
@@ -235,7 +235,6 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-//                deleteEntry(view);
                 Toast.makeText(JournalActivity.this, "Delete", Toast.LENGTH_SHORT).show();
             }
         });

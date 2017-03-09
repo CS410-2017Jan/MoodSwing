@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -66,7 +67,7 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView,
 
     private NewEntryComponent _newEntryComponent;
     private Bitmap capture;
-//    private Date date;
+    private String date = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +128,7 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView,
         _shareButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String description = _descText.getText().toString();
-                if(!isEmpty(description)){
+                if(!isEmpty(description) && !isEmpty(date)){
                     shareEntry(description);
                 }
                 else{
@@ -140,7 +141,7 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView,
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
         // TODO: use date
-//        date = new Date(year, monthOfYear, dayOfMonth);
+        date = Integer.toString(dayOfMonth) + "/" + Integer.toString(monthOfYear) + "/" + Integer.toString(year);
     }
 
     private void initializeDateButton() {
@@ -164,9 +165,6 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView,
     }
 
     private void shareEntry(String description) {
-        Date dateO = new Date();
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-        String date = df.format(dateO);
         _newEntryPresenter.uploadCapture(description, date);
     }
 
@@ -191,7 +189,7 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView,
     private void displayError() {
         AlertDialog alertDialog = new AlertDialog.Builder(NewEntryActivity.this).create();
         alertDialog.setTitle("Warning");
-        alertDialog.setMessage("The description cannot have an empty value.");
+        alertDialog.setMessage("The description and date cannot have an empty value.");
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
