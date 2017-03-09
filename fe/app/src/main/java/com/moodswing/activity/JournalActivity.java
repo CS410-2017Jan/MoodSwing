@@ -1,24 +1,26 @@
 package com.moodswing.activity;
 
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.graphics.Paint;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -48,7 +50,6 @@ import butterknife.ButterKnife;
 
 public class JournalActivity extends AppCompatActivity implements JournalView {
 
-
     private List<Capture> captures = new ArrayList<>();
     private CapturesAdapter cAdapter;
 
@@ -58,21 +59,20 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     @Inject2
     SharedPreferencesManager _sharedPreferencesManager;
 
-    @BindView(R.id.btn_logout)
-    ImageButton _logoutButton;
-
-    @BindView(R.id.btn_addnew)
-    ImageButton _addEntryButton;
-
-    @BindView(R.id.btn_edit_profile)
-    ImageButton _editprofileButton;
-
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;
 
     @BindView(R.id.recycler_view)
     android.support.v7.widget.RecyclerView _recyclerView;
 
+    @BindView(R.id.newentry_fab)
+    FloatingActionButton newEntryFab;
+
+//    @BindView(R.id.btn_menu)
+//    ImageButton menuButton;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     private JournalComponent _journalComponent;
 
@@ -92,10 +92,11 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
         _journalComponent.inject(this);
 
         initializePresenter();
-        initializeLogoutButton();
-        initializeAddEntryButton();
-        initializeEditProfileButton();
+
         initializeBottomNavigationView();
+        initializeNewEntryFab();
+//        initializeSettingsButton();
+        setSupportActionBar(toolbar);
 
         if (!_journalPresenter.isUserLoggedIn()) {
             Intent intent = new Intent(this, LoginActivity.class);
@@ -140,6 +141,8 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     protected void onResume() {
         super.onResume();
         if (_journalPresenter.isUserLoggedIn()) {
+            toolbar.setTitleTextColor(Color.WHITE);
+            setTitle(_sharedPreferencesManager.getCurrentUser() + "'s " + "MoodSwings");
             captures.clear();
             _journalPresenter.getEntries();
         }
@@ -179,47 +182,6 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
         finishAffinity();
     }
 
-    private void initializeLogoutButton() {
-        _logoutButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO: this is stubbed
-                String currentUser = _sharedPreferencesManager.getCurrentUser();
-                if (currentUser != null) {
-                    _sharedPreferencesManager.logout(currentUser);
-                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                    startActivity(intent);
-                } else {
-                    // TODO: ERROR... App should shutdown
-                }
-            }
-        });
-    }
-
-    private void initializeAddEntryButton() {
-        _addEntryButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Do something in response to button click
-                Intent intent = new Intent(getApplicationContext(), NewEntryActivity.class);
-                startActivity(intent);
-            }
-        });
-    }
-
-
-    private void initializeEditProfileButton() {
-        _editprofileButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                //TODO: set some restrictions on editing profile
-                Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
-                startActivity(intent);
-            }
-        });
-    }
-
     private void initializeBottomNavigationView() {
         bottomNavigationView.setOnNavigationItemSelectedListener( new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -249,9 +211,10 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
         _journalPresenter.attachSharedPreferencesManager(_sharedPreferencesManager);
     }
 
-    private void showToast(String s){
+    private void showToast(String s) {
         Toast.makeText(JournalActivity.this, s, Toast.LENGTH_LONG).show();
     }
+
 
     private void displayWarning(String s) {
         AlertDialog.Builder builder = new AlertDialog.Builder(JournalActivity.this);
@@ -270,6 +233,84 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
         });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    private void initializeNewEntryFab() {
+        newEntryFab.setOnClickListener(new FloatingActionButton.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), NewEntryActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+//    private void initializeSettingsButton() {
+//        menuButton.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//                Context wrapper = new ContextThemeWrapper(JournalActivity.this, R.style.popupMenuStyle);
+//                final PopupMenu popupMenu = new PopupMenu(wrapper, v);
+//
+//                MenuInflater inflater = popupMenu.getMenuInflater();
+//                inflater.inflate(R.menu.toolbar_menu, popupMenu.getMenu());
+//                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+//                    @Override
+//                    public boolean onMenuItemClick(MenuItem item) {
+//                        switch (item.getItemId()) {
+//                            case R.id.settings:
+//                                Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
+//                                startActivity(intent);
+//                                break;
+//                            case R.id.logout:
+//                                String currentUser = _sharedPreferencesManager.getCurrentUser();
+//                                if (currentUser != null) {
+//                                    _sharedPreferencesManager.logout(currentUser);
+//                                    Intent intent2 = new Intent(getApplicationContext(), LoginActivity.class);
+//                                    startActivity(intent2);
+//                                } else {
+//                                    // TODO: ERROR... App should shutdown
+//                                }
+//                                break;
+//                            default:
+//                                return true;
+//                        }
+//                        return true;
+//                    }
+//                });
+//                popupMenu.show();
+//            }
+//        });
+//    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.settings:
+                Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.logout:
+                String currentUser = _sharedPreferencesManager.getCurrentUser();
+                if (currentUser != null) {
+                    _sharedPreferencesManager.logout(currentUser);
+                    Intent intent2 = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivity(intent2);
+                } else {
+                    // TODO: ERROR... App should shutdown
+                }
+                break;
+            default:
+                return true;
+        }
+        return true;
     }
 }
 

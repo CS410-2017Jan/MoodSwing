@@ -46,7 +46,7 @@ import butterknife.ButterKnife;
 public class NewEntryActivity extends AppCompatActivity implements NewEntryView {
 
     private NewEntryView newEntryView;
-    public ProgressDialog pd;
+//    public ProgressDialog pd;
 
     @Inject2
     NewEntryPresenter _newEntryPresenter;
@@ -124,7 +124,7 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
     }
 
     public void onNewEntrySuccess() {
-        pd.dismiss();
+//        pd.dismiss();
         exitToJounal();
     }
 
@@ -147,7 +147,8 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
     private void initializeDateButton() {
         _dateButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // TODO:
+                // TODO: INSERT DATEPICKER DIALOG HERE
+//                pd = ProgressDialog.show(this, "Working..", "Calculating Pi", true, false);
             }
         });
     }
@@ -164,7 +165,6 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         String date = df.format(dateO);
         _newEntryPresenter.uploadCapture(description, date);
-        pd = ProgressDialog.show(this, "Working..", "Calculating Pi", true, false);
     }
 
 
@@ -180,7 +180,7 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
     public void onBackPressed() {
         String description = _descText.getText().toString();
         if(!isEmpty(description)){
-            displayDiscardWarning();
+            displayWarning("Are you sure you want to discard your post?");
         }
         else{
             exitToJounal();
@@ -202,10 +202,10 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView 
     }
 
 
-    private void displayDiscardWarning() {
+    private void displayWarning(String s) {
         AlertDialog.Builder builder = new AlertDialog.Builder(NewEntryActivity.this);
         builder.setTitle("Warning");
-        builder.setMessage("Are you sure you want to discard your post?");
+        builder.setMessage(s);
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
