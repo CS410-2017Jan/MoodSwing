@@ -3,8 +3,13 @@ package com.moodswing.activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.graphics.Paint;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,10 +28,12 @@ import com.moodswing.injector.module.ActivityModule;
 import com.moodswing.injector.module.JournalModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.model.Capture;
+import com.moodswing.mvp.mvp.model.CapturesAdapter;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.presenter.JournalPresenter;
 import com.moodswing.mvp.mvp.view.JournalView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject2;
@@ -36,9 +43,9 @@ import butterknife.ButterKnife;
 
 public class JournalActivity extends AppCompatActivity implements JournalView {
 
-//    private RecyclerView mRecyclerView;
-//    private RecyclerView.Adapter mAdapter;
-//    private RecyclerView.LayoutManager mLayoutManager;
+
+    private List<Capture> captures = new ArrayList<>();
+    private CapturesAdapter cAdapter;
 
     @Inject2
     JournalPresenter _journalPresenter;
@@ -58,11 +65,13 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;
 
-    @BindView(R.id.my_recycler_view)
-    RecyclerView mRecyclerView;
+    @BindView(R.id.btn_camera)
+    Button _cameraButton;
 
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    @BindView(R.id.recycler_view)
+    android.support.v7.widget.RecyclerView _recyclerView;
+
+
     private JournalComponent _journalComponent;
 
     @Override
@@ -91,19 +100,19 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
             startActivity(intent);
         }
 
-//        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-//        mRecyclerView.setHasFixedSize(true);
-//        mLayoutManager = new LinearLayoutManager(this);
-//        mRecyclerView.setLayoutManager(mLayoutManager);
-//        mAdapter = new MyAdapter(tempEntries);
-//        mRecyclerView.setAdapter(mAdapter);
+        cAdapter = new CapturesAdapter(captures);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        _recyclerView.setLayoutManager(layoutManager);
+        _recyclerView.setItemAnimator(new DefaultItemAnimator());
+        _recyclerView.setAdapter(cAdapter);
     }
 
     @Override
     protected void onResume() {
-
         super.onResume();
-        _journalPresenter.getEntries();
+        if (_journalPresenter.isUserLoggedIn()) {
+            _journalPresenter.getEntries();
+        }
     }
 
     @Override
@@ -116,19 +125,22 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
         for(JournalEntries je: journalEntries){
             List<Capture> capture = je.getEntry();
             for(Capture e: capture){
-                Log.i(e.getText(), "************************************************************");
+                captures.add(e);
             }
         }
+        cAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onEntryFailure(){
-        Toast.makeText(JournalActivity.this, "Capture fetch Failure", Toast.LENGTH_LONG).show();
+        String message = "Capture fetch Failure";
+        showToast(message);
     }
 
     @Override
     public void showError() {
-        Toast.makeText(JournalActivity.this, "Error fetching entries", Toast.LENGTH_LONG).show();
+        String message = "Error fetching entries";
+        showToast(message);
     }
 
     private void initializeLogoutButton() {
@@ -172,11 +184,6 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
         });
     }
 
-    private void initializePresenter() {
-        _journalPresenter.attachView(this);
-        _journalPresenter.attachSharedPreferencesManager(_sharedPreferencesManager);
-    }
-
     private void initializeBottomNavigationView() {
         bottomNavigationView.setOnNavigationItemSelectedListener( new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -199,6 +206,15 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
                 return true;
             }
         });
+    }
+
+    private void initializePresenter() {
+        _journalPresenter.attachView(this);
+        _journalPresenter.attachSharedPreferencesManager(_sharedPreferencesManager);
+    }
+
+    private void showToast(String s){
+        Toast.makeText(JournalActivity.this, s, Toast.LENGTH_LONG).show();
     }
 }
 
