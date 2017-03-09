@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -114,8 +115,17 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
 
             @Override
             public void onLongClick(View view, int position) {
-                Capture capture = captures.get(position);
-                Toast.makeText(getApplicationContext(), "Add Delete and Edit functionality here", Toast.LENGTH_SHORT).show();
+
+                PopupMenu popup = new PopupMenu(JournalActivity.this, view);
+                popup.getMenuInflater().inflate(R.menu.entry_popup_menu, popup.getMenu());
+
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        Toast.makeText(JournalActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                });
+                popup.show();
             }
         }));
     }
@@ -137,7 +147,6 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     @Override
     public void showEntries(List<JournalEntries> journalEntries){
         for(JournalEntries je: journalEntries){
-            Log.i(je.getDate(), "***********************************");
             List<Capture> capture = je.getEntry();
             for(Capture e: capture){
                 e.setCaptureDate(je.getDate());
