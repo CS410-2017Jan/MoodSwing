@@ -65,9 +65,6 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;
 
-    @BindView(R.id.btn_camera)
-    Button _cameraButton;
-
     @BindView(R.id.recycler_view)
     android.support.v7.widget.RecyclerView _recyclerView;
 
@@ -111,6 +108,7 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     protected void onResume() {
         super.onResume();
         if (_journalPresenter.isUserLoggedIn()) {
+            captures.clear();
             _journalPresenter.getEntries();
         }
     }
