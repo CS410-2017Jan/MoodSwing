@@ -90,6 +90,10 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView,
         initializeBottomNavigationView();
 
         checkIntent();
+
+        Date tDate = new Date();
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        date = df.format(tDate);
     }
 
     private void checkIntent() {
