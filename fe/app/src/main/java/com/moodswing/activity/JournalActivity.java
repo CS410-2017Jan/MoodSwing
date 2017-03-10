@@ -41,7 +41,11 @@ import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.presenter.JournalPresenter;
 import com.moodswing.mvp.mvp.view.JournalView;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject2;
@@ -159,7 +163,8 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
         for(JournalEntries je: journalEntries){
             List<Capture> capture = je.getEntry();
             for(Capture e: capture){
-                e.setCaptureDate(je.getDate());
+                String sDate = setJournalViewDateFormat(je.getDate());
+                e.setCaptureDate(sDate);
                 captures.add(e);
             }
         }
@@ -279,6 +284,20 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
                 return true;
         }
         return true;
+    }
+
+    public String setJournalViewDateFormat(String date){
+        DateFormat firstdf = new SimpleDateFormat("dd/MM/yyyy");
+        DateFormat secdf = new SimpleDateFormat("MMM.d, yyyy");
+        Date tempDate;
+        String rDate = "";
+        try {
+            tempDate = firstdf.parse(date);
+            rDate = secdf.format(tempDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return rDate;
     }
 }
 
