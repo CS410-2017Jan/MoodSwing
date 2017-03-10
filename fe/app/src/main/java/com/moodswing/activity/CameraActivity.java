@@ -652,11 +652,15 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
         Context context = getBaseContext();
 
         for (Face.EMOJI emoji : Face.EMOJI.values()) {
+            String emojiResourceName;
+            String emojiFileName;
+            String emojiName = emoji.name();
+
             if (emoji.equals(Face.EMOJI.UNKNOWN)) {
-                continue;
+                emojiName = "blank";
             }
-            String emojiResourceName = emoji.name().trim().replace(' ', '_').toLowerCase(Locale.US).concat("_emoji");
-            String emojiFileName = emojiResourceName + ".png";
+            emojiResourceName = emojiName.trim().replace(' ', '_').toLowerCase(Locale.US).concat("_emoji");
+            emojiFileName = emojiResourceName + ".png";
             ImageHelper.preproccessImageIfNecessary(context, emojiFileName, emojiResourceName);
         }
     }

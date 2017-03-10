@@ -360,9 +360,9 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         Bitmap getEmojiBitmapByName(String emojiName) throws FileNotFoundException {
-            // No bitmap necessary if emoji is unknown
+            // Use blank emoji when no emoji is recognized
             if (emojiName.equals(Face.EMOJI.UNKNOWN.name())) {
-                return null;
+                emojiName = "blank";
             }
 
             String emojiResourceName = emojiName.trim().replace(' ', '_').toLowerCase(Locale.US).concat("_emoji");
