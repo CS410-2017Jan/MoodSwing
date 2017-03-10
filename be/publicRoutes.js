@@ -108,11 +108,11 @@ router.get('/users/:username/entries', function(req, res) {
       return res.status(400).json({ success: false, message: 'No entries found'})
     }
 
-    let sortedEntries = journalEntries.sort(function(a, b) {
-      let aDate = new Date(a.entryDate)
-      let bDate = new Date(b.entryDate)
-      return aDate < bDate
-    })
+    let sortedEntries = journalEntries.sort(function(a, b){
+      a = a.entryDate.split('/');
+      b = b.entryDate.split('/');
+      return a[2] - b[2] || a[1] - b[1] || a[0] - b[0];
+    }).reverse();
 
     return res.status(200).json(sortedEntries)
   })
