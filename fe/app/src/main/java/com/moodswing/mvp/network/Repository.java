@@ -5,11 +5,12 @@ import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.LoginResponse;
 import com.moodswing.mvp.mvp.model.NewEntryResponse;
 import com.moodswing.mvp.mvp.model.SignupResponse;
-import com.moodswing.mvp.mvp.model.ProfilePicture;
 import com.moodswing.mvp.mvp.model.ProfilePictureResponse;
 import com.moodswing.mvp.mvp.model.User;
 import java.util.List;
 import io.reactivex.Observable;
+import okhttp3.MultipartBody;
+import retrofit2.http.Part;
 
 /**
  * Interface for API repository
@@ -18,10 +19,9 @@ import io.reactivex.Observable;
  */
 
 public interface Repository {
-    // getJournalEntries etc...
     Observable<NewEntryResponse> postNewEntry(Capture capture, String accessToken);
     Observable<List<JournalEntries>> getJournalEntries(String username);
     Observable<SignupResponse> postUser(User user);
     Observable<LoginResponse> postLogin(User user);
-    Observable<ProfilePictureResponse> postProfilePicture(String token, ProfilePicture profilePicture);
+    Observable<ProfilePictureResponse> postProfilePicture(String token, @Part MultipartBody.Part picture);
 }

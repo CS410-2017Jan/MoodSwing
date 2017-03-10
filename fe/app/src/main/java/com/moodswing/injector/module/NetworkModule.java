@@ -7,6 +7,8 @@ import com.moodswing.injector.scope.PerApplication;
 import com.moodswing.mvp.network.Repository;
 import com.moodswing.rest.MoodSwingRestRepository;
 
+import java.util.concurrent.TimeUnit;
+
 import dagger.Module2;
 import dagger.Provides2;
 import okhttp3.OkHttpClient;
@@ -21,7 +23,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module2
 public class NetworkModule {
 
-    private String apiEndpointUrl = "http://128.189.215.140:3000";
+//    private String apiEndpointUrl = "http://206.87.129.171:3000";
+    private String apiEndpointUrl = "http://206.87.132.143:3000";
 
     @Provides2
     @PerApplication
@@ -40,7 +43,11 @@ public class NetworkModule {
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         // Client
-        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(loggingInterceptor).build();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(loggingInterceptor)
+                .retryOnConnectionFailure(true)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
 
         // Rx
         RxJava2CallAdapterFactory rxJavaCallAdapterFactory = RxJava2CallAdapterFactory.create();

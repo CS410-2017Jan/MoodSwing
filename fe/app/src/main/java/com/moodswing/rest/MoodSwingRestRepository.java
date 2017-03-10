@@ -5,7 +5,6 @@ import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.LoginResponse;
 import com.moodswing.mvp.mvp.model.NewEntryResponse;
 import com.moodswing.mvp.mvp.model.SignupResponse;
-import com.moodswing.mvp.mvp.model.ProfilePicture;
 import com.moodswing.mvp.mvp.model.ProfilePictureResponse;
 import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.network.Repository;
@@ -14,6 +13,7 @@ import com.moodswing.mvp.network.Repository;
 import java.util.List;
 
 import io.reactivex.Observable;
+import okhttp3.MultipartBody;
 import retrofit2.Retrofit;
 
 /**
@@ -38,11 +38,6 @@ public class MoodSwingRestRepository implements Repository {
     }
 
     @Override
-    public Observable<ProfilePictureResponse> postProfilePicture(String token, ProfilePicture profilePicture) {
-        return apiService.postProfilePicture(token, profilePicture.getPicture());
-    }
-
-    @Override
     public Observable<NewEntryResponse> postNewEntry(Capture capture, String accessToken) {
         return apiService.postNewEntry(capture, accessToken);
     }
@@ -50,5 +45,10 @@ public class MoodSwingRestRepository implements Repository {
     @Override
     public Observable<List<JournalEntries>> getJournalEntries(String username){
         return apiService.getJournalEntries(username);
+    }
+
+    @Override
+    public Observable<ProfilePictureResponse> postProfilePicture(String token, MultipartBody.Part picture) {
+        return apiService.postProfilePicture(token, picture);
     }
 }

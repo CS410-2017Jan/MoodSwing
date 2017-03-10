@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -44,7 +45,6 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
     //------- variables used for gallery image selection -------------
     // Action code used for gallery selection showing the result of our action
     private static final int SELECT_PICTURE = 1;
-    private String selectedImagePath;
 
     @Inject2
     EditProfilePresenter _editProfilePresenter;
@@ -120,20 +120,10 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
                                 picture
                         );
 
-                // MultipartBody.Part is used to send also the actual file name
                 MultipartBody.Part body =
                         MultipartBody.Part.createFormData("profilePicture", picture.getName(), requestFile);
 
-                // add another part within the multipart request
-                String descriptionString = "hello, this is description speaking";
-
-                RequestBody description =
-                        RequestBody.create(
-                                okhttp3.MultipartBody.FORM, descriptionString);
-
-                //Pass to Presenter
-                _editProfilePresenter.postPicture(body, description);
-
+                _editProfilePresenter.postPicture(body);
             }
         }
 
