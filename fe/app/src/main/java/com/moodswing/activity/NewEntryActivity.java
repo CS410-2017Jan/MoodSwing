@@ -145,6 +145,7 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView,
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
         // TODO: use date
+        monthOfYear += 1;
         date = Integer.toString(dayOfMonth) + "/" + Integer.toString(monthOfYear) + "/" + Integer.toString(year);
     }
 
