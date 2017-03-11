@@ -50,7 +50,8 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
             _cRecyclerView.setAdapter(cAdapter);
 
 
-            // TODO: onLongClick selects wrong item right now
+            // TODO: onLongClick selects wrong item right now. the
+            // ordering selects by all posts instead of local to dateBlock
             _cRecyclerView.addOnItemTouchListener(new CaptureTouchListener(jActivity, _cRecyclerView, new CaptureTouchListener.ClickListener() {
                 @Override
                 public void onClick(View view, int position) {
