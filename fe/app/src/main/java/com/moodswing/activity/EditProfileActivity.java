@@ -1,6 +1,9 @@
 package com.moodswing.activity;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,6 +11,9 @@ import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -45,6 +51,7 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
     //------- variables used for gallery image selection -------------
     // Action code used for gallery selection showing the result of our action
     private static final int SELECT_PICTURE = 1;
+    private static final int EXTERNAL_STORAGE_PERMISSIONS_REQUEST = 99;
 
     @Inject2
     EditProfilePresenter _editProfilePresenter;
@@ -63,6 +70,7 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
 
 
     private EditProfileComponent _editProfileComponent;
+    private boolean storagePermissionsAvailable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,15 +104,20 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
     }
 
     private void changeProfilePicture() {
-        // Create intent to Open Image applications like Gallery, Google Photos
-        // select a file
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        //allows multiple strings tobe
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        startActivityForResult(Intent.createChooser(intent,
-                "Select Picture"), SELECT_PICTURE);
+        // First check that we have storage permissions
+        if (!storagePermissionsAvailable) {
+            checkForStoragePermissions();
+        } else {
+            // Create intent to Open Image applications like Gallery, Google Photos
+            // select a file
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            //allows multiple strings tobe
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            startActivityForResult(Intent.createChooser(intent,
+                    "Select Picture"), SELECT_PICTURE);
+        }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -193,5 +206,87 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
                 return true;
             }
         });
+    }
+
+    private void checkForStoragePermissions() {
+        storagePermissionsAvailable =
+                ContextCompat.checkSelfPermission(
+                        getApplicationContext(),
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+
+        if (!storagePermissionsAvailable) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                showPermissionExplanationDialog(EXTERNAL_STORAGE_PERMISSIONS_REQUEST);
+            } else {
+                // No explanation needed, we can request the permission.
+                requestStoragePermissions();
+            }
+        }
+    }
+
+    private void requestStoragePermissions() {
+        if (!storagePermissionsAvailable) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    EXTERNAL_STORAGE_PERMISSIONS_REQUEST);
+
+            // EXTERNAL_STORAGE_PERMISSIONS_REQUEST is an app-defined int constant that must be between 0 and 255.
+            // The callback method gets the result of the request.
+        }
+    }
+
+    private void showPermissionExplanationDialog(int requestCode) {
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                EditProfileActivity.this);
+
+        // set title
+        alertDialogBuilder.setTitle(getResources().getString(R.string.insufficient_permissions));
+
+        if (requestCode == EXTERNAL_STORAGE_PERMISSIONS_REQUEST) {
+            alertDialogBuilder
+                    .setMessage(getResources().getString(R.string.permissions_storage_needed_explanation))
+                    .setCancelable(false)
+                    .setPositiveButton(getResources().getString(R.string.understood), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                            requestStoragePermissions();
+                        }
+                    });
+        }
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == EXTERNAL_STORAGE_PERMISSIONS_REQUEST) {
+            for (int i = 0; i < permissions.length; i++) {
+                String permission = permissions[i];
+                int grantResult = grantResults[i];
+
+                if (permission.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    storagePermissionsAvailable = (grantResult == PackageManager.PERMISSION_GRANTED);
+                }
+            }
+
+            if (storagePermissionsAvailable) {
+                // resume changing profile picture
+                changeProfilePicture();
+            }
+        }
     }
 }

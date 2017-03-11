@@ -32,7 +32,7 @@
     <string name="error">Error</string>
     <string name="understood">Understood</string>
     <string name="permissions_camera_needed_explanation">MoodSwing requires permission to access your Camera to take captures.</string>
-    <string name="permissions_storage_needed_explanation">MoodSwing requires permission to access your external storage to save screenshots.</string>
+    <string name="permissions_storage_needed_explanation">MoodSwing requires permission to access your device storage.</string>
     <string name="insufficient_permissions">Insufficient Permissions</string>
     <string name="retry">Retry</string>
     <string name="not_found">Sorry, MoodSwing requires the use of a front-facing camera, which was not found on your device.</string>

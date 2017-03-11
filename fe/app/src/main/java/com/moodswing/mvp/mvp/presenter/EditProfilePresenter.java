@@ -69,7 +69,7 @@ public class EditProfilePresenter implements Presenter<EditProfileView> {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        Log.v("PROFILE_PICTURE", "FAILURE");
+                        Log.v("PROFILE_PICTURE", "FAILURE: " + throwable.getMessage());
                     }
                 });
 
