@@ -17,7 +17,7 @@ import java.util.List;
 public class CaptureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private List<Capture> captures;
-    private int mRowIndex;
+    private int blockIndex;
 
     public CaptureAdapter() {
     }
@@ -28,7 +28,7 @@ public class CaptureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public void setRowIndex(int index) {
-        mRowIndex = index;
+        blockIndex = index;
     }
 
     private class MyViewHolder extends RecyclerView.ViewHolder {
@@ -58,5 +58,9 @@ public class CaptureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public int getItemCount() {
         return captures.size();
+    }
+
+    public int getRowIndex() {
+        return blockIndex;
     }
 }

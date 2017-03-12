@@ -17,7 +17,11 @@ import android.widget.Toast;
 import com.moodswing.R;
 import com.moodswing.activity.JournalActivity;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -49,17 +53,17 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
             _cRecyclerView.addItemDecoration(new CaptureDivider(context, LinearLayoutManager.VERTICAL));
             _cRecyclerView.setAdapter(cAdapter);
 
-
-            // TODO: onLongClick selects wrong item right now. the
-            // ordering selects by all posts instead of local to dateBlock
             _cRecyclerView.addOnItemTouchListener(new CaptureTouchListener(jActivity, _cRecyclerView, new CaptureTouchListener.ClickListener() {
+                int capturePos = 0;
                 @Override
                 public void onClick(View view, int position) {
                     // TODO: Will go to separate page to view entry
+                    capturePos = getCaptureIndexInDateBlock(cAdapter, position);
                 }
 
                 @Override
                 public void onLongClick(final View view, final int position) {
+                    capturePos = getCaptureIndexInDateBlock(cAdapter, position);
 
                     PopupMenu popup = new PopupMenu(jActivity, view);
                     popup.getMenuInflater().inflate(R.menu.entry_popup_menu, popup.getMenu());
@@ -68,7 +72,7 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
                         public boolean onMenuItemClick(MenuItem item) {
                             if(item.getTitle().equals("Delete")){
                                 Log.i("CHECK", "*************************************************************");
-                                Capture capture = captures.get(position);
+                                Capture capture = captures.get(capturePos);
                                 Toast.makeText(jActivity, capture.getText() + capture.getDate(), Toast.LENGTH_SHORT).show();
                                 displayDeleteWarning("Are you sure you want to delete your post?");
                             }else{
@@ -128,6 +132,7 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
                 temp.add(c);
             }
         }
+
         holder.cAdapter.setData(temp);
         holder.cAdapter.setRowIndex(position);
     }
@@ -135,5 +140,24 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
     @Override
     public int getItemCount() {
         return dBlocks.size();
+    }
+
+    private int getCaptureIndexInDateBlock(CaptureAdapter ca, int posInDateBlock){
+        int numCapturesBeforeDateBlock = 0;
+        DateBlock dateBlock = dBlocks.get(ca.getRowIndex());
+        String sbDate = dateBlock.getDate();
+        DateFormat df = new SimpleDateFormat("MMM.d, yyyy");
+        try{
+            Date dbDate = df.parse(sbDate);
+            for(Capture c: captures){
+                Date dcDate = df.parse(c.getDate());
+                if (dcDate.after(dbDate)){
+                    numCapturesBeforeDateBlock += 1;
+                }
+            }
+        }catch(ParseException e) {
+            e.printStackTrace();
+        }
+        return posInDateBlock + numCapturesBeforeDateBlock;
     }
 }
