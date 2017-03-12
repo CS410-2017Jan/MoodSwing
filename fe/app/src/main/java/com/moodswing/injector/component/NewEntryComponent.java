@@ -17,6 +17,5 @@ import dagger.Component;
                 NewEntryModule.class
         })
 public interface NewEntryComponent {
-    // TODO: inject fragment...?
     void inject(NewEntryActivity newEntryActivity);
 }

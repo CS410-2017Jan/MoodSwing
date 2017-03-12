@@ -28,6 +28,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -63,6 +65,7 @@ import javax.inject.Inject2;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import pl.droidsonroids.gif.GifImageView;
 
 /**
  * Created by daniel on 03/03/17.
@@ -118,10 +121,6 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
     private boolean cameraPermissionsAvailable = false;
     private boolean storagePermissionsAvailable = false;
     private CameraDetector detector = null;
-    /*
-    * ...
-    * ...
-    */
     private boolean isFrontFacingCameraDetected = true;
     private boolean isBackFacingCameraDetected = true;
 
@@ -472,8 +471,9 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
             emotionView.invalidatePoints();
         } else if (faces.size() == 1) {
             emotionView.updatePoints(faces);
+
         }
-    }
+}
 
     @Override
     public void onFaceDetectionStarted() {

@@ -17,7 +17,6 @@ import dagger.Component;
                 JournalModule.class
         })
 public interface JournalComponent {
-    // TODO: inject fragment...?
     void inject(JournalActivity journalActivity);
 }
 
