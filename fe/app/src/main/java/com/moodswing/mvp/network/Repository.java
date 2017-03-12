@@ -10,6 +10,7 @@ import com.moodswing.mvp.mvp.model.User;
 import java.util.List;
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
+import okhttp3.ResponseBody;
 import retrofit2.http.Part;
 
 /**
@@ -24,4 +25,5 @@ public interface Repository {
     Observable<SignupResponse> postUser(User user);
     Observable<LoginResponse> postLogin(User user);
     Observable<ProfilePictureResponse> postProfilePicture(String token, @Part MultipartBody.Part picture);
+    Observable<ResponseBody> getProfilePicture(String token);
 }

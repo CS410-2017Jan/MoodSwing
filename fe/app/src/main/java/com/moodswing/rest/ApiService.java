@@ -10,6 +10,7 @@ import com.moodswing.mvp.mvp.model.User;
 import java.util.List;
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
+import okhttp3.ResponseBody;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
@@ -48,4 +49,7 @@ public interface ApiService {
     @POST("users/self/picture")
     Observable<ProfilePictureResponse> postProfilePicture(@Header("x-access-token") String token,
                                                           @Part MultipartBody.Part picture);
+
+    @GET("users/self/picture")
+    Observable<ResponseBody> getProfilePicture(@Header("x-access-token") String token);
 }

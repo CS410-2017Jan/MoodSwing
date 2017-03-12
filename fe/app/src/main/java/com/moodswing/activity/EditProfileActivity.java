@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.moodswing.MoodSwingApplication;
@@ -33,6 +34,10 @@ import com.moodswing.injector.component.DaggerEditProfileComponent;
 import com.moodswing.mvp.mvp.view.EditProfileView;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.util.ArrayList;
 
@@ -42,6 +47,7 @@ import butterknife.ButterKnife;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 
 /**
  * Created by Kenny on 2017-02-27.
@@ -62,15 +68,27 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
     @BindView(R.id.btn_editprofilepicture)
     Button _editProfilePictureButton;
 
+    @BindView(R.id.btn_saveprofile)
+    Button _saveProfileButton;
+
     @BindView(R.id.profilepicture)
-    ImageView profilePictureView;
+    ImageView _profilePictureView;
+
+    @BindView(R.id.change_displayname)
+    EditText _displayNameText;
+
+    @BindView(R.id.change_username)
+    EditText _usernameText;
+
+    @BindView(R.id.change_password)
+    EditText _passwordText;
 
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;
 
-
     private EditProfileComponent _editProfileComponent;
     private boolean storagePermissionsAvailable;
+    private Uri selectedProfileUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +105,10 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
                 .build();
         _editProfileComponent.inject(this);
 
+        selectedProfileUri = null;
         initializePresenter();
         initializeButtons();
+        initializeProfileInformation();
         initializeBottomNavigationView();
     }
 
@@ -101,6 +121,21 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
                 changeProfilePicture();
             }
         });
+
+        _saveProfileButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                saveProfile();
+            }
+        });
+    }
+
+    private void initializeProfileInformation() {
+        _usernameText.setText(_sharedPreferencesManager.getCurrentUser());
+        _passwordText.requestFocus();
+        _editProfilePresenter.getPicture();
+
     }
 
     private void changeProfilePicture() {
@@ -120,39 +155,72 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
         }
     }
 
+    @Override
+    public void getPicture(ResponseBody picture) {
+        try {
+            String[] type = picture.contentType().toString().split("/");
+            File profilePictureFile = new File(getExternalFilesDir(null) + File.separator + "OurProfilePicture." + type[1]);
+            InputStream inputStream = null;
+            OutputStream outputStream = null;
+
+            try {
+                byte[] fileReader = new byte[4096];
+                long fileSize = picture.contentLength();
+                long fileSizeDownloaded = 0;
+
+                inputStream = picture.byteStream();
+                outputStream = new FileOutputStream(profilePictureFile);
+
+                while (true) {
+                    int read = inputStream.read(fileReader);
+                    if (read == -1) {
+                        break;
+                    }
+                    outputStream.write(fileReader, 0, read);
+                    fileSizeDownloaded += read;
+                }
+                //SET PICTURE TO IMAGEVIEW
+                _profilePictureView.setImageURI(Uri.fromFile(profilePictureFile));
+                outputStream.flush();
+            } catch (IOException e) {
+
+            } finally {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PICTURE) {
-                Uri selectedImageUri = data.getData();
-                profilePictureView.setImageURI(selectedImageUri);
-                File picture = new File(getPath(selectedImageUri));
-
-                RequestBody requestFile =
-                        RequestBody.create(
-                                MediaType.parse(getContentResolver().getType(selectedImageUri)),
-                                picture
-                        );
-
-                MultipartBody.Part body =
-                        MultipartBody.Part.createFormData("profilePicture", picture.getName(), requestFile);
-
-                _editProfilePresenter.postPicture(body);
-            }
-        }
-
-        if (Intent.ACTION_SEND_MULTIPLE.equals(data.getAction()) && data.hasExtra(Intent.EXTRA_STREAM)) {
-            // retrieve a collection of selected images
-            ArrayList<Parcelable> list = data.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-            // iterate over these images
-            if( list != null ) {
-                for (Parcelable parcel : list) {
-                    Uri uri = (Uri) parcel;
-                    // TODO handle the images one by one here
-                }
+                selectedProfileUri = data.getData();
+                _profilePictureView.setImageURI(selectedProfileUri);
             }
         }
     }
 
+
+    private void saveProfile() {
+        File picture = new File(getPath(selectedProfileUri));
+
+        RequestBody requestFile =
+                RequestBody.create(
+                        MediaType.parse(getContentResolver().getType(selectedProfileUri)),
+                        picture
+                );
+
+        MultipartBody.Part body =
+                MultipartBody.Part.createFormData("profilePicture", picture.getName(), requestFile);
+
+        _editProfilePresenter.postPicture(body);
+    }
     /**
      * helper to retrieve the path of an image URI
      */
@@ -172,6 +240,7 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
             cursor.moveToFirst();
             String path = cursor.getString(column_index);
             cursor.close();
+            cursor = null;
             return path;
         }
         // this is our fallback here

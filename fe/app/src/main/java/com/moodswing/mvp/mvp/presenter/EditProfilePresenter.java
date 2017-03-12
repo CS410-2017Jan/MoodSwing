@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.EditProfilePictureUsecase;
+import com.moodswing.mvp.domain.GetProfilePictureUsecase;
 import com.moodswing.mvp.mvp.model.ProfilePictureResponse;
 import com.moodswing.mvp.mvp.view.EditProfileView;
 
@@ -12,6 +13,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MultipartBody;
+import okhttp3.ResponseBody;
 
 /**
  * Created by Kenny on 2017-02-27.
@@ -19,12 +21,16 @@ import okhttp3.MultipartBody;
 
 public class EditProfilePresenter implements Presenter<EditProfileView> {
     private EditProfilePictureUsecase editProfilePictureUseCase;
+    private GetProfilePictureUsecase getProfilePictureUsecase;
     private EditProfileView editProfileView;
     private SharedPreferencesManager sharedPreferencesManager;
     private Disposable newProfilePictureSubscription;
+    private Disposable getProfilePictureSubcscription;
 
-    public EditProfilePresenter(EditProfilePictureUsecase editProfilePictureUsecase) {
+    public EditProfilePresenter(EditProfilePictureUsecase editProfilePictureUsecase,
+                                GetProfilePictureUsecase getProfilePictureUsecase) {
         this.editProfilePictureUseCase = editProfilePictureUsecase;
+        this.getProfilePictureUsecase = getProfilePictureUsecase;
     }
 
     @Override
@@ -70,6 +76,28 @@ public class EditProfilePresenter implements Presenter<EditProfileView> {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         Log.v("PROFILE_PICTURE", "FAILURE: " + throwable.getMessage());
+                    }
+                });
+    }
+
+    public void getPicture() {
+        String token = sharedPreferencesManager.getToken();
+        getProfilePictureUsecase.setToken(token);
+
+        getProfilePictureSubcscription = getProfilePictureUsecase.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseBody>() {
+                    @Override
+                    public void accept(ResponseBody picture) throws Exception {
+                        editProfileView.getPicture(picture);
+                        Log.d("GET_PROFILE_PICTURE", "SUCCESS");
+                    }
+
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.d("GET_PROFILE_PICTURE", "FAILURE: " + throwable.getMessage());
                     }
                 });
 
