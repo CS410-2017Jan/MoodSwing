@@ -1,6 +1,7 @@
 package com.moodswing.affectiva_helper;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -13,6 +14,7 @@ import android.graphics.RectF;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.os.Process;
 import android.view.SurfaceHolder;
@@ -22,6 +24,7 @@ import com.affectiva.android.affdex.sdk.detector.Face;
 import com.moodswing.R;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -160,16 +163,12 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
         private volatile boolean requestCaptureBitmap = false; //boolean to indicate a snapshot of the surface has been requested
         private EmotionThreadEventListener emotionThreadEventListener;
         private GifDrawable currentAnimation;
+        private int currentAnimationResource = -1;
 
         public EmotionViewThread(SurfaceHolder surfaceHolder, EmotionThreadEventListener emotionThreadEventListener) {
             this.surfaceHolder = surfaceHolder;
             this.emotionThreadEventListener = emotionThreadEventListener;
             this.facesSharer = new FacesSharer();
-
-            try {
-                currentAnimation = new GifDrawable(getResources(), R.drawable.test_gif);
-                currentAnimation.setBounds(200, 0, 900, 800);
-            } catch(Exception e) {}
         }
 
         public void setEventListener(EmotionThreadEventListener emotionEventThreadListener) {
@@ -318,8 +317,6 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
                 return;
             }
 
-            Bitmap b = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
-//            Canvas canvas = new Canvas(b);
             Paint paint = new Paint();
 
             paint.setStrokeWidth(10);
@@ -331,13 +328,14 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
             final RectF oval = new RectF();
             paint.setStyle(Paint.Style.STROKE);
             oval.set(10, 10, 290, 290);
-            c.drawArc(oval, 270, ((dominantEmojiScore * 360) / 100), false, paint);
 
-            // TODO: Fix this
-//            float padding = getResources().getDimension(R.dimen.circleProgressPadding);
-//            float markerPosX = c.getWidth() - b.getWidth() - padding;
-//            float markerPosY = c.getHeight() - b.getHeight() - padding;
-//            c.drawBitmap(b, markerPosX, markerPosY, null);
+
+            int xPadding = (int) getResources().getDimension(R.dimen.xEmotionCirlePadding);
+            int yPadding = (int) getResources().getDimension(R.dimen.yEmotionCirclePadding);
+            c.save();
+            c.translate(c.getWidth() - oval.centerX() - dpToPx(xPadding), c.getHeight() - oval.centerY() - dpToPx(yPadding));
+            c.drawArc(oval, 270, ((dominantEmojiScore * 360) / 100), false, paint);
+            c.restore();
         }
 
         private void drawDominantEmoji(Canvas c, Face f) {
@@ -348,7 +346,8 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
             Bitmap emojiBitmap;
             float markerPosX;
             float markerPosY;
-            float padding;
+            int xPadding;
+            int yPadding;
 
             try {
                 emojiBitmap = getEmojiBitmapByName(emojiName);
@@ -358,9 +357,11 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
             }
 
             if (emojiBitmap != null) {
-                padding = getResources().getDimension(R.dimen.emojiPadding);
-                markerPosX = c.getWidth() - emojiBitmap.getWidth() - padding;
-                markerPosY = c.getHeight() - emojiBitmap.getHeight() - padding;
+                xPadding = (int) getResources().getDimension(R.dimen.xEmojiPadding);
+                yPadding = (int) getResources().getDimension(R.dimen.yEmojiPadding);
+
+                markerPosX = c.getWidth() - emojiBitmap.getWidth() - dpToPx(xPadding);
+                markerPosY = c.getHeight() - emojiBitmap.getHeight() - dpToPx(yPadding);
                 c.drawBitmap(emojiBitmap, markerPosX, markerPosY, null);
             }
         }
@@ -418,14 +419,74 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
             return desiredEmojiBitmap;
         }
 
-        private void drawEmotionAnimation(Canvas c, Face nextFaceToDraw) {
+        private void drawEmotionAnimation(Canvas c, Face face) {
             // TODO
-            try {
-                if (nextFaceToDraw.emojis.getDominantEmoji().name().equals("SMILEY"))
-                    currentAnimation.draw(c);
-            } catch (Exception e) {
-                Log.v(LOG_TAG, e.getMessage());
+            String dominantEmoji = face.emojis.getDominantEmoji().name();
+            int nextAnimationResource = -1;
+            switch (dominantEmoji) {
+                case "RELAXED":
+                    break;
+                case "SMILEY":
+                    nextAnimationResource = R.drawable.smiley_animation;
+                    break;
+                case "LAUGHING":
+                    break;
+                case "WINK":
+                    break;
+                case "SMIRK":
+                    break;
+                case "KISSING":
+                    nextAnimationResource = R.drawable.kissing_animation;
+                    break;
+                case "STUCK_OUT_TONGUE":
+                    break;
+                case "STUCK_OUT_TONGUE_WINKING_EYE":
+                    break;
+                case "DISAPPOINTED":
+                    nextAnimationResource = R.drawable.disappointed_animation;
+                    break;
+                case "RAGE":
+                    break;
+                case "SCREAM":
+                    break;
+                case "FLUSHED":
+                    break;
+                default:
+                    nextAnimationResource = -1;
             }
+            playGIF(nextAnimationResource, c);
+        }
+
+        private void playGIF(int nextAnimationResource, Canvas c) {
+            if (currentAnimationResource != nextAnimationResource) { // we are changing GIFs
+                if (currentAnimation != null) {
+                    currentAnimation.recycle();
+                }
+                currentAnimationResource = nextAnimationResource;
+                if (currentAnimationResource != -1) {
+                    try {
+                        currentAnimation = new GifDrawable(getResources(), currentAnimationResource);
+                        int width = Resources.getSystem().getDisplayMetrics().widthPixels;
+                        int height = Resources.getSystem().getDisplayMetrics().heightPixels;
+                        currentAnimation.setBounds(width / 4, 0, width * 3 / 4, height / 2);
+                        currentAnimation.draw(c);
+                    } catch (IOException e) {
+                        Log.v(LOG_TAG, e.getMessage());
+                    }
+                }
+            } else if (currentAnimationResource != -1) { // not changing GIFs
+                currentAnimation.draw(c);
+            }
+        }
+
+        private int dpToPx(int dp) {
+            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+            return (int)((dp * displayMetrics.density) + 0.5);
+        }
+
+        private int pxToDp(int px) {
+            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+            return (int) ((px/displayMetrics.density)+0.5);
         }
     }
 }

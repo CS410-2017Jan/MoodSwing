@@ -19,6 +19,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SwitchCompat;
 import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -30,6 +31,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -110,6 +112,9 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
     @BindView(R.id.btn_camera_switcher)
     ImageButton _cameraSwitchButton;
 
+    @BindView(R.id.emotion_switch)
+    SwitchCompat _emotionSwitch;
+
     public static final int MAX_SUPPORTED_FACES = 1;
     private static final String LOG_TAG = "MoodSwing Camera";
     private static final int CAMERA_PERMISSIONS_REQUEST = 42;  //value is arbitrary (between 0 and 255)
@@ -123,6 +128,7 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
     private CameraDetector detector = null;
     private boolean isFrontFacingCameraDetected = true;
     private boolean isBackFacingCameraDetected = true;
+    private boolean emotionEffectsEnabled = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +141,7 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
         _cameraComponent = DaggerCameraComponent.builder()
                 .cameraModule(new CameraModule())
                 .activityModule(new ActivityModule(this))
+                .applicationComponent(applicationComponent)
                 .applicationComponent(applicationComponent)
                 .build();
         _cameraComponent.inject(this);
@@ -179,7 +186,23 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
         cameraPreview.setZOrderMediaOverlay(false);
         initializeCameraCaptureButton();
         initializeCameraSwitchButton();
+        initializeEmotionSwitch();
         emotionView.setEventListener(this);
+    }
+
+    private void initializeEmotionSwitch() {
+        _emotionSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                emotionEffectsEnabled = isChecked;
+                if (isChecked) {
+                    Toast.makeText(getApplicationContext(), "Emotion effects enabled.", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Emotion effects disabled.", Toast.LENGTH_LONG).show();
+                    emotionView.invalidatePoints();
+                }
+            }
+        });
     }
 
     private void initializeCameraSwitchButton() {
@@ -459,19 +482,20 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
 
     @Override
     public void onImageResults(List<Face> faces, Frame image, float v) {
-        mostRecentFrame = image;
+        if (emotionEffectsEnabled) {
+            mostRecentFrame = image;
 
-        //If the faces object is null, we received an unprocessed frame
-        if (faces == null) {
-            return;
-        }
+            //If the faces object is null, we received an unprocessed frame
+            if (faces == null) {
+                return;
+            }
 
-        //If faces.size() is 0, we received a frame in which no face was detected
-        if (faces.size() <= 0) {
-            emotionView.invalidatePoints();
-        } else if (faces.size() == 1) {
-            emotionView.updatePoints(faces);
-
+            //If faces.size() is 0, we received a frame in which no face was detected
+            if (faces.size() <= 0) {
+                emotionView.invalidatePoints();
+            } else if (faces.size() == 1) {
+                emotionView.updatePoints(faces);
+            }
         }
 }
 

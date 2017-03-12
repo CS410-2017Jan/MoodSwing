@@ -7,9 +7,18 @@
     <dimen name="settings_button_size">48dp</dimen>
     <dimen name="settings_button_margin">10dp</dimen>
     <dimen name="bottom_padding">5dp</dimen>
+    <dimen name="switcherPadding">35dp</dimen>
     <dimen name="please_wait_textview_size">20sp</dimen>
-    <dimen name="padding">35dp</dimen>
-    <dimen name="circleProgressPadding">4dp</dimen>
-    <dimen name="emojiPadding">28dp</dimen>
+    <!--EmotionView Dimensions-->
+    <dimen name="xEmotionCirlePadding">20dp</dimen>
+    <dimen name="yEmotionCirclePadding">20dp</dimen>
+    <dimen name="xEmojiPadding">10.75dp</dimen>
+    <dimen name="yEmojiPadding">12dp</dimen>
+
+    <dimen name="gifLeft">12dp</dimen>
+    <dimen name="gifTop">12dp</dimen>
+    <dimen name="gifRight">12dp</dimen>
+    <dimen name="gifBottom">12dp</dimen>
+
 
 </resources>
