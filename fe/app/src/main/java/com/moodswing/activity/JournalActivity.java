@@ -3,7 +3,6 @@ package com.moodswing.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
@@ -11,7 +10,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -19,10 +17,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.moodswing.MoodSwingApplication;
@@ -34,9 +30,11 @@ import com.moodswing.injector.module.ActivityModule;
 import com.moodswing.injector.module.JournalModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.model.Capture;
-import com.moodswing.mvp.mvp.model.CaptureDivider;
+import com.moodswing.mvp.mvp.model.DateDivider;
 import com.moodswing.mvp.mvp.model.CaptureTouchListener;
-import com.moodswing.mvp.mvp.model.CapturesAdapter;
+import com.moodswing.mvp.mvp.model.DateAdapter;
+//import com.moodswing.mvp.mvp.model.DateSeparator;
+import com.moodswing.mvp.mvp.model.DateBlock;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.presenter.JournalPresenter;
 import com.moodswing.mvp.mvp.view.JournalView;
@@ -55,8 +53,9 @@ import butterknife.ButterKnife;
 
 public class JournalActivity extends AppCompatActivity implements JournalView {
 
+    private List<DateBlock> dBlocks = new ArrayList<>();
     private List<Capture> captures = new ArrayList<>();
-    private CapturesAdapter cAdapter;
+    private DateAdapter dAdapter;
 
     @Inject2
     JournalPresenter _journalPresenter;
@@ -67,8 +66,8 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;
 
-    @BindView(R.id.recycler_view)
-    android.support.v7.widget.RecyclerView _recyclerView;
+    @BindView(R.id.date_recycler_view)
+    android.support.v7.widget.RecyclerView _dRecyclerView;
 
     @BindView(R.id.newentry_fab)
     FloatingActionButton newEntryFab;
@@ -105,41 +104,12 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
             startActivity(intent);
         }
 
-        cAdapter = new CapturesAdapter(captures);
+        dAdapter = new DateAdapter(dBlocks, captures, this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        _recyclerView.setLayoutManager(layoutManager);
-        _recyclerView.setItemAnimator(new DefaultItemAnimator());
-        _recyclerView.addItemDecoration(new CaptureDivider(this, LinearLayoutManager.VERTICAL));
-        _recyclerView.setAdapter(cAdapter);
-
-        _recyclerView.addOnItemTouchListener(new CaptureTouchListener(getApplicationContext(), _recyclerView, new CaptureTouchListener.ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                // Don't think anything should happen here
-            }
-
-            @Override
-            public void onLongClick(final View view, final int position) {
-
-                PopupMenu popup = new PopupMenu(JournalActivity.this, view);
-                popup.getMenuInflater().inflate(R.menu.entry_popup_menu, popup.getMenu());
-
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
-                        if(item.getTitle().equals("Delete")){
-                            Log.i("CHECK", "*************************************************************");
-                            Capture capture = captures.get(position);
-                            Toast.makeText(getApplicationContext(), capture.getText() + capture.getDate(), Toast.LENGTH_SHORT).show();
-                            displayDeleteWarning("Are you sure you want to delete your post?");
-                        }else{
-                            Toast.makeText(JournalActivity.this, item.getTitle(), Toast.LENGTH_SHORT).show();
-                        }
-                        return true;
-                    }
-                });
-                popup.show();
-            }
-        }));
+        _dRecyclerView.setLayoutManager(layoutManager);
+        _dRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        _dRecyclerView.addItemDecoration(new DateDivider(this, R.drawable.divider));
+        _dRecyclerView.setAdapter(dAdapter);
     }
 
     @Override
@@ -149,6 +119,7 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
             toolbar.setTitleTextColor(Color.WHITE);
             setTitle(_sharedPreferencesManager.getCurrentUser() + "'s " + "MoodSwings");
             captures.clear();
+            dBlocks.clear();
             _journalPresenter.getEntries();
         }
     }
@@ -162,13 +133,17 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     public void showEntries(List<JournalEntries> journalEntries){
         for(JournalEntries je: journalEntries){
             List<Capture> capture = je.getEntry();
+
+            String sDate = setJournalViewDateFormat(je.getDate());
+            DateBlock db = new DateBlock("Title", sDate);
+            dBlocks.add(db);
+
             for(Capture e: capture){
-                String sDate = setJournalViewDateFormat(je.getDate());
                 e.setCaptureDate(sDate);
                 captures.add(e);
             }
         }
-        cAdapter.notifyDataSetChanged();
+        dAdapter.notifyDataSetChanged();
     }
 
 //    private void deleteEntry(View view) {
@@ -225,26 +200,6 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
 
     private void showToast(String s) {
         Toast.makeText(JournalActivity.this, s, Toast.LENGTH_LONG).show();
-    }
-
-
-    private void displayDeleteWarning(String s) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(JournalActivity.this);
-        builder.setTitle("Warning");
-        builder.setMessage(s);
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                Toast.makeText(JournalActivity.this, "Delete", Toast.LENGTH_SHORT).show();
-            }
-        });
-        AlertDialog alert = builder.create();
-        alert.show();
     }
 
     private void initializeNewEntryFab() {

@@ -49,7 +49,6 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
     @BindView(R.id.link_signup)
     TextView _signupLink;
 
-    // TODO: adapter...?
     private LoginComponent _loginComponent;
 
     @Override

@@ -14,17 +14,6 @@
 
         <include layout="@layout/journal_main"/>
 
-        <!--<ImageButton-->
-        <!--android:id="@+id/btn_menu"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="@drawable/ic_more_vert_black_24dp"-->
-        <!--android:padding="15dp"-->
-        <!--android:layout_alignParentTop="true"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_alignParentEnd="true"-->
-        <!--android:contentDescription="Settings" />-->
-
     </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton

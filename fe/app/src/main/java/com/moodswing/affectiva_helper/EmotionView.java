@@ -15,10 +15,8 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.os.Process;
-import android.util.Pair;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.Toast;
 
 import com.affectiva.android.affdex.sdk.detector.Face;
 import com.moodswing.R;
@@ -29,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import pl.droidsonroids.gif.GifDrawable;
 
 /**
  * Created by daniel on 04/03/17.
@@ -131,13 +131,11 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
         if (emotionThreadEventListener == null) {
             String msg = "Attempted to request screenshot without first attaching event listener";
             Log.e(LOG_TAG, msg);
-            Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
             return;
         }
         if (emotionViewThread == null || emotionViewThread.isStopped()) {
             String msg = "Attempted to request screenshot without a running drawing thread";
             Log.e(LOG_TAG, msg);
-            Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
             return;
         }
         emotionViewThread.requestCaptureBitmap = true;
@@ -161,11 +159,17 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
         private volatile boolean stopFlag = false; //boolean to indicate when thread has been told to stop
         private volatile boolean requestCaptureBitmap = false; //boolean to indicate a snapshot of the surface has been requested
         private EmotionThreadEventListener emotionThreadEventListener;
+        private GifDrawable currentAnimation;
 
         public EmotionViewThread(SurfaceHolder surfaceHolder, EmotionThreadEventListener emotionThreadEventListener) {
             this.surfaceHolder = surfaceHolder;
             this.emotionThreadEventListener = emotionThreadEventListener;
             this.facesSharer = new FacesSharer();
+
+            try {
+                currentAnimation = new GifDrawable(getResources(), R.drawable.test_gif);
+                currentAnimation.setBounds(200, 0, 900, 800);
+            } catch(Exception e) {}
         }
 
         public void setEventListener(EmotionThreadEventListener emotionEventThreadListener) {
@@ -272,8 +276,9 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
 
         private void drawFaceAttributes(Canvas c, Face nextFaceToDraw) {
             //Draw the Emoji markers
-            drawEmotionProgressCircle(c, getDominantEmojiScore(nextFaceToDraw));
             drawDominantEmoji(c, nextFaceToDraw);
+            drawEmotionProgressCircle(c, getDominantEmojiScore(nextFaceToDraw));
+            drawEmotionAnimation(c, nextFaceToDraw);
         }
 
         private float getDominantEmojiScore(Face face) {
@@ -314,7 +319,7 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
             }
 
             Bitmap b = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(b);
+//            Canvas canvas = new Canvas(b);
             Paint paint = new Paint();
 
             paint.setStrokeWidth(10);
@@ -326,12 +331,13 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
             final RectF oval = new RectF();
             paint.setStyle(Paint.Style.STROKE);
             oval.set(10, 10, 290, 290);
-            canvas.drawArc(oval, 270, ((dominantEmojiScore * 360) / 100), false, paint);
+            c.drawArc(oval, 270, ((dominantEmojiScore * 360) / 100), false, paint);
 
-            float padding = getResources().getDimension(R.dimen.circleProgressPadding);
-            float markerPosX = c.getWidth() - b.getWidth() - padding;
-            float markerPosY = c.getHeight() - b.getHeight() - padding;
-            c.drawBitmap(b, markerPosX, markerPosY, null);
+            // TODO: Fix this
+//            float padding = getResources().getDimension(R.dimen.circleProgressPadding);
+//            float markerPosX = c.getWidth() - b.getWidth() - padding;
+//            float markerPosY = c.getHeight() - b.getHeight() - padding;
+//            c.drawBitmap(b, markerPosX, markerPosY, null);
         }
 
         private void drawDominantEmoji(Canvas c, Face f) {
@@ -359,7 +365,7 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
             }
         }
 
-        Bitmap getEmojiBitmapByName(String emojiName) throws FileNotFoundException {
+        private Bitmap getEmojiBitmapByName(String emojiName) throws FileNotFoundException {
             // Use blank emoji when no emoji is recognized
             if (emojiName.equals(Face.EMOJI.UNKNOWN.name())) {
                 emojiName = "blank";
@@ -410,6 +416,16 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
             emojiMarkerBitmapToEmojiTypeMap.put(emojiFileName, desiredEmojiBitmap);
 
             return desiredEmojiBitmap;
+        }
+
+        private void drawEmotionAnimation(Canvas c, Face nextFaceToDraw) {
+            // TODO
+            try {
+                if (nextFaceToDraw.emojis.getDominantEmoji().name().equals("SMILEY"))
+                    currentAnimation.draw(c);
+            } catch (Exception e) {
+                Log.v(LOG_TAG, e.getMessage());
+            }
         }
     }
 }
