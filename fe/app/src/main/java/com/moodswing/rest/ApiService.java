@@ -17,6 +17,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 
@@ -52,4 +53,13 @@ public interface ApiService {
 
     @GET("users/self/picture")
     Observable<ResponseBody> getProfilePicture(@Header("x-access-token") String token);
+
+    /*
+    @PUT("users/self")
+    Observable<ChangeUsernameResponse>  changeUsername(@Header("x-access-token") String token,
+                                                       String )
+
+    @PUT("users/self")
+    Observable
+    */
 }

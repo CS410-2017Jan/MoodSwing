@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.moodswing.MoodSwingApplication;
@@ -61,14 +62,11 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
     @Inject2
     SharedPreferencesManager _sharedPreferencesManager;
 
-    @BindView(R.id.btn_editprofilepicture)
-    Button _editProfilePictureButton;
+    @BindView(R.id.btn_profilepicture)
+    ImageButton _editProfilePictureButton;
 
     @BindView(R.id.btn_saveprofile)
     Button _saveProfileButton;
-
-    @BindView(R.id.profilepicture)
-    ImageView _profilePictureView;
 
     @BindView(R.id.change_displayname)
     EditText _displayNameText;
@@ -113,7 +111,6 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
 
             @Override
             public void onClick(View view) {
-                //TODO: set some restrictions on editing profile
                 changeProfilePicture();
             }
         });
@@ -129,7 +126,6 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
 
     private void initializeProfileInformation() {
         _usernameText.setText(_sharedPreferencesManager.getCurrentUser());
-        _passwordText.requestFocus();
         _editProfilePresenter.getPicture();
 
     }
@@ -176,7 +172,7 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
                     fileSizeDownloaded += read;
                 }
                 //SET PICTURE TO IMAGEVIEW
-                _profilePictureView.setImageURI(Uri.fromFile(profilePictureFile));
+                _editProfilePictureButton.setImageURI(Uri.fromFile(profilePictureFile));
                 outputStream.flush();
             } catch (IOException e) {
 
@@ -197,11 +193,10 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PICTURE) {
                 selectedProfileUri = data.getData();
-                _profilePictureView.setImageURI(selectedProfileUri);
+                _editProfilePictureButton.setImageURI(selectedProfileUri);
             }
         }
     }
-
 
     private void saveProfile() {
         File picture = new File(getPath(selectedProfileUri));
@@ -223,7 +218,6 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
     public String getPath(Uri uri) {
         // just some safety built in
         if( uri == null ) {
-            // TODO perform some logging or show user feedback
             return null;
         }
         // try to retrieve the image from the media store first
@@ -242,7 +236,6 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
         // this is our fallback here
         return uri.getPath();
     }
-
 
     private void initializePresenter() {
         _editProfilePresenter.attachView(this);
