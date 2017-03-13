@@ -56,5 +56,9 @@
             android:label="@string/title_activity_camera"
             android:theme="@style/NoBarAppTheme"
             />
+        <activity
+            android:name=".activity.CaptureActivity"
+            android:theme="@style/AppTheme"
+            android:label="Capture"/>
     </application>
 </manifest>

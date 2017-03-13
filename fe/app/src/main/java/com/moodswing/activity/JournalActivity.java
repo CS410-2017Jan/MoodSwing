@@ -104,7 +104,7 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
             startActivity(intent);
         }
 
-        dAdapter = new DateAdapter(dBlocks, captures, this);
+        dAdapter = new DateAdapter(dBlocks, captures, this, getApplicationContext());
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         _dRecyclerView.setLayoutManager(layoutManager);
         _dRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -152,7 +152,7 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
 //    }
 
 
-        @Override
+    @Override
     public void onEntryFailure(){
         String message = "Capture fetch Failure";
         showToast(message);

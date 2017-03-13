@@ -1,6 +1,7 @@
 package com.moodswing.mvp.network;
 
 import com.moodswing.mvp.mvp.model.Capture;
+import com.moodswing.mvp.mvp.model.CaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.LoginResponse;
 import com.moodswing.mvp.mvp.model.NewEntryResponse;
@@ -26,4 +27,5 @@ public interface Repository {
     Observable<LoginResponse> postLogin(User user);
     Observable<ProfilePictureResponse> postProfilePicture(String token, @Part MultipartBody.Part picture);
     Observable<ResponseBody> getProfilePicture(String token);
+//    Observable<CaptureResponse> getCaptureData(Capture capture, String accessToken);
 }

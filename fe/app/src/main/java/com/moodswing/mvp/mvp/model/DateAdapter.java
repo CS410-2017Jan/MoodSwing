@@ -3,6 +3,7 @@ package com.moodswing.mvp.mvp.model;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.moodswing.R;
+import com.moodswing.activity.CaptureActivity;
 import com.moodswing.activity.JournalActivity;
+import com.moodswing.activity.NewEntryActivity;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -36,6 +39,7 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
     private List<Capture> captures;
     private static RecyclerView _cRecyclerView;
     Context jActivity;
+    Context context1;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, date;
@@ -43,7 +47,7 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
 
         public MyViewHolder(View view) {
             super(view);
-            Context context = itemView.getContext();
+            final Context context = itemView.getContext();
             title = (TextView) view.findViewById(R.id.title);
             date = (TextView) view.findViewById(R.id.date);
             cAdapter = new CaptureAdapter();
@@ -57,8 +61,11 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
                 int capturePos = 0;
                 @Override
                 public void onClick(View view, int position) {
-                    // TODO: Will go to separate page to view entry
                     capturePos = getCaptureIndexInDateBlock(cAdapter, position);
+                    Capture capture = captures.get(capturePos);
+                    DateBlock dateBlock = dBlocks.get(cAdapter.getRowIndex());
+
+                    openCapture(capture, dateBlock);
                 }
 
                 @Override
@@ -108,10 +115,11 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
 
     }
 
-    public DateAdapter(List<DateBlock> dBlocks, List<Capture> captures, Context c) {
+    public DateAdapter(List<DateBlock> dBlocks, List<Capture> captures, Context c, Context context) {
         this.dBlocks = dBlocks;
         this.captures = captures;
         this.jActivity = c;
+        this.context1 = context;
     }
 
     @Override
@@ -159,5 +167,16 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
             e.printStackTrace();
         }
         return posInDateBlock + numCapturesBeforeDateBlock;
+    }
+
+    private void openCapture(Capture capture, DateBlock dBlock){
+        String capTitle = dBlock.getTitle();
+        String capDate = dBlock.getDate();
+        String capText = capture.getText();
+        Intent intent = new Intent(jActivity, CaptureActivity.class);
+        intent.putExtra("EXTRA_TITLE", capTitle);
+        intent.putExtra("EXTRA_DATE", capDate);
+        intent.putExtra("EXTRA_TEXT", capText);
+        jActivity.startActivity(intent);
     }
 }
