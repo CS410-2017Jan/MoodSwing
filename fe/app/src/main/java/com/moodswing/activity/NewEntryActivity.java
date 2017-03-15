@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -15,6 +16,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.app.AlertDialog;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,8 +61,11 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView,
     @BindView(R.id.btn_share)
     Button _shareButton;
 
-    @BindView(R.id.btn_date)
-    ImageButton _dateButton;
+    @BindView(R.id.selectdatelayout)
+    RelativeLayout _dateLayout;
+
+    @BindView(R.id.post_image)
+    ImageView _postImage;
 
     @BindView(R.id.text_date)
     TextView _dateText;
@@ -104,6 +110,7 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView,
 
         if (byteArray != null) {
             capture = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+            _postImage.setImageBitmap(capture);
         }
     }
 
@@ -152,7 +159,7 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView,
     }
 
     private void initializeDateButton() {
-        _dateButton.setOnClickListener(new View.OnClickListener() {
+        _dateLayout.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Calendar now = Calendar.getInstance();
                 DatePickerDialog dpd = DatePickerDialog.newInstance(
@@ -186,7 +193,7 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView,
     @Override
     public void onBackPressed() {
         String description = _descText.getText().toString();
-        if(!isEmpty(description)){
+        if(!isEmpty(description) || capture != null){
             displayWarning("Are you sure you want to discard your post?");
         }
         else{

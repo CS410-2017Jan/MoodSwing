@@ -146,14 +146,12 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
         dAdapter.notifyDataSetChanged();
     }
 
-
     @Override
     public void onDeletionSuccess(){
         String message = "Capture Deleted";
         showToast(message);
         onResume();
     }
-
 
     @Override
     public void onEntryFailure(){

@@ -40,7 +40,7 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
     private List<Capture> captures;
     private static RecyclerView _cRecyclerView;
     Context jActivity;
-    Context context1;
+    //Context context1;
     JournalPresenter _journalPresenter;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -118,7 +118,7 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
         this.dBlocks = dBlocks;
         this.captures = captures;
         this.jActivity = c;
-        this.context1 = context;
+        //this.context1 = context;
         this._journalPresenter = _journalPresenter;
     }
 
