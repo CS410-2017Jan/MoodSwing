@@ -188,15 +188,31 @@ router.delete('/users/self/captures/:captureId', function(req, res) {
 	let username = req.username
 	let captureId = req.params.captureId
 
-	JournalEntry.findOneAndUpdate({"captures._id": mongoose.Types.ObjectId(captureId)},
-		{'$pull': {'captures': {'_id': mongoose.Types.ObjectId(captureId)}}}
-		)
-	  .then(function() {
-			return res.status(200).json({ success: true })
-			})
-		.catch(function(err) {
+	JournalEntry.findOne({
+		"captures._id": mongoose.Types.ObjectId(captureId)
+	}, function(err, entry) {
+		if (err || !entry) {
 			return res.status(400).json({ success: false })
-			})
+		}
+
+		if (entry.captures.length === 1) {
+			entry.remove()
+				.then(function () {
+					return res.status(200).json({ success: true, message: "Deleted entire entry"})
+				})
+				.catch(function(err) {
+					return res.status(400).json({ success: false })
+				})
+		} else {
+			entry.update({'$pull': {'captures': {'_id': mongoose.Types.ObjectId(captureId)}}})
+				.then(function() {
+					return res.status(200).json({ success: true })
+				})
+				.catch(function(err) {
+					return res.status(400).json({ success: false })
+				})
+			}
+	})
 })
 
 
