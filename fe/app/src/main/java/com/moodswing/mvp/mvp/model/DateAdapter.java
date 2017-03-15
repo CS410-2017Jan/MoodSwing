@@ -81,7 +81,6 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
                             if(item.getTitle().equals("Delete")){
-                                Toast.makeText(jActivity, capture.getText() + capture.getDate(), Toast.LENGTH_SHORT).show();
                                 displayDeleteWarning("Are you sure you want to delete your post?", capture);
                             }else{
                                 Toast.makeText(jActivity, item.getTitle(), Toast.LENGTH_SHORT).show();
@@ -108,7 +107,6 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
                     _journalPresenter.deleteCapture(capture);
-                    Toast.makeText(jActivity, "Delete", Toast.LENGTH_SHORT).show();
                 }
             });
             AlertDialog alert = builder.create();

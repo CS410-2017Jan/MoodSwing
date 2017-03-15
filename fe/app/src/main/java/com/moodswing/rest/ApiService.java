@@ -2,6 +2,7 @@ package com.moodswing.rest;
 
 import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.CaptureResponse;
+import com.moodswing.mvp.mvp.model.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.LoginResponse;
 import com.moodswing.mvp.mvp.model.NewEntryResponse;
@@ -13,6 +14,7 @@ import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
@@ -42,6 +44,11 @@ public interface ApiService {
     @POST("users/self/captures")
     Observable<NewEntryResponse> postNewEntry(@Body Capture capture,
                                               @Header("x-access-token") String accessToken);
+
+    @Headers("Content-Type: application/json")
+    @DELETE("users/self/captures/{captureId}")
+    Observable<DeleteCaptureResponse> deleteCapture(@Path("captureId") String captureId,
+                                                    @Header("x-access-token") String accessToken);
 
     @Headers("Content-Type: application/json")
     @GET("users/{username}/entries")

@@ -1,6 +1,7 @@
 package com.moodswing.injector.module;
 
 import com.moodswing.injector.scope.PerActivity;
+import com.moodswing.mvp.domain.DeleteCaptureUsecase;
 import com.moodswing.mvp.domain.GetJournalsUsecase;
 import com.moodswing.mvp.mvp.presenter.JournalPresenter;
 import com.moodswing.mvp.network.Repository;
@@ -20,8 +21,14 @@ public class JournalModule {
         return new GetJournalsUsecase(repository);
     }
 
+    @PerActivity
+    @Provides2
+    public DeleteCaptureUsecase provideDeleteCaptureUsecase(Repository repository) {
+        return new DeleteCaptureUsecase(repository);
+    }
+
 
     @PerActivity
     @Provides2
-    public JournalPresenter provideJournalPresenter(GetJournalsUsecase getJournalsUsecase) {return new JournalPresenter(getJournalsUsecase);}
+    public JournalPresenter provideJournalPresenter(GetJournalsUsecase getJournalsUsecase, DeleteCaptureUsecase deleteCaptureUsecase) {return new JournalPresenter(getJournalsUsecase, deleteCaptureUsecase);}
 }

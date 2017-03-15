@@ -11,6 +11,8 @@ import java.util.List;
 public interface JournalView extends View {
 
     void showEntries(List<JournalEntries> je);
+    void onDeletionSuccess();
     void onEntryFailure();
+    void onDeletionFailure();
     void showError();
 }

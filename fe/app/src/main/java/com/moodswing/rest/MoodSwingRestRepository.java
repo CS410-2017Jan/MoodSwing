@@ -2,6 +2,7 @@ package com.moodswing.rest;
 
 import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.CaptureResponse;
+import com.moodswing.mvp.mvp.model.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.LoginResponse;
 import com.moodswing.mvp.mvp.model.NewEntryResponse;
@@ -57,6 +58,11 @@ public class MoodSwingRestRepository implements Repository {
     @Override
     public Observable<ResponseBody> getProfilePicture(String token) {
         return apiService.getProfilePicture(token);
+    }
+
+    @Override
+    public Observable<DeleteCaptureResponse> deleteCapture(String _id, String token) {
+        return apiService.deleteCapture(_id, token);
     }
 
 //    @Override

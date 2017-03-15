@@ -2,6 +2,7 @@ package com.moodswing.mvp.network;
 
 import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.CaptureResponse;
+import com.moodswing.mvp.mvp.model.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.LoginResponse;
 import com.moodswing.mvp.mvp.model.NewEntryResponse;
@@ -22,6 +23,7 @@ import retrofit2.http.Part;
 
 public interface Repository {
     Observable<NewEntryResponse> postNewEntry(Capture capture, String accessToken);
+    Observable<DeleteCaptureResponse> deleteCapture(String _id, String accessToken);
     Observable<List<JournalEntries>> getJournalEntries(String username);
     Observable<SignupResponse> postUser(User user);
     Observable<LoginResponse> postLogin(User user);

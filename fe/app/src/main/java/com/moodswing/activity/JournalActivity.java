@@ -148,8 +148,22 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
 
 
     @Override
+    public void onDeletionSuccess(){
+        String message = "Capture Deleted";
+        showToast(message);
+        onResume();
+    }
+
+
+    @Override
     public void onEntryFailure(){
         String message = "Capture fetch Failure";
+        showToast(message);
+    }
+
+    @Override
+    public void onDeletionFailure(){
+        String message = "Capture Deletion Failure";
         showToast(message);
     }
 
