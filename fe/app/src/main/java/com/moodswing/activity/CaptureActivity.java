@@ -1,8 +1,18 @@
 package com.moodswing.activity;
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +55,12 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView{
     @BindView(R.id.cap_text)
     TextView _capText;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.bottom_navigation)
+    BottomNavigationView bottomNavigationView;
+
 //    private CaptureComponent _captureComponent;
 
     String title;
@@ -59,6 +75,10 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView{
         ButterKnife.setDebug(true);
         ButterKnife.bind(this);
         ApplicationComponent applicationComponent = ((MoodSwingApplication) getApplication()).getApplicationComponent();
+
+        setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(Color.WHITE);
+        initializeBottomNavigationView();
 
 //        initializePresenter();
     }
@@ -102,4 +122,67 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView{
 //        _capturePresenter.attachView(this);
 //        _capturePresenter.attachSharedPreferencesManager(_sharedPreferencesManager);
 //    }
+
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_share, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        int id = menuItem.getItemId();
+
+        switch (id) {
+            case R.id.action_share:
+                View menuItemView = findViewById(R.id.action_share);
+                PopupMenu popupMenu = new PopupMenu(this, menuItemView);
+                popupMenu.inflate(R.menu.share_popup_menu);
+
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.share_facebook:
+                                Toast.makeText(getApplicationContext(), "Share to Facebook", Toast.LENGTH_SHORT).show();
+                                break;
+                            case R.id.share_instagram:
+                                Toast.makeText(getApplicationContext(), "Share to Instagram", Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                        return true;
+                    }
+                });
+                popupMenu.show();
+                return true;
+        }
+        return super.onOptionsItemSelected(menuItem);
+    }
+
+    private void initializeBottomNavigationView() {
+        bottomNavigationView.setOnNavigationItemSelectedListener( new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_search:
+                        // TODO: Re-direct to search
+                        break;
+                    case R.id.action_camera:
+                        Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.action_follows:
+                        // TODO: Re-direct to follows
+                        break;
+                    default:
+                        return false;
+                }
+                return true;
+            }
+        });
+    }
 }

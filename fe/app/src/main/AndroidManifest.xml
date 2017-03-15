@@ -58,7 +58,7 @@
             />
         <activity
             android:name=".activity.CaptureActivity"
-            android:theme="@style/AppTheme"
+            android:theme="@style/NoBarAppTheme"
             android:label="Capture"/>
     </application>
 </manifest>

@@ -1,8 +1,6 @@
 package com.moodswing.activity;
 
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
@@ -12,10 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,9 +27,7 @@ import com.moodswing.injector.module.JournalModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.DateDivider;
-import com.moodswing.mvp.mvp.model.CaptureTouchListener;
 import com.moodswing.mvp.mvp.model.DateAdapter;
-//import com.moodswing.mvp.mvp.model.DateSeparator;
 import com.moodswing.mvp.mvp.model.DateBlock;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.presenter.JournalPresenter;
@@ -96,7 +90,6 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
 
         initializeBottomNavigationView();
         initializeNewEntryFab();
-//        initializeSettingsButton();
         setSupportActionBar(toolbar);
 
         if (!_journalPresenter.isUserLoggedIn()) {
