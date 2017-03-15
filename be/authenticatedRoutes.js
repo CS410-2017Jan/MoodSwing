@@ -215,6 +215,21 @@ router.delete('/users/self/captures/:captureId', function(req, res) {
 	})
 })
 
+router.put('/users/self/entries/:entryId', function(req, res) {
+	let entryId = req.params.entryId
+	let title = req.body.title
+
+	JournalEntry.findByIdAndUpdate(entryId, {
+		$set: { title: title }
+	}, function (err, entry) {
+		if (err) {
+			return res.status(400).json({ success: false })
+		}
+
+		return res.status(200).json({ success: true })
+	})
+})
+
 
 /*
 ---------------------------------------------------------
