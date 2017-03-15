@@ -40,9 +40,10 @@ router.use(/.*\/self\/.*/, function(req, res, next) {
 
 /*
 ---------------------------------------------------------
- Authenticated Routes
+User Information
 ---------------------------------------------------------
 */
+
 router.get('/self/hi', function(req, res) {
 	console.log(req.username) //how you get user information
 	res.json({ message: 'Welcome to the coolest API on earth!' })
@@ -120,11 +121,38 @@ router.get('/users/self/picture', (req, res) => {
 })
 
 
+/*
+---------------------------------------------------------
+Journal Entries
+---------------------------------------------------------
+*/
 
-router.post('/users/self/captures', function(req, res) {
-  let username = req.username
-  let text = req.body.text
-  let captureDate = req.body.captureDate
+router.post('/users/self/captures', upload.single('image'), function(req, res) {
+	let username = req.username
+	let text = req.body.text
+	let captureDate = req.body.captureDate
+	let file = req.file
+
+	let newCapture = {text: text, _id: mongoose.Types.ObjectId()};
+
+	if (file) {
+		if (file.size > 16*MB) {
+			return res.status(400).json({ success: false, message: 'File too large' })
+		}
+
+		switch (file.mimetype) {
+			case 'image/bpm':
+			case 'image/gif':
+			case 'image/jpeg':
+			case 'image/png':
+			case 'image/tiff':
+				break
+			default:
+				return res.status(415).json({ success: false, message: 'File type not supported' })
+		}
+
+		newCapture.image = {data: req.file.buffer, contentType: req.file.mimetype}
+	}
 
   JournalEntry.findOne({
 		username: username,
@@ -132,22 +160,23 @@ router.post('/users/self/captures', function(req, res) {
   }, function(err, entry) {
 
 		if (entry) {
-			entry.captures.push({text: text, _id: mongoose.Types.ObjectId()})
+			entry.captures.push(newCapture)
+
 			entry.save()
 				.then(function(doc) {
-					return res.status(200).json({ success: true, message: "Added to existing date"})
+					return res.status(200).json({ success: true, message: 'Added to existing date'})
 				})
 		} else {
 
 			let newEntry = new JournalEntry({
 			  username: username,
 			  entryDate: captureDate,
-			  captures: [{text: text, _id: mongoose.Types.ObjectId()}]
+			  captures: [newCapture]
 			})
 
 			newEntry.save()
 			  .then(function (doc) {
-			    return res.status(200).json({ success: true })
+			    return res.status(200).json({ success: true, message: 'Created new journal entry'})
 			  })
 			  .catch(function(err) {
 			    console.log(err)

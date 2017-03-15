@@ -5,7 +5,8 @@ mongoose.Promise = Promise
 
 module.exports = mongoose.model('Capture', new Schema({
 	_id: {type: ObjectId, required: true},
-	text: String
+	text: String,
+	image: { data: Buffer, contentType: String }
 }, {
 	versionKey: '1'
 }))
