@@ -5,6 +5,8 @@ const User   = require('./app/models/user')
 const JournalEntry   = require('./app/models/journalentry')
 const config = require('./config')
 const multer = require('multer')
+const mongoose = require('mongoose')
+const _ = require('lodash')
 
 const KB = 1024
 const MB = KB*KB
@@ -130,7 +132,7 @@ router.post('/users/self/captures', function(req, res) {
   }, function(err, entry) {
 
 		if (entry) {
-			entry.captures.push({text: text})
+			entry.captures.push({text: text, _id: mongoose.Types.ObjectId()})
 			entry.save()
 				.then(function(doc) {
 					return res.status(200).json({ success: true, message: "Added to existing date"})
@@ -140,7 +142,7 @@ router.post('/users/self/captures', function(req, res) {
 			let newEntry = new JournalEntry({
 			  username: username,
 			  entryDate: captureDate,
-			  captures: [{text: text}]
+			  captures: [{text: text, _id: mongoose.Types.ObjectId()}]
 			})
 
 			newEntry.save()
@@ -157,7 +159,44 @@ router.post('/users/self/captures', function(req, res) {
 
 router.get('/users/self/entries', function(req, res) {
 	let username = req.username
-	res.redirect('/users/' + username + '/captures')
+	res.redirect('/users/' + username + '/entries')
+})
+
+router.delete('/users/self/entries/:entryId', function(req, res) {
+	let username = req.username
+	let entryId = req.params.entryId
+
+	JournalEntry.findOne({
+		_id: entryId
+  }, function(err, entry) {
+		if (err) throw err
+		if (!entry) {
+      return res.status(400).json({ success: false, message: 'Entry not found'})
+    }
+
+    entry.remove()
+      .then(function () {
+        return res.status(200).json({ success: true})
+      })
+      .catch(function(err) {
+        return res.status(400).json({ success: false })
+      })
+    })
+})
+
+router.delete('/users/self/captures/:captureId', function(req, res) {
+	let username = req.username
+	let captureId = req.params.captureId
+
+	JournalEntry.findOneAndUpdate({"captures._id": mongoose.Types.ObjectId(captureId)},
+		{'$pull': {'captures': {'_id': mongoose.Types.ObjectId(captureId)}}}
+		)
+	  .then(function() {
+			return res.status(200).json({ success: true })
+			})
+		.catch(function(err) {
+			return res.status(400).json({ success: false })
+			})
 })
 
 
