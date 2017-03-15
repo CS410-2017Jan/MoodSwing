@@ -2,6 +2,7 @@ package com.moodswing.mvp.mvp.presenter;
 
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.GetJournalsUsecase;
+import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.view.JournalView;
 
@@ -73,6 +74,32 @@ public class JournalPresenter implements Presenter<JournalView> {
                     }
                 });
     }
+
+
+    public void deleteCapture(Capture capture) {
+//        getJournalsUsecase.setUsername(sharedPreferencesManager.getCurrentUser());
+//
+//        getJounalsSubscription = getJournalsUsecase.execute()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Consumer<List<JournalEntries>>() {
+//                    @Override
+//                    public void accept(List<JournalEntries> journalEntries) throws Exception {
+//                        if (true) {
+//                            journalView.showEntries(journalEntries);
+//                        } else {
+//                            journalView.onEntryFailure();
+//                        }
+//                    }
+//                }, new Consumer<Throwable>() {
+//                    @Override
+//                    public void accept(Throwable throwable) throws Exception {
+//                        journalView.showError();
+//                    }
+//                });
+    }
+
+
 
     public void attachSharedPreferencesManager(SharedPreferencesManager sharedPreferencesManager) {
         this.sharedPreferencesManager = sharedPreferencesManager;

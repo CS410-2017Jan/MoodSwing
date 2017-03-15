@@ -19,6 +19,7 @@ import com.moodswing.R;
 import com.moodswing.activity.CaptureActivity;
 import com.moodswing.activity.JournalActivity;
 import com.moodswing.activity.NewEntryActivity;
+import com.moodswing.mvp.mvp.presenter.JournalPresenter;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -40,6 +41,7 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
     private static RecyclerView _cRecyclerView;
     Context jActivity;
     Context context1;
+    JournalPresenter _journalPresenter;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, date;
@@ -71,6 +73,7 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
                 @Override
                 public void onLongClick(final View view, final int position) {
                     capturePos = getCaptureIndexInDateBlock(cAdapter, position);
+                    final Capture capture = captures.get(capturePos);
 
                     PopupMenu popup = new PopupMenu(jActivity, view);
                     popup.getMenuInflater().inflate(R.menu.entry_popup_menu, popup.getMenu());
@@ -78,10 +81,8 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
                             if(item.getTitle().equals("Delete")){
-                                Log.i("CHECK", "*************************************************************");
-                                Capture capture = captures.get(capturePos);
                                 Toast.makeText(jActivity, capture.getText() + capture.getDate(), Toast.LENGTH_SHORT).show();
-                                displayDeleteWarning("Are you sure you want to delete your post?");
+                                displayDeleteWarning("Are you sure you want to delete your post?", capture);
                             }else{
                                 Toast.makeText(jActivity, item.getTitle(), Toast.LENGTH_SHORT).show();
                             }
@@ -94,7 +95,7 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
         }
 
 
-        private void displayDeleteWarning(String s) {
+        private void displayDeleteWarning(String s, final Capture capture) {
             AlertDialog.Builder builder = new AlertDialog.Builder(jActivity);
             builder.setTitle("Warning");
             builder.setMessage(s);
@@ -106,20 +107,21 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
             builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
+                    _journalPresenter.deleteCapture(capture);
                     Toast.makeText(jActivity, "Delete", Toast.LENGTH_SHORT).show();
                 }
             });
             AlertDialog alert = builder.create();
             alert.show();
         }
-
     }
 
-    public DateAdapter(List<DateBlock> dBlocks, List<Capture> captures, Context c, Context context) {
+    public DateAdapter(List<DateBlock> dBlocks, List<Capture> captures, Context c, Context context, JournalPresenter _journalPresenter) {
         this.dBlocks = dBlocks;
         this.captures = captures;
         this.jActivity = c;
         this.context1 = context;
+        this._journalPresenter = _journalPresenter;
     }
 
     @Override

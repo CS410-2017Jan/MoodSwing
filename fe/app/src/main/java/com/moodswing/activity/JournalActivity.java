@@ -104,7 +104,7 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
             startActivity(intent);
         }
 
-        dAdapter = new DateAdapter(dBlocks, captures, this, getApplicationContext());
+        dAdapter = new DateAdapter(dBlocks, captures, this, getApplicationContext(), _journalPresenter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         _dRecyclerView.setLayoutManager(layoutManager);
         _dRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -145,11 +145,6 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
         }
         dAdapter.notifyDataSetChanged();
     }
-
-//    private void deleteEntry(View view) {
-//        view.
-//        _journalPresenter.deleteCapture(capture);
-//    }
 
 
     @Override

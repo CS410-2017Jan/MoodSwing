@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.app.AlertDialog;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.moodswing.MoodSwingApplication;
@@ -30,6 +31,7 @@ import com.moodswing.mvp.mvp.view.NewEntryView;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -59,6 +61,9 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView,
     @BindView(R.id.btn_date)
     ImageButton _dateButton;
 
+    @BindView(R.id.text_date)
+    TextView _dateText;
+
     @BindView(R.id.entry_desc)
     EditText _descText;
 
@@ -87,13 +92,10 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView,
         initializePresenter();
         initializeShareButton();
         initializeDateButton();
+        initializeDate();
         initializeBottomNavigationView();
 
         checkIntent();
-
-        Date tDate = new Date();
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-        date = df.format(tDate);
     }
 
     private void checkIntent() {
@@ -144,9 +146,9 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView,
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-        // TODO: use date
         monthOfYear += 1;
         date = Integer.toString(dayOfMonth) + "/" + Integer.toString(monthOfYear) + "/" + Integer.toString(year);
+        updateDateText(date);
     }
 
     private void initializeDateButton() {
@@ -159,6 +161,7 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView,
                         now.get(Calendar.MONTH),
                         now.get(Calendar.DAY_OF_MONTH)
                 );
+                // dpd.getDatePicker().setMaxDate(System.currentTimeMillis()); //TODO: figure out why this dosnt work
                 dpd.show(getFragmentManager(), "Datepickerdialog");
             }
         });
@@ -250,5 +253,35 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView,
                 return true;
             }
         });
+    }
+
+    public void initializeDate(){
+        Date tDate = new Date();
+        DateFormat firstdf = new SimpleDateFormat("dd/MM/yyyy");
+        date = firstdf.format(tDate);
+        DateFormat secdf = new SimpleDateFormat("MMM.d, yyyy");
+        Date tempDate;
+        String rDate = "";
+        try {
+            tempDate = firstdf.parse(date);
+            rDate = secdf.format(tempDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        _dateText.setText(rDate);
+    }
+
+    public void updateDateText(String date){
+        DateFormat firstdf = new SimpleDateFormat("dd/MM/yyyy");
+        DateFormat secdf = new SimpleDateFormat("MMM.d, yyyy");
+        Date tempDate;
+        String rDate = "";
+        try {
+            tempDate = firstdf.parse(date);
+            rDate = secdf.format(tempDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        _dateText.setText(rDate);
     }
 }
