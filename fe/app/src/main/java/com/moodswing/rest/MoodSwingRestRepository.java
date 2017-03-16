@@ -6,6 +6,7 @@ import com.moodswing.mvp.mvp.model.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.LoginResponse;
 import com.moodswing.mvp.mvp.model.NewEntryResponse;
+import com.moodswing.mvp.mvp.model.SetTitleResponse;
 import com.moodswing.mvp.mvp.model.SignupResponse;
 import com.moodswing.mvp.mvp.model.ProfilePictureResponse;
 import com.moodswing.mvp.mvp.model.User;
@@ -39,6 +40,11 @@ public class MoodSwingRestRepository implements Repository {
     public Observable<LoginResponse> postLogin(User user) {
         return apiService.postLogin(user);
     }
+
+    @Override
+    public Observable<SetTitleResponse> setTitle(String accessToken, String entryId, String title){
+        return apiService.setTitle(accessToken, entryId, title);
+    };
 
     @Override
     public Observable<NewEntryResponse> postNewEntry(Capture capture, String accessToken) {

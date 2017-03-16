@@ -12,12 +12,14 @@ public class JournalEntries {
     List<Capture> captures;
     String title;
     String entryDate;
+    String _id;
 
-    public JournalEntries(String username, List<Capture> captures, String title, String date){
+    public JournalEntries(String username, List<Capture> captures, String title, String date, String _id){
         this.username = username;
         this.captures = captures;
         this.title = title;
         this.entryDate = date;
+        this._id = _id;
     }
 
     public List<Capture> getEntry(){
@@ -34,5 +36,13 @@ public class JournalEntries {
 
     public String getUsername(){
         return username;
+    }
+
+    public String getId(){
+        return _id;
+    }
+
+    public void setId(String id){
+        _id = id;
     }
 }

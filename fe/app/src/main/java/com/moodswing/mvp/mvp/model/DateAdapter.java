@@ -12,8 +12,12 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import com.moodswing.R;
 import com.moodswing.activity.CaptureActivity;
@@ -45,13 +49,47 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, date;
+        public EditText hiddenTitle;
+        public ImageButton saveTitle;
+        public ViewSwitcher _titleViewSwitcher;
         private CaptureAdapter cAdapter;
 
         public MyViewHolder(View view) {
             super(view);
             final Context context = itemView.getContext();
+
             title = (TextView) view.findViewById(R.id.title);
+            hiddenTitle = (EditText) view.findViewById(R.id.hidden_title);
+            saveTitle = (ImageButton) view.findViewById(R.id.btn_saveTitle);
             date = (TextView) view.findViewById(R.id.date);
+            _titleViewSwitcher = (ViewSwitcher) view.findViewById(R.id.title_viewswitcher);
+
+
+            title.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    hiddenTitle.setText(title.getText());
+                    _titleViewSwitcher.showNext();
+                    return true;
+                }
+            });
+            saveTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int i = 0;
+                    for(DateBlock db: dBlocks){
+                        if(db.getDate().equals(date.getText().toString())){
+                            break;
+                        }
+                        i += 1;
+                    }
+                    DateBlock blockToUpdate = dBlocks.get(i);
+                    title.setText(hiddenTitle.getText());
+                    _journalPresenter.setTitle(title.getText().toString(), blockToUpdate.getId());
+                    _titleViewSwitcher.showNext();
+                }
+            });
+
             cAdapter = new CaptureAdapter();
             _cRecyclerView = (RecyclerView) itemView.findViewById(R.id.capture_recycler_view);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
@@ -112,7 +150,10 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
             AlertDialog alert = builder.create();
             alert.show();
         }
+
+
     }
+
 
     public DateAdapter(List<DateBlock> dBlocks, List<Capture> captures, Context c, Context context, JournalPresenter _journalPresenter) {
         this.dBlocks = dBlocks;

@@ -14,5 +14,7 @@ public interface JournalView extends View {
     void onDeletionSuccess();
     void onEntryFailure();
     void onDeletionFailure();
+    void onSetTitleSuccess();
+    void onSetTitleFailure();
     void showError();
 }

@@ -8,12 +8,14 @@ public class DateBlock {
 
     String title;
     String date;
+    String _id;
 
     public DateBlock(){};
 
-    public DateBlock(String title, String date){
+    public DateBlock(String title, String date, String _id){
         this.title = title;
         this.date = date;
+        this._id = _id;
     }
 
     public String getTitle(){
@@ -30,5 +32,13 @@ public class DateBlock {
 
     public void setDate(String d){
         date = d;
+    }
+
+    public String getId(){
+        return _id;
+    }
+
+    public void setId(String id){
+        _id = id;
     }
 }

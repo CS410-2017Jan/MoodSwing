@@ -12,6 +12,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -128,7 +129,8 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
             List<Capture> capture = je.getEntry();
 
             String sDate = setJournalViewDateFormat(je.getDate());
-            DateBlock db = new DateBlock("Title", sDate);
+            String dbid = je.getId();
+            DateBlock db = new DateBlock("Title", sDate, dbid);
             dBlocks.add(db);
 
             for(Capture e: capture){
@@ -142,6 +144,20 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     @Override
     public void onDeletionSuccess(){
         String message = "Capture Deleted";
+        showToast(message);
+        onResume();
+    }
+
+    @Override
+    public void onSetTitleSuccess(){
+        String message = "Title changed successfully";
+        showToast(message);
+        onResume();
+    }
+
+    @Override
+    public void onSetTitleFailure(){
+        String message = "Title change failure";
         showToast(message);
         onResume();
     }

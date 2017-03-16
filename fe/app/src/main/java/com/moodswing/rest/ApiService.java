@@ -7,6 +7,7 @@ import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.LoginResponse;
 import com.moodswing.mvp.mvp.model.NewEntryResponse;
 import com.moodswing.mvp.mvp.model.ProfilePictureResponse;
+import com.moodswing.mvp.mvp.model.SetTitleResponse;
 import com.moodswing.mvp.mvp.model.SignupResponse;
 import com.moodswing.mvp.mvp.model.User;
 import java.util.List;
@@ -44,6 +45,12 @@ public interface ApiService {
     @POST("users/self/captures")
     Observable<NewEntryResponse> postNewEntry(@Body Capture capture,
                                               @Header("x-access-token") String accessToken);
+
+    @Headers("Content-Type: application/json")
+    @PUT("users/self/entries/{entryId}")
+    Observable<SetTitleResponse> setTitle(@Header("x-access-token") String accessToken,
+                                          @Path("entryId") String entryId,
+                                          @Body String title);
 
     @Headers("Content-Type: application/json")
     @DELETE("users/self/captures/{captureId}")

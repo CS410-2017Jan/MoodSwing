@@ -55,11 +55,11 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView{
     @BindView(R.id.cap_text)
     TextView _capText;
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+//    @BindView(R.id.toolbar)
+//    Toolbar toolbar;
 
-    @BindView(R.id.bottom_navigation)
-    BottomNavigationView bottomNavigationView;
+//    @BindView(R.id.bottom_navigation)
+//    BottomNavigationView bottomNavigationView;
 
 //    private CaptureComponent _captureComponent;
 
@@ -76,9 +76,9 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView{
         ButterKnife.bind(this);
         ApplicationComponent applicationComponent = ((MoodSwingApplication) getApplication()).getApplicationComponent();
 
-        setSupportActionBar(toolbar);
-        toolbar.setTitleTextColor(Color.WHITE);
-        initializeBottomNavigationView();
+//        setSupportActionBar(toolbar);
+//        toolbar.setTitleTextColor(Color.WHITE);
+        //initializeBottomNavigationView();
 
 //        initializePresenter();
     }
@@ -162,27 +162,27 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView{
         return super.onOptionsItemSelected(menuItem);
     }
 
-    private void initializeBottomNavigationView() {
-        bottomNavigationView.setOnNavigationItemSelectedListener( new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_search:
-                        // TODO: Re-direct to search
-                        break;
-                    case R.id.action_camera:
-                        Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.action_follows:
-                        // TODO: Re-direct to follows
-                        break;
-                    default:
-                        return false;
-                }
-                return true;
-            }
-        });
-    }
+//    private void initializeBottomNavigationView() {
+//        bottomNavigationView.setOnNavigationItemSelectedListener( new BottomNavigationView.OnNavigationItemSelectedListener() {
+//
+//            @Override
+//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//                switch (item.getItemId()) {
+//                    case R.id.action_search:
+//                        // TODO: Re-direct to search
+//                        break;
+//                    case R.id.action_camera:
+//                        Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
+//                        startActivity(intent);
+//                        break;
+//                    case R.id.action_follows:
+//                        // TODO: Re-direct to follows
+//                        break;
+//                    default:
+//                        return false;
+//                }
+//                return true;
+//            }
+//        });
+//    }
 }
