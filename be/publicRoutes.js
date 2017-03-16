@@ -57,8 +57,6 @@ router.post('/users', function(req, res) {
   })
 })
 
-
-
 router.post('/users/login', function(req, res) {
 
   User.findOne({
@@ -89,6 +87,28 @@ function createToken(user) {
     expiresIn: 86400  // 24 hours
   })
 }
+
+/*
+---------------------------------------------------------
+User information
+---------------------------------------------------------
+ */
+
+router.get('/users/:username', function(req, res) {
+  let username = req.params.username
+
+  User.findOne({
+    username: username
+  }, '_id username displayName', //TODO: Return profile picture if FE wants it
+  function(err, userInfo) {
+    if (!userInfo || err) {
+      return res.status(400).json({success: false, message: 'User not found'})
+    }
+
+    return res.status(200).json(userInfo)
+  })
+})
+
 
  /*
 ---------------------------------------------------------
