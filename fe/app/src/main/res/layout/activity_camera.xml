@@ -21,7 +21,7 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true" />
 
-        <com.moodswing.affectiva_helper.EmotionView
+        <com.moodswing.emotion_effects_helper.EmotionView
             android:id="@+id/emotion_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

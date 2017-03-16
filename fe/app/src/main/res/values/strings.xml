@@ -47,5 +47,6 @@
 
     <string name="settings">Settings</string>
 
-
+    <!-- Facebook -->
+    <string name="facebook_app_id">100716993800806</string>
 </resources>

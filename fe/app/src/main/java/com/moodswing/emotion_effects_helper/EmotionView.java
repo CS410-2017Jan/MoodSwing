@@ -1,4 +1,4 @@
-package com.moodswing.affectiva_helper;
+package com.moodswing.emotion_effects_helper;
 
 import android.content.Context;
 import android.content.res.Resources;

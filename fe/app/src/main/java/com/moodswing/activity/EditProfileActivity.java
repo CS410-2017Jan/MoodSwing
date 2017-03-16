@@ -9,17 +9,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import com.moodswing.MoodSwingApplication;
 import com.moodswing.R;
@@ -50,7 +46,7 @@ import okhttp3.ResponseBody;
  * Created by Kenny on 2017-02-27.
  */
 
-public class EditProfileActivity extends AppCompatActivity implements EditProfileView {
+public class EditProfileActivity extends MoodSwingActivity implements EditProfileView {
     //------- variables used for gallery image selection -------------
     // Action code used for gallery selection showing the result of our action
     private static final int SELECT_PICTURE = 1;
@@ -76,9 +72,6 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
 
     @BindView(R.id.change_password)
     EditText _passwordText;
-
-    @BindView(R.id.bottom_navigation)
-    BottomNavigationView bottomNavigationView;
 
     private EditProfileComponent _editProfileComponent;
     private boolean storagePermissionsAvailable;
@@ -240,30 +233,6 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
     private void initializePresenter() {
         _editProfilePresenter.attachView(this);
         _editProfilePresenter.attachSharedPreferencesManager(_sharedPreferencesManager);
-    }
-
-    private void initializeBottomNavigationView() {
-        bottomNavigationView.setOnNavigationItemSelectedListener( new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_search:
-                        // TODO: Re-direct to search
-                        break;
-                    case R.id.action_camera:
-                        Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.action_follows:
-                        // TODO: Re-direct to follows
-                        break;
-                    default:
-                        return false;
-                }
-                return true;
-            }
-        });
     }
 
     private void checkForStoragePermissions() {

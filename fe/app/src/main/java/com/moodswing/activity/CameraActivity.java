@@ -6,12 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -29,8 +26,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -46,8 +41,8 @@ import com.affectiva.android.affdex.sdk.detector.Detector;
 import com.affectiva.android.affdex.sdk.detector.Face;
 import com.moodswing.MoodSwingApplication;
 import com.moodswing.R;
-import com.moodswing.affectiva_helper.EmotionView;
-import com.moodswing.affectiva_helper.ImageHelper;
+import com.moodswing.emotion_effects_helper.EmotionView;
+import com.moodswing.emotion_effects_helper.ImageHelper;
 import com.moodswing.injector.component.ApplicationComponent;
 import com.moodswing.injector.component.CameraComponent;
 import com.moodswing.injector.component.DaggerCameraComponent;
@@ -67,7 +62,6 @@ import javax.inject.Inject2;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import pl.droidsonroids.gif.GifImageView;
 
 /**
  * Created by daniel on 03/03/17.

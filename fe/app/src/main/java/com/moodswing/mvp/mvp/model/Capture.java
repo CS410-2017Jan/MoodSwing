@@ -1,16 +1,19 @@
 package com.moodswing.mvp.mvp.model;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by Matthew on 2017-03-07.
  */
 
 public class Capture {
 
-    String text;
-    String captureDate;
-    String _id;
+    private String text;
+    private String captureDate;
+    private String _id;
+    private Bitmap image;
 
-    public Capture(){};
+    public Capture(){}
 
     public Capture(String text, String captureDate){
         this.text = text;

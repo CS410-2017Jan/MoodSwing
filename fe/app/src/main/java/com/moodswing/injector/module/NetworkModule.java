@@ -23,7 +23,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module2
 public class NetworkModule {
 
-    private String apiEndpointUrl = "http://206.87.135.125:3000";
+//    private String apiEndpointUrl = "http://172.16.42.14:3000";
+    private String apiEndpointUrl = "http://206.87.133.68:3000";
 
     @Provides2
     @PerApplication
@@ -34,7 +35,7 @@ public class NetworkModule {
     Retrofit provideRetrofit() {
         // Gson
         String endpointUrl = apiEndpointUrl;
-        Gson gson = new GsonBuilder().create(); // TODO: setDateFormat
+        Gson gson = new GsonBuilder().create();
         GsonConverterFactory gsonConverterFactory = GsonConverterFactory.create(gson);
 
         // Logging

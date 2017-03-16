@@ -1,4 +1,4 @@
-package com.moodswing.affectiva_helper;
+package com.moodswing.emotion_effects_helper;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,12 +9,10 @@ import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
-import android.graphics.drawable.Drawable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.widget.ImageView;
 
 import com.affectiva.android.affdex.sdk.Frame;
 

@@ -3,16 +3,12 @@ package com.moodswing.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,7 +42,7 @@ import javax.inject.Inject2;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class JournalActivity extends AppCompatActivity implements JournalView {
+public class JournalActivity extends MoodSwingActivity implements JournalView {
 
     private List<DateBlock> dBlocks = new ArrayList<>();
     private List<Capture> captures = new ArrayList<>();
@@ -57,9 +53,6 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
 
     @Inject2
     SharedPreferencesManager _sharedPreferencesManager;
-
-    @BindView(R.id.bottom_navigation)
-    BottomNavigationView bottomNavigationView;
 
     @BindView(R.id.date_recycler_view)
     android.support.v7.widget.RecyclerView _dRecyclerView;
@@ -131,7 +124,6 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
             String sDate = setJournalViewDateFormat(je.getDate());
             String dbid = je.getId();
             String t = je.getTitle();
-            Log.i("***" + t + "***", "******************");
             if(t.isEmpty()){
                 t = "Title";
             }
@@ -188,30 +180,6 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
     @Override
     public void onBackPressed() {
         finishAffinity();
-    }
-
-    private void initializeBottomNavigationView() {
-        bottomNavigationView.setOnNavigationItemSelectedListener( new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_search:
-                        // TODO: Re-direct to search
-                        break;
-                    case R.id.action_camera:
-                        Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.action_follows:
-                        // TODO: Re-direct to follows
-                        break;
-                    default:
-                        return false;
-                }
-                return true;
-            }
-        });
     }
 
     private void initializePresenter() {

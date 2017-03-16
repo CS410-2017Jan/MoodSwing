@@ -3,8 +3,4 @@
 <item
     android:id="@+id/share_facebook"
     android:title="Share to Facebook"/>
-
-<item
-    android:id="@+id/share_instagram"
-    android:title="Share to Instagram"/>
 </menu>

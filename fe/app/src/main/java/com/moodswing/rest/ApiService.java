@@ -15,6 +15,7 @@ import java.util.List;
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
@@ -31,8 +32,6 @@ import retrofit2.http.Path;
  */
 
 public interface ApiService {
-
-
 
     @Headers("Content-Type: application/json")
     @POST("users")
@@ -83,5 +82,9 @@ public interface ApiService {
 //    @POST("users/self/captures")
 //    Observable<CaptureResponse> getCaptureData(@Body Capture capture,
 //                                              @Header("x-access-token") String accessToken);
+
+    @Headers("Content-Type: application/json")
+    @GET("users")
+    Observable<Response<List<User>>> getUsers();
 
 }

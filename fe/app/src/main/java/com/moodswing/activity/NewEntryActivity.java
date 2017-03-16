@@ -5,12 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,7 +16,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amazonaws.auth.policy.Resource;
 import com.moodswing.MoodSwingApplication;
 import com.moodswing.R;
 import com.moodswing.injector.component.ApplicationComponent;
@@ -52,7 +47,7 @@ import butterknife.ButterKnife;
  * Created by Matthew on 2017-03-04.
  */
 
-public class NewEntryActivity extends AppCompatActivity implements NewEntryView, DatePickerDialog.OnDateSetListener{
+public class NewEntryActivity extends MoodSwingActivity implements NewEntryView, DatePickerDialog.OnDateSetListener{
 
     private NewEntryView newEntryView;
     private List<DateBlock> dBlocks = new ArrayList<>();
@@ -313,30 +308,6 @@ public class NewEntryActivity extends AppCompatActivity implements NewEntryView,
     public void exitToJounal(){
         Intent intent = new Intent(getApplicationContext(), JournalActivity.class);
         startActivity(intent);
-    }
-
-    private void initializeBottomNavigationView() {
-        bottomNavigationView.setOnNavigationItemSelectedListener( new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_search:
-                        // TODO: Re-direct to search
-                        break;
-                    case R.id.action_camera:
-                        Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.action_follows:
-                        // TODO: Re-direct to follows
-                        break;
-                    default:
-                        return false;
-                }
-                return true;
-            }
-        });
     }
 
     public void initializeDate(){

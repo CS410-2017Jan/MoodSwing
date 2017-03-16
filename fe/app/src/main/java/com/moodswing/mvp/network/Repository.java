@@ -15,6 +15,7 @@ import java.util.List;
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
+import retrofit2.Response;
 import retrofit2.http.Part;
 
 /**
@@ -33,4 +34,5 @@ public interface Repository {
     Observable<ProfilePictureResponse> postProfilePicture(String token, @Part MultipartBody.Part picture);
     Observable<ResponseBody> getProfilePicture(String token);
 //    Observable<CaptureResponse> getCaptureData(Capture capture, String accessToken);
+    Observable<Response<List<User>>> getUsers();
 }

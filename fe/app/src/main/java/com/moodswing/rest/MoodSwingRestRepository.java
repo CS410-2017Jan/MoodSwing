@@ -19,6 +19,7 @@ import java.util.List;
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 
 /**
@@ -65,6 +66,11 @@ public class MoodSwingRestRepository implements Repository {
     @Override
     public Observable<ResponseBody> getProfilePicture(String token) {
         return apiService.getProfilePicture(token);
+    }
+
+    @Override
+    public Observable<Response<List<User>>> getUsers() {
+        return apiService.getUsers();
     }
 
     @Override

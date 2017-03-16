@@ -8,22 +8,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewSwitcher;
 
 import com.moodswing.R;
 import com.moodswing.activity.CaptureActivity;
-import com.moodswing.activity.JournalActivity;
-import com.moodswing.activity.NewEntryActivity;
 import com.moodswing.mvp.mvp.presenter.JournalPresenter;
 
 import java.text.DateFormat;
@@ -33,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import butterknife.BindView;
 
 /**
  * Created by Matthew on 2017-03-08.

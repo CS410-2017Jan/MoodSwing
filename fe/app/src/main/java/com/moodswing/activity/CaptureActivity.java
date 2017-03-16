@@ -1,27 +1,28 @@
 package com.moodswing.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
+import com.facebook.share.model.ShareHashtag;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareDialog;
 import com.moodswing.MoodSwingApplication;
 import com.moodswing.R;
 import com.moodswing.injector.component.ApplicationComponent;
-//import com.moodswing.injector.component.CaptureComponent;
 import com.moodswing.mvp.data.SharedPreferencesManager;
-//import com.moodswing.mvp.mvp.presenter.CapturePresenter;
 import com.moodswing.mvp.mvp.view.CaptureView;
 
 import javax.inject.Inject2;
@@ -33,7 +34,7 @@ import butterknife.ButterKnife;
  * Created by Matthew on 2017-03-12.
  */
 
-public class CaptureActivity extends AppCompatActivity implements CaptureView {
+public class CaptureActivity extends MoodSwingActivity implements CaptureView {
 
 //    private CaptureView captureView;
 
@@ -58,10 +59,11 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @BindView(R.id.bottom_navigation)
-    BottomNavigationView bottomNavigationView;
-
 //    private CaptureComponent _captureComponent;
+
+    // Facebook
+    private CallbackManager callbackManager;
+    private ShareDialog shareDialog;
 
     String title;
     String date;
@@ -81,6 +83,11 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView {
         initializeBottomNavigationView();
 
 //        initializePresenter();
+
+        // Facebook
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
+        shareDialog = new ShareDialog(this);
     }
 
     @Override
@@ -147,10 +154,21 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView {
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.share_facebook:
-                                Toast.makeText(getApplicationContext(), "Share to Facebook", Toast.LENGTH_SHORT).show();
-                                break;
-                            case R.id.share_instagram:
-                                Toast.makeText(getApplicationContext(), "Share to Instagram", Toast.LENGTH_SHORT).show();
+                                if (ShareDialog.canShow(SharePhotoContent.class)) {
+                                    // TODO change to Bitmap in Capture
+                                    Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
+                                    SharePhoto photo = new SharePhoto.Builder()
+                                            .setBitmap(image)
+                                            .build();
+
+                                    SharePhotoContent sharePhotoContent= new SharePhotoContent.Builder()
+                                            .addPhoto(photo)
+                                            .setShareHashtag(new ShareHashtag.Builder()
+                                                    .setHashtag("#MoodSwing")
+                                                    .build())
+                                            .build();
+                                    shareDialog.show(sharePhotoContent);
+                                }
                                 break;
                         }
                         return true;
@@ -162,27 +180,9 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView {
         return super.onOptionsItemSelected(menuItem);
     }
 
-    private void initializeBottomNavigationView() {
-        bottomNavigationView.setOnNavigationItemSelectedListener( new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_search:
-                        // TODO: Re-direct to search
-                        break;
-                    case R.id.action_camera:
-                        Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.action_follows:
-                        // TODO: Re-direct to follows
-                        break;
-                    default:
-                        return false;
-                }
-                return true;
-            }
-        });
+    @Override
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 }
