@@ -55,6 +55,7 @@
                     android:id="@+id/entry_desc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:inputType="textCapSentences"
                     android:hint="Write a description..." />
 
             </android.support.design.widget.TextInputLayout>
