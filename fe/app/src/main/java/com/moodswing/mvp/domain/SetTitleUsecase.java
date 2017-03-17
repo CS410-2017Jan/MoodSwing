@@ -1,6 +1,7 @@
 package com.moodswing.mvp.domain;
 
 import com.moodswing.mvp.mvp.model.SetTitleResponse;
+import com.moodswing.mvp.mvp.model.Title;
 import com.moodswing.mvp.network.Repository;
 
 import io.reactivex.Observable;
@@ -13,13 +14,13 @@ public class SetTitleUsecase implements Usecase<SetTitleResponse>{
     private Repository repository;
     private String entryId;
     private String accessToken;
-    private String title;
+    private Title title;
 
     public SetTitleUsecase(Repository repository) {this.repository = repository;}
 
     public void setDateId(String _id) { this.entryId = _id; }
 
-    public void setTitle(String title) { this.title = title; }
+    public void setTitle(Title title) { this.title = title; }
 
     public void setToken(String token){
         this.accessToken = token;

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -49,9 +50,6 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, date;
-        public EditText hiddenTitle;
-        public ImageButton saveTitle;
-        public ViewSwitcher _titleViewSwitcher;
         private CaptureAdapter cAdapter;
 
         public MyViewHolder(View view) {
@@ -59,34 +57,37 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
             final Context context = itemView.getContext();
 
             title = (TextView) view.findViewById(R.id.title);
-            hiddenTitle = (EditText) view.findViewById(R.id.hidden_title);
-            saveTitle = (ImageButton) view.findViewById(R.id.btn_saveTitle);
             date = (TextView) view.findViewById(R.id.date);
-            _titleViewSwitcher = (ViewSwitcher) view.findViewById(R.id.title_viewswitcher);
-
 
             title.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    hiddenTitle.setText(title.getText());
-                    _titleViewSwitcher.showNext();
-                    return true;
-                }
-            });
-            saveTitle.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int i = 0;
-                    for(DateBlock db: dBlocks){
-                        if(db.getDate().equals(date.getText().toString())){
-                            break;
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(jActivity);
+                    builder.setTitle("Edit Title");
+
+                    final EditText input = new EditText(jActivity);
+
+                    input.setInputType(InputType.TYPE_CLASS_TEXT);
+                    builder.setView(input);
+
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            title.setText(input.getText().toString());
+                            DateBlock dateBlock = dBlocks.get(cAdapter.getRowIndex());
+                            _journalPresenter.setTitle(input.getText().toString(), dateBlock.getId());
                         }
-                        i += 1;
-                    }
-                    DateBlock blockToUpdate = dBlocks.get(i);
-                    title.setText(hiddenTitle.getText());
-                    _journalPresenter.setTitle(title.getText().toString(), blockToUpdate.getId());
-                    _titleViewSwitcher.showNext();
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    builder.show();
+                    return true;
                 }
             });
 

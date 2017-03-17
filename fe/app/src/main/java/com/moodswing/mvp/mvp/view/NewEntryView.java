@@ -2,6 +2,10 @@ package com.moodswing.mvp.mvp.view;
 
 import android.app.ProgressDialog;
 
+import com.moodswing.mvp.mvp.model.JournalEntries;
+
+import java.util.List;
+
 /**
  * Created by Matthew on 2017-03-04.
  */
@@ -9,5 +13,9 @@ import android.app.ProgressDialog;
 public interface NewEntryView extends View {
     void onNewEntrySuccess();
     void onNewEntryFailure();
+    void onEntrySuccess(List<JournalEntries> je);
+    void onEntryFailure();
+    void onSetTitleSuccess();
+    void onSetTitleFailure();
     void showError();
 }

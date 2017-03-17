@@ -130,7 +130,12 @@ public class JournalActivity extends AppCompatActivity implements JournalView {
 
             String sDate = setJournalViewDateFormat(je.getDate());
             String dbid = je.getId();
-            DateBlock db = new DateBlock("Title", sDate, dbid);
+            String t = je.getTitle();
+            Log.i("***" + t + "***", "******************");
+            if(t.isEmpty()){
+                t = "Title";
+            }
+            DateBlock db = new DateBlock(t, sDate, dbid);
             dBlocks.add(db);
 
             for(Capture e: capture){

@@ -9,6 +9,7 @@ import com.moodswing.mvp.mvp.model.NewEntryResponse;
 import com.moodswing.mvp.mvp.model.SetTitleResponse;
 import com.moodswing.mvp.mvp.model.SignupResponse;
 import com.moodswing.mvp.mvp.model.ProfilePictureResponse;
+import com.moodswing.mvp.mvp.model.Title;
 import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.network.Repository;
 
@@ -42,7 +43,7 @@ public class MoodSwingRestRepository implements Repository {
     }
 
     @Override
-    public Observable<SetTitleResponse> setTitle(String accessToken, String entryId, String title){
+    public Observable<SetTitleResponse> setTitle(String accessToken, String entryId, Title title){
         return apiService.setTitle(accessToken, entryId, title);
     };
 

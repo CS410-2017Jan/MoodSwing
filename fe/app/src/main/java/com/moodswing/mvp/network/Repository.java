@@ -9,6 +9,7 @@ import com.moodswing.mvp.mvp.model.NewEntryResponse;
 import com.moodswing.mvp.mvp.model.SetTitleResponse;
 import com.moodswing.mvp.mvp.model.SignupResponse;
 import com.moodswing.mvp.mvp.model.ProfilePictureResponse;
+import com.moodswing.mvp.mvp.model.Title;
 import com.moodswing.mvp.mvp.model.User;
 import java.util.List;
 import io.reactivex.Observable;
@@ -24,7 +25,7 @@ import retrofit2.http.Part;
 
 public interface Repository {
     Observable<NewEntryResponse> postNewEntry(Capture capture, String accessToken);
-    Observable<SetTitleResponse> setTitle(String accessToken, String entryId, String title);
+    Observable<SetTitleResponse> setTitle(String accessToken, String entryId, Title title);
     Observable<DeleteCaptureResponse> deleteCapture(String _id, String accessToken);
     Observable<List<JournalEntries>> getJournalEntries(String username);
     Observable<SignupResponse> postUser(User user);

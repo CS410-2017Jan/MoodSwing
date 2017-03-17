@@ -1,12 +1,20 @@
 package com.moodswing.mvp.mvp.presenter;
 
 import android.app.ProgressDialog;
+import android.util.Log;
 
 import com.moodswing.mvp.data.SharedPreferencesManager;
+import com.moodswing.mvp.domain.GetJournalsUsecase;
 import com.moodswing.mvp.domain.NewEntryUsecase;
+import com.moodswing.mvp.domain.SetTitleUsecase;
 import com.moodswing.mvp.mvp.model.Capture;
+import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.NewEntryResponse;
+import com.moodswing.mvp.mvp.model.SetTitleResponse;
+import com.moodswing.mvp.mvp.model.Title;
 import com.moodswing.mvp.mvp.view.NewEntryView;
+
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -20,11 +28,15 @@ import io.reactivex.schedulers.Schedulers;
 public class NewEntryPresenter implements Presenter<NewEntryView> {
     private NewEntryView newEntryView;
     private NewEntryUsecase newEntryUsecase;
+    private SetTitleUsecase setTitleUsecase;
+    private GetJournalsUsecase getJournalsUsecase;
     private Disposable newEntrySubscription;
     private SharedPreferencesManager sharedPreferencesManager;
 
-    public NewEntryPresenter(NewEntryUsecase newEntryUsecase) {
+    public NewEntryPresenter(NewEntryUsecase newEntryUsecase, SetTitleUsecase setTitleUsecase, GetJournalsUsecase getJournalsUsecase) {
         this.newEntryUsecase = newEntryUsecase;
+        this.setTitleUsecase = setTitleUsecase;
+        this.getJournalsUsecase = getJournalsUsecase;
     }
 
     @Override
@@ -67,6 +79,54 @@ public class NewEntryPresenter implements Presenter<NewEntryView> {
                             newEntryView.onNewEntrySuccess();
                         } else {
                             newEntryView.onNewEntryFailure();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        newEntryView.showError();
+                    }
+                });
+    }
+
+    public void setTitle(String title, String id) {
+        setTitleUsecase.setDateId(id);
+        setTitleUsecase.setTitle(new Title(title));
+        setTitleUsecase.setToken(sharedPreferencesManager.getToken());
+
+        newEntrySubscription = setTitleUsecase.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<SetTitleResponse>() {
+                    @Override
+                    public void accept(SetTitleResponse setTitleResponse) throws Exception {
+                        if (setTitleResponse.isSuccessful()) {
+                            newEntryView.onSetTitleSuccess();
+                        } else {
+                            newEntryView.onSetTitleFailure();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        newEntryView.showError();
+                    }
+                });
+    }
+
+    public void getEntries() {
+        getJournalsUsecase.setUsername(sharedPreferencesManager.getCurrentUser());
+
+        newEntrySubscription = getJournalsUsecase.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<JournalEntries>>() {
+                    @Override
+                    public void accept(List<JournalEntries> journalEntries) throws Exception {
+                        if (true) {
+                            newEntryView.onEntrySuccess(journalEntries);
+                        } else {
+                            newEntryView.onEntryFailure();
                         }
                     }
                 }, new Consumer<Throwable>() {

@@ -9,6 +9,7 @@ import com.moodswing.mvp.mvp.model.NewEntryResponse;
 import com.moodswing.mvp.mvp.model.ProfilePictureResponse;
 import com.moodswing.mvp.mvp.model.SetTitleResponse;
 import com.moodswing.mvp.mvp.model.SignupResponse;
+import com.moodswing.mvp.mvp.model.Title;
 import com.moodswing.mvp.mvp.model.User;
 import java.util.List;
 import io.reactivex.Observable;
@@ -50,7 +51,7 @@ public interface ApiService {
     @PUT("users/self/entries/{entryId}")
     Observable<SetTitleResponse> setTitle(@Header("x-access-token") String accessToken,
                                           @Path("entryId") String entryId,
-                                          @Body String title);
+                                          @Body Title title);
 
     @Headers("Content-Type: application/json")
     @DELETE("users/self/captures/{captureId}")

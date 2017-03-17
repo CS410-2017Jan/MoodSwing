@@ -10,6 +10,7 @@ import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.SetTitleResponse;
+import com.moodswing.mvp.mvp.model.Title;
 import com.moodswing.mvp.mvp.view.JournalView;
 
 import java.util.List;
@@ -112,7 +113,7 @@ public class JournalPresenter implements Presenter<JournalView> {
 
     public void setTitle(String title, String id) {
         setTitleUsecase.setDateId(id);
-        setTitleUsecase.setTitle(title);
+        setTitleUsecase.setTitle(new Title(title));
         setTitleUsecase.setToken(sharedPreferencesManager.getToken());
 
         getJournalsSubscription = setTitleUsecase.execute()
