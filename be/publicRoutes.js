@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 const User   = require('./app/models/user')
 const JournalEntry   = require('./app/models/journalentry')
 const config = require('./config')
+const _ = require('lodash')
 
 /*
 ---------------------------------------------------------
@@ -135,6 +136,13 @@ router.get('/users/:username/entries', function(req, res) {
     }).reverse();
 
     return res.status(200).json(sortedEntries)
+  })
+})
+
+router.get('/users', function(req, res) {
+  User.find({}, 'username', function(err, results) {
+    let usernameList = _.map(results, 'username')
+    return res.status(200).json(usernameList.sort())
   })
 })
 
