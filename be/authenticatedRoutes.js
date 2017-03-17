@@ -17,7 +17,7 @@ const MB = KB*KB
 ---------------------------------------------------------
 */
 
-router.use(/.*\/self\/.*/, function(req, res, next) {
+router.use(/.*\/self\/.*|^\/users\/self$/, function(req, res, next) {
 	var token = req.body.token || req.headers['x-access-token']
 
 	if (token) {
@@ -118,6 +118,47 @@ router.get('/users/self/picture', (req, res) => {
     })
     res.status(200).end(img)
   })
+})
+
+router.put('/users/self', (req, res) => {
+	let username = req.username
+	let oldPassword = req.body.oldPassword
+	let newPassword = req.body.newPassword
+	let newDisplayName = req.body.newDisplayName
+
+	if (!newPassword && !newDisplayName) {
+		return res.status(400).send({ success: false , message: 'Malformed request'})
+	}
+
+  User.findOne({
+    username: username,
+    password: oldPassword
+  }, function(err, user) {
+
+		if (err || !user) {
+			return res.status(404).send({ success: false , message: 'Error: Incorrect password'})
+		}
+
+		let changedParameters = ''
+
+		if (newPassword) {
+			user.password = newPassword
+			changedParameters += 'password '
+		}
+
+		if (newDisplayName) {
+			user.displayName = newDisplayName
+			changedParameters += 'displayName'
+		}
+
+		user.save()
+	    .then(function (doc) {
+	      return res.status(200).json({ success: true, message: "Changed user information: " + changedParameters})
+	    })
+	    .catch(function(err) {
+	      return res.status(400).json({ success: false, message: "Error saving changes"})
+	    })
+	})
 })
 
 
