@@ -17,7 +17,7 @@ const MB = KB*KB
 ---------------------------------------------------------
 */
 
-router.use(/\w\/self\/\w*|^\/users\/self$|^\/entries\/\w*\/comments$|^\/entries\/\w*\/comments\/\w*$/,
+router.use(/\w\/self\/\w*|^\/users\/self$|^\/entries\/\w*\/comments$|^\/entries\/\w*\/comments\/\w*$|^\/users\/\w*\/(un)?follow$/,
 	function(req, res, next) {
 		var token = req.body.token || req.headers['x-access-token']
 
@@ -354,6 +354,72 @@ router.delete('/entries/:entryId/comments/:commentId', function(req, res) {
 				return res.status(400).json({ success: false })
 			})
 	})
+})
+
+/*
+---------------------------------------------------------
+Following
+---------------------------------------------------------
+*/
+
+router.post('/users/:username/follow', function(req, res) {
+	let toFollowUsername = req.params.username
+	let currentUsername = req.username
+
+	User.findOne({
+	  username: currentUsername
+	}, function(err, currentUser) {
+
+		if (err || !currentUser) {
+			return res.status(400).json({success: false})
+		}
+
+		User.findOne({
+		  username: toFollowUsername
+		}, function(err, userToFollow) {
+
+			if (err || !userToFollow) {
+				return res.status(400).json({success: false, message: 'User not found'})
+			}
+
+			currentUser.following.push(toFollowUsername)
+			userToFollow.followers.push(currentUsername)
+
+			currentUser.save()
+				.then(function(doc) {
+					userToFollow.save()
+				})
+				.then(function (doc) {
+					return res.status(200).json({ success: true })
+			  })
+			  .catch(function(err) {
+					return res.status(400).json({ success: false })
+			  })
+		})
+	})
+})
+
+router.post('/users/:username/unfollow', function(req, res) {
+	let toUnfollowUsername = req.params.username
+	let currentUsername = req.username
+
+	User.findOneAndUpdate({
+		username: currentUsername
+	}, {$pull: {following: toUnfollowUsername}}, function(err, data){
+    if (err) {
+      return res.status(400).json({success: false})
+    }
+
+    User.findOneAndUpdate({
+			username: toUnfollowUsername
+		}, {$pull: {followers: currentUsername}}, function(err, data){
+	    if (err) {
+	      return res.status(400).json({success: false})
+	    }
+
+	    return res.status(200).json({ success: true })
+	  })
+  })
 })
 
 
