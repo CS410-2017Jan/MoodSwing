@@ -9,13 +9,15 @@ public class DateBlock {
     String title;
     String date;
     String _id;
+    String username;
 
     public DateBlock(){};
 
-    public DateBlock(String title, String date, String _id){
+    public DateBlock(String title, String date, String _id, String username){
         this.title = title;
         this.date = date;
         this._id = _id;
+        this.username = username;
     }
 
     public String getTitle(){
@@ -40,5 +42,13 @@ public class DateBlock {
 
     public void setId(String id){
         _id = id;
+    }
+
+    public String getUsername(){
+        return username;
+    }
+
+    public void setUsername(String u){
+        username = u;
     }
 }

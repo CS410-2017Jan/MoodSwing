@@ -9,6 +9,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -124,10 +125,9 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
             String sDate = setJournalViewDateFormat(je.getDate());
             String dbid = je.getId();
             String t = je.getTitle();
-            if(t.isEmpty()){
-                t = "Title";
-            }
-            DateBlock db = new DateBlock(t, sDate, dbid);
+            String u = je.getUsername();
+
+            DateBlock db = new DateBlock(t, sDate, dbid, u);
             dBlocks.add(db);
 
             for(Capture e: capture){

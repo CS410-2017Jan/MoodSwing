@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -210,10 +211,12 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
         String capTitle = dBlock.getTitle();
         String capDate = dBlock.getDate();
         String capText = capture.getText();
+        String capUsername = dBlock.getUsername();
         Intent intent = new Intent(jActivity, CaptureActivity.class);
         intent.putExtra("EXTRA_TITLE", capTitle);
         intent.putExtra("EXTRA_DATE", capDate);
         intent.putExtra("EXTRA_TEXT", capText);
+        intent.putExtra("EXTRA_USERNAME", capUsername);
         jActivity.startActivity(intent);
     }
 }

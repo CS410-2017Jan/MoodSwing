@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,8 +23,16 @@ import com.facebook.share.widget.ShareDialog;
 import com.moodswing.MoodSwingApplication;
 import com.moodswing.R;
 import com.moodswing.injector.component.ApplicationComponent;
+import com.moodswing.injector.component.CaptureComponent;
+import com.moodswing.injector.component.DaggerCaptureComponent;
+import com.moodswing.injector.module.ActivityModule;
+import com.moodswing.injector.module.CaptureModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
+import com.moodswing.mvp.mvp.model.User;
+import com.moodswing.mvp.mvp.presenter.CapturePresenter;
 import com.moodswing.mvp.mvp.view.CaptureView;
+
+import java.util.List;
 
 import javax.inject.Inject2;
 
@@ -36,10 +45,8 @@ import butterknife.ButterKnife;
 
 public class CaptureActivity extends MoodSwingActivity implements CaptureView {
 
-//    private CaptureView captureView;
-
-//    @Inject2
-//    CapturePresenter _capturePresenter;
+    @Inject2
+    CapturePresenter _capturePresenter;
 
     @Inject2
     SharedPreferencesManager _sharedPreferencesManager;
@@ -59,7 +66,7 @@ public class CaptureActivity extends MoodSwingActivity implements CaptureView {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-//    private CaptureComponent _captureComponent;
+    private CaptureComponent _captureComponent;
 
     // Facebook
     private CallbackManager callbackManager;
@@ -68,6 +75,7 @@ public class CaptureActivity extends MoodSwingActivity implements CaptureView {
     String title;
     String date;
     String text;
+    String username;
 
 
     @Override
@@ -78,11 +86,19 @@ public class CaptureActivity extends MoodSwingActivity implements CaptureView {
         ButterKnife.bind(this);
         ApplicationComponent applicationComponent = ((MoodSwingApplication) getApplication()).getApplicationComponent();
 
+        _captureComponent = DaggerCaptureComponent.builder()
+                .captureModule(new CaptureModule())
+                .activityModule(new ActivityModule(this))
+                .applicationComponent(applicationComponent)
+                .build();
+        _captureComponent.inject(this);
+
+
         setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
         initializeBottomNavigationView();
 
-//        initializePresenter();
+        initializePresenter();
 
         // Facebook
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -96,11 +112,9 @@ public class CaptureActivity extends MoodSwingActivity implements CaptureView {
         title = getIntent().getStringExtra("EXTRA_TITLE");
         date = getIntent().getStringExtra("EXTRA_DATE");
         text = getIntent().getStringExtra("EXTRA_TEXT");
-        _capName.setText("Name");
-        _capDate.setText(date);
-        _capTitle.setText(title);
-        _capText.setText(text);
-    }
+        username = getIntent().getStringExtra("EXTRA_USERNAME");
+        _capturePresenter.getUsers();
+}
 
     @Override
     protected void onStop() {
@@ -108,27 +122,35 @@ public class CaptureActivity extends MoodSwingActivity implements CaptureView {
     }
 
     @Override
-    public void onCaptureSuccess(){
-        String message = "Capture fetch Failure";
+    public void onGetUserInfoSuccess(List<User> users){
+        String message = "User Success";
         Toast.makeText(CaptureActivity.this, message, Toast.LENGTH_LONG).show();
+        for (User user: users){
+            if (user.getUsername().equals(username)){
+                _capName.setText(user.getDisplayName());
+                _capDate.setText(date);
+                _capTitle.setText(title);
+                _capText.setText(text);
+            }
+        }
     }
 
     @Override
-    public void onCaptureFailure(){
-        String message = "Capture fetch Failure";
+    public void onGetUserInfoFailure(){
+        String message = "User Failure";
         Toast.makeText(CaptureActivity.this, message, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void showError() {
-        String message = "Error fetching entries";
+        String message = "User Error";
         Toast.makeText(CaptureActivity.this, message, Toast.LENGTH_LONG).show();
     }
 
-//    private void initializePresenter() {
-//        _capturePresenter.attachView(this);
-//        _capturePresenter.attachSharedPreferencesManager(_sharedPreferencesManager);
-//    }
+    private void initializePresenter() {
+        _capturePresenter.attachView(this);
+        _capturePresenter.attachSharedPreferencesManager(_sharedPreferencesManager);
+    }
 
 
 

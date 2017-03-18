@@ -1,9 +1,9 @@
-package com.moodswing.mvp.domain;
-
-/**
- * Created by Matthew on 2017-03-12.
- */
-
+//package com.moodswing.mvp.domain;
+//
+///**
+// * Created by Matthew on 2017-03-12.
+// */
+//
 //public class CaptureUsecase implements Usecase<CaptureResponse>{
 //
 //    private Repository repository;

@@ -50,7 +50,6 @@ import butterknife.ButterKnife;
 
 public class NewEntryActivity extends MoodSwingActivity implements NewEntryView, DatePickerDialog.OnDateSetListener{
 
-    private NewEntryView newEntryView;
     private List<DateBlock> dBlocks = new ArrayList<>();
 
     @Inject2
@@ -170,7 +169,7 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
     @Override
     public void onEntrySuccess(List<JournalEntries> journalEntries) {
         for(JournalEntries je: journalEntries){
-            DateBlock db = new DateBlock(je.getTitle(), je.getDate(), je.getId());
+            DateBlock db = new DateBlock(je.getTitle(), je.getDate(), je.getId(), je.getUsername());
             dBlocks.add(db);
         }
         if(isNewEntry){

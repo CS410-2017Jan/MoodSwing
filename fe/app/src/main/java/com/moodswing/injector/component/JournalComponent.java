@@ -16,6 +16,7 @@ import dagger.Component;
         modules = {ActivityModule.class,
                 JournalModule.class
         })
+
 public interface JournalComponent {
     void inject(JournalActivity journalActivity);
 }
