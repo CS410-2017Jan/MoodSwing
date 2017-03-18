@@ -4,11 +4,11 @@ import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.DeleteCaptureUsecase;
 import com.moodswing.mvp.domain.GetJournalsUsecase;
 import com.moodswing.mvp.domain.SetTitleUsecase;
-import com.moodswing.mvp.mvp.model.journalobjects.Capture;
-import com.moodswing.mvp.mvp.model.DeleteCaptureResponse;
-import com.moodswing.mvp.mvp.model.journalobjects.JournalEntries;
-import com.moodswing.mvp.mvp.model.SetTitleResponse;
-import com.moodswing.mvp.mvp.model.journalobjects.Title;
+import com.moodswing.mvp.mvp.model.Capture;
+import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
+import com.moodswing.mvp.mvp.model.JournalEntries;
+import com.moodswing.mvp.mvp.model.response.SetTitleResponse;
+import com.moodswing.mvp.mvp.model.Title;
 import com.moodswing.mvp.mvp.view.JournalView;
 
 import java.util.List;

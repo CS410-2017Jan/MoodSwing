@@ -1,14 +1,14 @@
-package com.moodswing.mvp.mvp.model;
+package com.moodswing.mvp.mvp.model.response;
 
 /**
- * Created by Matthew on 2017-03-12.
+ * Created by Matthew on 2017-03-14.
  */
 
-public class CaptureResponse {
+public class DeleteCaptureResponse {
     private boolean success;
     private String message;
 
-    public CaptureResponse(boolean success, String message) {
+    public DeleteCaptureResponse(boolean success, String message) {
         this.success = success;
         this.message = message;
     }

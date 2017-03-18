@@ -1,4 +1,4 @@
-package com.moodswing.mvp.mvp.model.journalobjects;
+package com.moodswing.mvp.mvp.model;
 
 import android.content.Context;
 import android.content.res.TypedArray;

@@ -1,6 +1,6 @@
 package com.moodswing.mvp.domain;
 
-import com.moodswing.mvp.mvp.model.ProfilePictureResponse;
+import com.moodswing.mvp.mvp.model.response.ProfilePictureResponse;
 import com.moodswing.mvp.network.Repository;
 
 import io.reactivex.Observable;

@@ -5,8 +5,8 @@ import android.content.Context;
 
 import com.moodswing.R;
 import com.moodswing.mvp.domain.SignupUsecase;
-import com.moodswing.mvp.mvp.model.SignupResponse;
-import com.moodswing.mvp.mvp.model.journalobjects.User;
+import com.moodswing.mvp.mvp.model.response.SignupResponse;
+import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.mvp.view.SignupView;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;

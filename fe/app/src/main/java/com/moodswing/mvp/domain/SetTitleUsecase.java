@@ -1,7 +1,7 @@
 package com.moodswing.mvp.domain;
 
-import com.moodswing.mvp.mvp.model.SetTitleResponse;
-import com.moodswing.mvp.mvp.model.journalobjects.Title;
+import com.moodswing.mvp.mvp.model.response.SetTitleResponse;
+import com.moodswing.mvp.mvp.model.Title;
 import com.moodswing.mvp.network.Repository;
 
 import io.reactivex.Observable;

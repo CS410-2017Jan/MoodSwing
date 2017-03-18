@@ -24,7 +24,7 @@ import com.moodswing.injector.component.DaggerSearchComponent;
 import com.moodswing.injector.component.SearchComponent;
 import com.moodswing.injector.module.ActivityModule;
 import com.moodswing.injector.module.SearchModule;
-import com.moodswing.mvp.mvp.model.journalobjects.User;
+import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.mvp.presenter.SearchPresenter;
 import com.moodswing.mvp.mvp.view.SearchView;
 

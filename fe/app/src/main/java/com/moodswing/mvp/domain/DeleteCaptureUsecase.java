@@ -2,7 +2,7 @@ package com.moodswing.mvp.domain;
 
 import io.reactivex.Observable;
 
-import com.moodswing.mvp.mvp.model.DeleteCaptureResponse;
+import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
 import com.moodswing.mvp.network.Repository;
 
 /**

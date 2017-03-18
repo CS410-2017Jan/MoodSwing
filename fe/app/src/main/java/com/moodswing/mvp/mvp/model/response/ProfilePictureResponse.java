@@ -1,4 +1,4 @@
-package com.moodswing.mvp.mvp.model;
+package com.moodswing.mvp.mvp.model.response;
 
 import android.media.Image;
 

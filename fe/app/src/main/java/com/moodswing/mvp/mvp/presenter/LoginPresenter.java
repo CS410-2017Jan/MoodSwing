@@ -6,8 +6,8 @@ import android.content.Context;
 import com.moodswing.R;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.LoginUsecase;
-import com.moodswing.mvp.mvp.model.LoginResponse;
-import com.moodswing.mvp.mvp.model.journalobjects.User;
+import com.moodswing.mvp.mvp.model.response.LoginResponse;
+import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.mvp.view.LoginView;
 
 

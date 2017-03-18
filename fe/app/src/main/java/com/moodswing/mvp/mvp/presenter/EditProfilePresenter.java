@@ -5,7 +5,7 @@ import android.util.Log;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.EditProfilePictureUsecase;
 import com.moodswing.mvp.domain.GetProfilePictureUsecase;
-import com.moodswing.mvp.mvp.model.ProfilePictureResponse;
+import com.moodswing.mvp.mvp.model.response.ProfilePictureResponse;
 import com.moodswing.mvp.mvp.view.EditProfileView;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;

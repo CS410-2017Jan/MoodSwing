@@ -1,6 +1,6 @@
 package com.moodswing.mvp.mvp.view;
 
-import com.moodswing.mvp.mvp.model.journalobjects.JournalEntries;
+import com.moodswing.mvp.mvp.model.JournalEntries;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.moodswing.mvp.domain;
 
-import com.moodswing.mvp.mvp.model.SignupResponse;
-import com.moodswing.mvp.mvp.model.journalobjects.User;
+import com.moodswing.mvp.mvp.model.response.SignupResponse;
+import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.network.Repository;
 
 import io.reactivex.Observable;

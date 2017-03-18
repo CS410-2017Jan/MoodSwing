@@ -1,4 +1,4 @@
-package com.moodswing.mvp.mvp.model;
+package com.moodswing.mvp.mvp.model.response;
 
 /**
  * Created by Matthew on 2017-03-05.

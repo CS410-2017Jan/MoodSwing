@@ -1,4 +1,4 @@
-package com.moodswing.mvp.mvp.model.Adapter;
+package com.moodswing.widget;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

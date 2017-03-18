@@ -1,4 +1,4 @@
-package com.moodswing.mvp.mvp.model.Adapter;
+package com.moodswing.widget;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.moodswing.R;
-import com.moodswing.mvp.mvp.model.journalobjects.Capture;
+import com.moodswing.mvp.mvp.model.Capture;
 
 import java.util.List;
 

@@ -1,6 +1,4 @@
-package com.moodswing.mvp.mvp.model.journalobjects;
-
-import com.moodswing.mvp.mvp.model.journalobjects.Capture;
+package com.moodswing.mvp.mvp.model;
 
 import java.util.List;
 

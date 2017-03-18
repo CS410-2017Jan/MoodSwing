@@ -1,15 +1,15 @@
 package com.moodswing.mvp.network;
 
-import com.moodswing.mvp.mvp.model.journalobjects.Capture;
-import com.moodswing.mvp.mvp.model.DeleteCaptureResponse;
-import com.moodswing.mvp.mvp.model.journalobjects.JournalEntries;
-import com.moodswing.mvp.mvp.model.LoginResponse;
-import com.moodswing.mvp.mvp.model.NewEntryResponse;
-import com.moodswing.mvp.mvp.model.SetTitleResponse;
-import com.moodswing.mvp.mvp.model.SignupResponse;
-import com.moodswing.mvp.mvp.model.ProfilePictureResponse;
-import com.moodswing.mvp.mvp.model.journalobjects.Title;
-import com.moodswing.mvp.mvp.model.journalobjects.User;
+import com.moodswing.mvp.mvp.model.Capture;
+import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
+import com.moodswing.mvp.mvp.model.JournalEntries;
+import com.moodswing.mvp.mvp.model.response.LoginResponse;
+import com.moodswing.mvp.mvp.model.response.NewEntryResponse;
+import com.moodswing.mvp.mvp.model.response.SetTitleResponse;
+import com.moodswing.mvp.mvp.model.response.SignupResponse;
+import com.moodswing.mvp.mvp.model.response.ProfilePictureResponse;
+import com.moodswing.mvp.mvp.model.Title;
+import com.moodswing.mvp.mvp.model.User;
 import java.util.List;
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
