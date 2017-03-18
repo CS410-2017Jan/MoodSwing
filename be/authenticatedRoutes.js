@@ -206,6 +206,7 @@ router.post('/users/self/captures', upload.single('image'), function(req, res) {
 
 			entry.save()
 				.then(function(doc) {
+					notifyFollowers(username, entry._id)
 					return res.status(200).json({ success: true, message: 'Added to existing date'})
 				})
 		} else {
@@ -217,16 +218,42 @@ router.post('/users/self/captures', upload.single('image'), function(req, res) {
 			})
 
 			newEntry.save()
-			  .then(function (doc) {
-			    return res.status(200).json({ success: true, message: 'Created new journal entry'})
+			  .then(function (createdEntry) {
+					notifyFollowers(username, createdEntry._id)
+					return res.status(200).json({ success: true, message: 'Created new journal entry'})
 			  })
 			  .catch(function(err) {
-			    console.log(err)
-			    return res.status(400).json({ success: false })
+					console.log(err)
+					return res.status(400).json({ success: false })
 			  })
 		}
   })
 })
+
+function notifyFollowers(username, entryId) {
+	User.findOne({
+		username: username
+	}, 'followers', function(err, userInfo) {
+		if (err || !userInfo) {
+			console.log("error notifying followers")
+			return
+		}
+
+		User.updateMany({
+			'username': { $in: userInfo.followers },
+			'notifications': { $nin: [entryId] }
+		}, {
+			$push: {
+				notifications: {
+					$each: [entryId.toString()],
+					$slice: -10
+				}
+			}
+		}, function(err, stats){
+			console.log("Notified " + stats.nModified + " people")
+		})
+	})
+}
 
 router.get('/users/self/entries', function(req, res) {
 	let username = req.username
@@ -422,6 +449,35 @@ router.post('/users/:username/unfollow', function(req, res) {
   })
 })
 
+/*
+---------------------------------------------------------
+ Notifications
+---------------------------------------------------------
+*/
+
+router.get('/users/self/notifications', function(req, res) {
+	let username = req.username
+
+	User.findOne({
+	  username: username
+	}, 'notifications', function(err, userInfo) {
+
+		if (err || !userInfo) {
+			return res.status(400).json({success: false, message: 'Notifications not found'})
+		}
+
+		JournalEntry.find({
+    '_id': { $in: userInfo.notifications}
+		}, function(err, docs){
+
+			if (err || !docs) {
+				return res.status(400).json({success: false, message: 'Server error'})
+			}
+
+			return res.status(200).json(docs.reverse())
+		})
+	})
+})
 
 /*
 ---------------------------------------------------------
