@@ -24,6 +24,7 @@ import com.moodswing.injector.module.ActivityModule;
 import com.moodswing.injector.module.JournalModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.model.Capture;
+import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.widget.DateDivider;
 import com.moodswing.widget.DateAdapter;
 import com.moodswing.widget.DateBlock;
@@ -168,6 +169,28 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
     @Override
     public void onDeletionFailure(){
         String message = "Capture Deletion Failure";
+        showToast(message);
+    }
+
+    @Override
+    public void onGetUserInfoSuccess(List<User> users){
+        String message = "User Success";
+        showToast(message);
+
+        Intent captureIntent = DateAdapter.getCaptureIntent();
+        String username = DateAdapter.getCapUsername();
+        for (User user: users){
+            if (user.getUsername().equals(username)){
+                captureIntent.putExtra("EXTRA_DISPLAYNAME", user.getDisplayName());
+                break;
+            }
+        }
+        startActivity(captureIntent);
+    }
+
+    @Override
+    public void onGetUserInfoFailure(){
+        String message = "User Failure";
         showToast(message);
     }
 

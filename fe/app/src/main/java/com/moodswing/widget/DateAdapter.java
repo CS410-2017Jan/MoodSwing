@@ -43,6 +43,8 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
     Context jActivity;
     //Context context1;
     JournalPresenter _journalPresenter;
+    public static Intent captureIntent;
+    public static String capUsername;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, date;
@@ -211,12 +213,20 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
         String capTitle = dBlock.getTitle();
         String capDate = dBlock.getDate();
         String capText = capture.getText();
-        String capUsername = dBlock.getUsername();
-        Intent intent = new Intent(jActivity, CaptureActivity.class);
-        intent.putExtra("EXTRA_TITLE", capTitle);
-        intent.putExtra("EXTRA_DATE", capDate);
-        intent.putExtra("EXTRA_TEXT", capText);
-        intent.putExtra("EXTRA_USERNAME", capUsername);
-        jActivity.startActivity(intent);
+        capUsername = dBlock.getUsername();
+        captureIntent = new Intent(jActivity, CaptureActivity.class);
+        captureIntent.putExtra("EXTRA_TITLE", capTitle);
+        captureIntent.putExtra("EXTRA_DATE", capDate);
+        captureIntent.putExtra("EXTRA_TEXT", capText);
+
+        _journalPresenter.getUsers();
+    }
+
+    public static Intent getCaptureIntent(){
+        return captureIntent;
+    }
+
+    public static String getCapUsername(){
+        return capUsername;
     }
 }

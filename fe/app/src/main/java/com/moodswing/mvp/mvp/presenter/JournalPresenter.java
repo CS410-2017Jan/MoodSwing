@@ -3,8 +3,10 @@ package com.moodswing.mvp.mvp.presenter;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.DeleteCaptureUsecase;
 import com.moodswing.mvp.domain.GetJournalsUsecase;
+import com.moodswing.mvp.domain.SearchUsecase;
 import com.moodswing.mvp.domain.SetTitleUsecase;
 import com.moodswing.mvp.mvp.model.Capture;
+import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.response.SetTitleResponse;
@@ -17,6 +19,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Response;
 
 /**
  * Created by daniel on 11/02/17.
@@ -27,13 +30,15 @@ public class JournalPresenter implements Presenter<JournalView> {
     private GetJournalsUsecase getJournalsUsecase;
     private DeleteCaptureUsecase deleteCaptureUsecase;
     private SetTitleUsecase setTitleUsecase;
+    private SearchUsecase searchUsecase;
     private Disposable getJournalsSubscription;
     private SharedPreferencesManager sharedPreferencesManager;
 
-    public JournalPresenter(GetJournalsUsecase getJournalsUsecase, DeleteCaptureUsecase deleteCaptureUsecase, SetTitleUsecase setTitleUsecase) {
+    public JournalPresenter(GetJournalsUsecase getJournalsUsecase, DeleteCaptureUsecase deleteCaptureUsecase, SetTitleUsecase setTitleUsecase, SearchUsecase searchUsecase) {
         this.getJournalsUsecase = getJournalsUsecase;
         this.deleteCaptureUsecase = deleteCaptureUsecase;
         this.setTitleUsecase = setTitleUsecase;
+        this.searchUsecase = searchUsecase;
     }
 
     @Override
@@ -74,6 +79,27 @@ public class JournalPresenter implements Presenter<JournalView> {
                             journalView.showEntries(journalEntries);
                         } else {
                             journalView.onEntryFailure();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        journalView.showError();
+                    }
+                });
+    }
+
+    public void getUsers() {
+        getJournalsSubscription = searchUsecase.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Response<List<User>>>() {
+                    @Override
+                    public void accept(Response<List<User>> listResponse) throws Exception {
+                        if (listResponse.code() == 200) {
+                            journalView.onGetUserInfoSuccess(listResponse.body());
+                        } else {
+                            journalView.onGetUserInfoFailure();
                         }
                     }
                 }, new Consumer<Throwable>() {

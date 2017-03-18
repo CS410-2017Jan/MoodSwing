@@ -21,12 +21,11 @@ import retrofit2.Response;
 public class CapturePresenter implements Presenter<CaptureView> {
     private CaptureView captureView;
 //    private CaptureUsecase captureUsecase;
-    private SearchUsecase searchUsecase;
     private Disposable captureSubscription;
     private SharedPreferencesManager sharedPreferencesManager;
 
-    public CapturePresenter(SearchUsecase searchUsecase) {
-        this.searchUsecase = searchUsecase;
+    public CapturePresenter() {
+
     }
 
     @Override
@@ -52,28 +51,6 @@ public class CapturePresenter implements Presenter<CaptureView> {
     @Override
     public void attachView(CaptureView view) {
         this.captureView = view;
-    }
-
-
-    public void getUsers() {
-        captureSubscription = searchUsecase.execute()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Response<List<User>>>() {
-                    @Override
-                    public void accept(Response<List<User>> listResponse) throws Exception {
-                        if (listResponse.code() == 200) {
-                            captureView.onGetUserInfoSuccess(listResponse.body());
-                        } else {
-                            captureView.onGetUserInfoFailure();
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        captureView.showError();
-                    }
-                });
     }
 
 

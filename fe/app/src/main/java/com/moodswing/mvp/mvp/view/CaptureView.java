@@ -10,7 +10,4 @@ import java.util.List;
  */
 
 public interface CaptureView extends View {
-    void onGetUserInfoSuccess(List<User> users);
-    void onGetUserInfoFailure();
-    void showError();
 }

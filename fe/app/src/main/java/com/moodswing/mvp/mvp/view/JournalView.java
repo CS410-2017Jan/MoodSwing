@@ -1,6 +1,7 @@
 package com.moodswing.mvp.mvp.view;
 
 import com.moodswing.mvp.mvp.model.JournalEntries;
+import com.moodswing.mvp.mvp.model.User;
 
 import java.util.List;
 
@@ -16,5 +17,7 @@ public interface JournalView extends View {
     void onDeletionFailure();
     void onSetTitleSuccess();
     void onSetTitleFailure();
+    void onGetUserInfoSuccess(List<User> users);
+    void onGetUserInfoFailure();
     void showError();
 }

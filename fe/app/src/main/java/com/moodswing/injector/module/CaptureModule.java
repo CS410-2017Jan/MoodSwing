@@ -15,15 +15,10 @@ import dagger.Provides2;
 @Module2
 public class CaptureModule {
 
-    @PerActivity
-    @Provides2
-    public SearchUsecase provideSearchUsecase(Repository repository) {
-        return new SearchUsecase(repository);
-    }
 
 
     @PerActivity
     @Provides2
-    public CapturePresenter provideCapturePresenter(SearchUsecase searchUsecase) {return new CapturePresenter(searchUsecase);}
+    public CapturePresenter provideCapturePresenter() {return new CapturePresenter();}
 
 }

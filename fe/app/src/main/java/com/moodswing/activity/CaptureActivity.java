@@ -45,8 +45,8 @@ import butterknife.ButterKnife;
 
 public class CaptureActivity extends MoodSwingActivity implements CaptureView {
 
-    @Inject2
-    CapturePresenter _capturePresenter;
+//    @Inject2
+//    CapturePresenter _capturePresenter;
 
     @Inject2
     SharedPreferencesManager _sharedPreferencesManager;
@@ -75,7 +75,7 @@ public class CaptureActivity extends MoodSwingActivity implements CaptureView {
     String title;
     String date;
     String text;
-    String username;
+    String displayName;
 
 
     @Override
@@ -98,7 +98,7 @@ public class CaptureActivity extends MoodSwingActivity implements CaptureView {
         toolbar.setTitleTextColor(Color.WHITE);
         initializeBottomNavigationView();
 
-        initializePresenter();
+//        initializePresenter();
 
         // Facebook
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -112,48 +112,23 @@ public class CaptureActivity extends MoodSwingActivity implements CaptureView {
         title = getIntent().getStringExtra("EXTRA_TITLE");
         date = getIntent().getStringExtra("EXTRA_DATE");
         text = getIntent().getStringExtra("EXTRA_TEXT");
-        username = getIntent().getStringExtra("EXTRA_USERNAME");
-        _capturePresenter.getUsers();
-}
+        displayName = getIntent().getStringExtra("EXTRA_DISPLAYNAME");
+
+        _capName.setText(displayName);
+        _capDate.setText(date);
+        _capTitle.setText(title);
+        _capText.setText(text);
+    }
 
     @Override
     protected void onStop() {
         super.onStop();
     }
 
-    @Override
-    public void onGetUserInfoSuccess(List<User> users){
-        String message = "User Success";
-        Toast.makeText(CaptureActivity.this, message, Toast.LENGTH_LONG).show();
-        for (User user: users){
-            if (user.getUsername().equals(username)){
-                _capName.setText(user.getDisplayName());
-                _capDate.setText(date);
-                _capTitle.setText(title);
-                _capText.setText(text);
-            }
-        }
-    }
-
-    @Override
-    public void onGetUserInfoFailure(){
-        String message = "User Failure";
-        Toast.makeText(CaptureActivity.this, message, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void showError() {
-        String message = "User Error";
-        Toast.makeText(CaptureActivity.this, message, Toast.LENGTH_LONG).show();
-    }
-
-    private void initializePresenter() {
-        _capturePresenter.attachView(this);
-        _capturePresenter.attachSharedPreferencesManager(_sharedPreferencesManager);
-    }
-
-
-
+//    private void initializePresenter() {
+//        _capturePresenter.attachView(this);
+//        _capturePresenter.attachSharedPreferencesManager(_sharedPreferencesManager);
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
