@@ -100,7 +100,7 @@ router.get('/users/:username', function(req, res) {
 
   User.findOne({
     username: username
-  }, '_id username displayName', //TODO: Return profile picture if FE wants it
+  }, '_id username displayName followers following', //TODO: Return profile picture if FE wants it
   function(err, userInfo) {
     if (!userInfo || err) {
       return res.status(400).json({success: false, message: 'User not found'})
