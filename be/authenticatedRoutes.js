@@ -17,7 +17,7 @@ const MB = KB*KB
 ---------------------------------------------------------
 */
 
-router.use(/\w\/self\/\w*|^\/users\/self$|^\/entries\/\w*\/comments$|^\/entries\/\w*\/comments\/\w*$|^\/users\/\w*\/(un)?follow$/,
+router.use(/.*\/self\/.*|^\/users\/self$|^\/entries\/\w*\/comments$|^\/entries\/\w*\/comments\/\w*$|^\/users\/\w*\/(un)?follow$/,
 	function(req, res, next) {
 		var token = req.body.token || req.headers['x-access-token']
 
