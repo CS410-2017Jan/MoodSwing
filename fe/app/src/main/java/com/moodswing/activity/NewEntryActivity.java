@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -168,14 +169,15 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
 
     @Override
     public void onEntrySuccess(List<JournalEntries> journalEntries) {
+        String tempDate = setJournalViewDateFormat(date);
         for(JournalEntries je: journalEntries){
-            DateBlock db = new DateBlock(je.getTitle(), je.getDate(), je.getId(), je.getUsername());
+            DateBlock db = new DateBlock(je.getTitle(), setJournalViewDateFormat(je.getDate()), je.getId(), je.getUsername());
             dBlocks.add(db);
         }
         if(isNewEntry){
             int i = 0;
             for(DateBlock db: dBlocks){
-                if(db.getDate().equals(date)){
+                if(db.getDate().equals(tempDate)){
                     break;
                 }
                 i += 1;
@@ -187,7 +189,7 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
         if(loadingDate){
             _descText.setHint("Write a description...");
             for(DateBlock db: dBlocks){
-                if(db.getDate().equals(date)){
+                if(db.getDate().equals(tempDate)){
                     _titleText.setEnabled(false);
                     _titleText.setHint(db.getTitle());
                     _titleLayout.setBackgroundResource(R.drawable.background_newentrynotselectable);
@@ -347,6 +349,20 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
             e.printStackTrace();
         }
         _dateText.setText(rDate);
+    }
+
+    public String setJournalViewDateFormat(String date){
+        DateFormat firstdf = new SimpleDateFormat("dd/MM/yyyy");
+        DateFormat secdf = new SimpleDateFormat("MMM.d, yyyy");
+        Date tempDate;
+        String rDate = "";
+        try {
+            tempDate = firstdf.parse(date);
+            rDate = secdf.format(tempDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return rDate;
     }
 
     public void openFullScreen(){
