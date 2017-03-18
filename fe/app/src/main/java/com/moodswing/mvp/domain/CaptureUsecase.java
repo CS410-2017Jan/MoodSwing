@@ -1,11 +1,5 @@
 package com.moodswing.mvp.domain;
 
-import android.database.Observable;
-
-import com.moodswing.mvp.mvp.model.Capture;
-import com.moodswing.mvp.mvp.model.CaptureResponse;
-import com.moodswing.mvp.network.Repository;
-
 /**
  * Created by Matthew on 2017-03-12.
  */

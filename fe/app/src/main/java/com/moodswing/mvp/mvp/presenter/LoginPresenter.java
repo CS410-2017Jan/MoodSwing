@@ -3,19 +3,17 @@ package com.moodswing.mvp.mvp.presenter;
 import android.app.ProgressDialog;
 import android.content.Context;
 
-import com.jakewharton.retrofit2.adapter.rxjava2.HttpException;
 import com.moodswing.R;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.LoginUsecase;
 import com.moodswing.mvp.mvp.model.LoginResponse;
-import com.moodswing.mvp.mvp.model.User;
+import com.moodswing.mvp.mvp.model.journalobjects.User;
 import com.moodswing.mvp.mvp.view.LoginView;
 
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 /**

@@ -1,7 +1,7 @@
 package com.moodswing.mvp.domain;
 
 
-import com.moodswing.mvp.mvp.model.JournalEntries;
+import com.moodswing.mvp.mvp.model.journalobjects.JournalEntries;
 import com.moodswing.mvp.network.Repository;
 
 import java.util.List;

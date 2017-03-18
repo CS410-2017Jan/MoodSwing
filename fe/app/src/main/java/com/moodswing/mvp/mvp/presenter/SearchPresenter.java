@@ -1,7 +1,7 @@
 package com.moodswing.mvp.mvp.presenter;
 
 import com.moodswing.mvp.domain.SearchUsecase;
-import com.moodswing.mvp.mvp.model.User;
+import com.moodswing.mvp.mvp.model.journalobjects.User;
 import com.moodswing.mvp.mvp.view.SearchView;
 
 import java.util.List;

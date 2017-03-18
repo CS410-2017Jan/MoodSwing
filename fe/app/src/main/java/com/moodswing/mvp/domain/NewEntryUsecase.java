@@ -1,6 +1,6 @@
 package com.moodswing.mvp.domain;
 
-import com.moodswing.mvp.mvp.model.Capture;
+import com.moodswing.mvp.mvp.model.journalobjects.Capture;
 import com.moodswing.mvp.mvp.model.NewEntryResponse;
 import com.moodswing.mvp.network.Repository;
 

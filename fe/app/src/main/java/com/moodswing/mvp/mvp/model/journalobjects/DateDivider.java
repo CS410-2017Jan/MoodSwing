@@ -1,4 +1,4 @@
-package com.moodswing.mvp.mvp.model;
+package com.moodswing.mvp.mvp.model.journalobjects;
 
 import android.content.Context;
 import android.graphics.Canvas;

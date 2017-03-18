@@ -1,4 +1,4 @@
-package com.moodswing.mvp.mvp.model;
+package com.moodswing.mvp.mvp.model.journalobjects;
 
 /**
  * Created by Matthew on 2017-03-10.

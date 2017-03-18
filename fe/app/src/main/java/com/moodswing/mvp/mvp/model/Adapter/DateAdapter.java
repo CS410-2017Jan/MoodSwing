@@ -1,4 +1,4 @@
-package com.moodswing.mvp.mvp.model;
+package com.moodswing.mvp.mvp.model.Adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -18,6 +18,9 @@ import android.widget.Toast;
 
 import com.moodswing.R;
 import com.moodswing.activity.CaptureActivity;
+import com.moodswing.mvp.mvp.model.journalobjects.Capture;
+import com.moodswing.mvp.mvp.model.journalobjects.CaptureDivider;
+import com.moodswing.mvp.mvp.model.journalobjects.DateBlock;
 import com.moodswing.mvp.mvp.presenter.JournalPresenter;
 
 import java.text.DateFormat;

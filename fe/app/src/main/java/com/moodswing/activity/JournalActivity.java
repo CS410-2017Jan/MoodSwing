@@ -22,11 +22,11 @@ import com.moodswing.injector.component.JournalComponent;
 import com.moodswing.injector.module.ActivityModule;
 import com.moodswing.injector.module.JournalModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
-import com.moodswing.mvp.mvp.model.Capture;
-import com.moodswing.mvp.mvp.model.DateDivider;
-import com.moodswing.mvp.mvp.model.DateAdapter;
-import com.moodswing.mvp.mvp.model.DateBlock;
-import com.moodswing.mvp.mvp.model.JournalEntries;
+import com.moodswing.mvp.mvp.model.journalobjects.Capture;
+import com.moodswing.mvp.mvp.model.journalobjects.DateDivider;
+import com.moodswing.mvp.mvp.model.Adapter.DateAdapter;
+import com.moodswing.mvp.mvp.model.journalobjects.DateBlock;
+import com.moodswing.mvp.mvp.model.journalobjects.JournalEntries;
 import com.moodswing.mvp.mvp.presenter.JournalPresenter;
 import com.moodswing.mvp.mvp.view.JournalView;
 

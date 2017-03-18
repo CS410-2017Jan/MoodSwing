@@ -1,17 +1,14 @@
 package com.moodswing.mvp.mvp.presenter;
 
-import android.app.ProgressDialog;
-import android.util.Log;
-
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.GetJournalsUsecase;
 import com.moodswing.mvp.domain.NewEntryUsecase;
 import com.moodswing.mvp.domain.SetTitleUsecase;
-import com.moodswing.mvp.mvp.model.Capture;
-import com.moodswing.mvp.mvp.model.JournalEntries;
+import com.moodswing.mvp.mvp.model.journalobjects.Capture;
+import com.moodswing.mvp.mvp.model.journalobjects.JournalEntries;
 import com.moodswing.mvp.mvp.model.NewEntryResponse;
 import com.moodswing.mvp.mvp.model.SetTitleResponse;
-import com.moodswing.mvp.mvp.model.Title;
+import com.moodswing.mvp.mvp.model.journalobjects.Title;
 import com.moodswing.mvp.mvp.view.NewEntryView;
 
 import java.util.List;
