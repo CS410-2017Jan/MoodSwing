@@ -7,6 +7,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
+
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -87,6 +91,7 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
 
     private NewEntryComponent _newEntryComponent;
     private Bitmap capture;
+    byte[] byteArray;
     private boolean isNewEntry = false;
     private boolean loadingDate = false;
     private String date = "";
@@ -110,6 +115,7 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
         initializePresenter();
         initializeShareButton();
         initializeDateButton();
+        initializePictureListener();
         initializeDate();
         initializeBottomNavigationView();
 
@@ -117,8 +123,7 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
     }
 
     private void checkIntent() {
-        // TODO: Verify that this works
-        byte[] byteArray = getIntent().getByteArrayExtra("CAPTURE");
+        byteArray = getIntent().getByteArrayExtra("CAPTURE");
 
         if (byteArray != null) {
             capture = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
@@ -218,6 +223,14 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
                 else{
                     displayError();
                 }
+            }
+        });
+    }
+
+    private void initializePictureListener() {
+        _postImage.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                openFullScreen();
             }
         });
     }
@@ -338,5 +351,11 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
             e.printStackTrace();
         }
         _dateText.setText(rDate);
+    }
+
+    public void openFullScreen(){
+        Intent intent = new Intent(this, FullScreenImageActivity.class);
+        intent.putExtra("PICTURE", byteArray);
+        startActivity(intent);
     }
 }

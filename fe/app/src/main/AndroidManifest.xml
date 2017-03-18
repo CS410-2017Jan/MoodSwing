@@ -49,6 +49,9 @@
             android:name=".activity.SignupActivity"
             android:theme="@style/NoBarAppTheme"
             />
+        <activity
+            android:name=".activity.FullScreenImageActivity"
+            android:theme="@style/NoBarAppTheme"/>
         <activity android:name=".activity.EditProfileActivity"
             android:theme="@style/AppTheme"
             android:label="Edit Profile"/>
