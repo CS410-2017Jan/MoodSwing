@@ -17,25 +17,26 @@ const MB = KB*KB
 ---------------------------------------------------------
 */
 
-router.use(/.*\/self\/.*|^\/users\/self$/, function(req, res, next) {
-	var token = req.body.token || req.headers['x-access-token']
+router.use(/\w\/self\/\w*|^\/users\/self$|^\/entries\/\w*\/comments$|^\/entries\/\w*\/comments\/\w*$/,
+	function(req, res, next) {
+		var token = req.body.token || req.headers['x-access-token']
 
-	if (token) {
-		jwt.verify(token, config.secret, function(err, decoded) {
-			if (err) {
-				return res.json({ success: false, message: 'Failed to authenticate token.' })
-			}
+		if (token) {
+			jwt.verify(token, config.secret, function(err, decoded) {
+				if (err) {
+					return res.json({ success: false, message: 'Failed to authenticate token.' })
+				}
 
-			req.username = decoded.username
-			next()
-		})
+				req.username = decoded.username
+				next()
+			})
 
-	} else {
-		return res.status(403).send({
-			success: false,
-			message: 'No token provided.'
-		})
-	}
+		} else {
+			return res.status(403).send({
+				success: false,
+				message: 'No token provided.'
+			})
+		}
 })
 
 /*
@@ -174,7 +175,7 @@ router.post('/users/self/captures', upload.single('image'), function(req, res) {
 	let captureDate = req.body.captureDate
 	let file = req.file
 
-	let newCapture = {text: text, _id: mongoose.Types.ObjectId()};
+	let newCapture = {text: text};
 
 	if (file) {
 		if (file.size > 16*MB) {
@@ -236,9 +237,7 @@ router.delete('/users/self/entries/:entryId', function(req, res) {
 	let username = req.username
 	let entryId = req.params.entryId
 
-	JournalEntry.findOne({
-		_id: entryId
-  }, function(err, entry) {
+	JournalEntry.findById(entryId, function(err, entry) {
 		if (err) throw err
 		if (!entry) {
       return res.status(400).json({ success: false, message: 'Entry not found'})
@@ -297,6 +296,63 @@ router.put('/users/self/entries/:entryId', function(req, res) {
 		}
 
 		return res.status(200).json({ success: true })
+	})
+})
+
+/*
+---------------------------------------------------------
+Comments
+---------------------------------------------------------
+*/
+
+router.post('/entries/:entryId/comments', function(req, res) {
+	let commenter = req.username
+	let text = req.body.text
+	let entryId = req.params.entryId
+
+	let newComment = {commenter: commenter, text: text}
+
+	console.log(newComment)
+
+  JournalEntry.findById(entryId, function(err, entry) {
+		if (err || !entry) {
+			return res.status(400).json({ success: false })
+		}
+
+		entry.comments.push(newComment)
+
+		entry.save()
+		  .then(function (doc) {
+		    return res.status(200).json({ success: true, message: 'Comment created'})
+		  })
+		  .catch(function(err) {
+		    return res.status(400).json({ success: false })
+		  })
+	})
+})
+
+router.delete('/entries/:entryId/comments/:commentId', function(req, res) {
+	let commenter = req.username
+	let entryId = req.params.entryId
+	let commentId = req.params.commentId
+
+	console.log(commenter)
+
+  JournalEntry.findOne({
+		"comments._id": mongoose.Types.ObjectId(commentId),
+		"comments.commenter": commenter
+  }, function(err, entry) {
+		if (err || !entry) {
+			return res.status(400).json({ success: false })
+		}
+
+		entry.update({'$pull': {'comments': {'_id': mongoose.Types.ObjectId(commentId)}}})
+			.then(function() {
+				return res.status(200).json({ success: true })
+			})
+			.catch(function(err) {
+				return res.status(400).json({ success: false })
+			})
 	})
 })
 

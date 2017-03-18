@@ -1,15 +1,32 @@
 var mongoose = require('mongoose')
 var Schema = mongoose.Schema
-const Capture   = require('./journalentry')
 
 mongoose.Promise = Promise
 
-module.exports = mongoose.model('JournalEntry', new Schema({
+var Comment = new Schema({
+	dateCreated: { type: Date, default: Date.now },
+	commenter: String,
+	text: String
+}, {
+	versionKey: '1'
+})
+
+var Capture = new Schema({
+	text: String,
+	image: { data: Buffer, contentType: String }
+}, {
+	versionKey: '1'
+})
+
+var JournalEntry = new Schema({
 	username: String,
 	entryDate: String,
 	dateCreated: { type: Date, default: Date.now },
 	title: {type: String, default: ""},
-	captures: [Capture]
+	captures: [Capture],
+	comments: [Comment]
 }, {
 	versionKey: '1'
-}))
+})
+
+module.exports = mongoose.model('JournalEntry', JournalEntry)
