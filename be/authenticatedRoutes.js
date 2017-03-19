@@ -326,6 +326,25 @@ router.put('/users/self/entries/:entryId', function(req, res) {
 	})
 })
 
+router.put('/users/self/captures/:captureId', function(req, res) {
+	let captureId = req.params.captureId
+	let text = req.body.text
+	let username = req.username
+
+	JournalEntry.findOneAndUpdate({
+		"username": username,
+		"captures._id": mongoose.Types.ObjectId(captureId)
+	}, {
+		"captures.$.text": text
+	}, function(err, entry) {
+		if (err || !entry) {
+			return res.status(400).json({ success: false })
+		}
+
+		return res.status(200).json({ success: true })
+	})
+})
+
 /*
 ---------------------------------------------------------
 Comments
