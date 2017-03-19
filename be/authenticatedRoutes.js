@@ -377,9 +377,8 @@ router.post('/entries/:entryId/comments', function(req, res) {
 	})
 })
 
-router.delete('/entries/:entryId/comments/:commentId', function(req, res) {
+router.delete('/comments/:commentId', function(req, res) {
 	let commenter = req.username
-	let entryId = req.params.entryId
 	let commentId = req.params.commentId
 
 	console.log(commenter)
