@@ -152,6 +152,40 @@ router.get('/users', function(req, res) {
   })
 })
 
+router.get('/entries/:entryId', function(req, res) {
+  let entryId = req.params.entryId
+  JournalEntry.findById(entryId, function(err, entry) {
+    entry = entry.toObject()
+
+    if (err || !entry) {
+      return res.status(400).json({ success: false, message: "No entry found"})
+    }
+
+    let commenters = _.map(entry.comments, 'commenter')
+
+    User.find({
+      username: { $in: commenters }
+      }, 'username displayName', function(err, commentersUserInfo) {
+        if (err || !commentersUserInfo) {
+          return res.status(400).json({ success: false, message: "Commenter error"})
+        }
+
+        let usernameDisplayNameHash = {};
+        _.forEach(commentersUserInfo, function(commenterUserInfo) {
+          usernameDisplayNameHash[commenterUserInfo.username] = commenterUserInfo.displayName
+        })
+
+        _.forEach(entry.comments, function(comment) {
+          comment.displayName = usernameDisplayNameHash[comment.commenter]
+        })
+
+        return res.status(200).json(entry)
+      }
+    )
+  })
+})
+
+
 
  /*
 ---------------------------------------------------------
