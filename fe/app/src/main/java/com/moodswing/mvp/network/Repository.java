@@ -1,6 +1,8 @@
 package com.moodswing.mvp.network;
 
 import com.moodswing.mvp.mvp.model.Capture;
+import com.moodswing.mvp.mvp.model.LoginRequest;
+import com.moodswing.mvp.mvp.model.SignupRequest;
 import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.response.LoginResponse;
@@ -28,8 +30,8 @@ public interface Repository {
     Observable<SetTitleResponse> setTitle(String accessToken, String entryId, Title title);
     Observable<DeleteCaptureResponse> deleteCapture(String _id, String accessToken);
     Observable<List<JournalEntries>> getJournalEntries(String username);
-    Observable<SignupResponse> postUser(User user);
-    Observable<LoginResponse> postLogin(User user);
+    Observable<SignupResponse> postSignupRequest(SignupRequest signupRequest);
+    Observable<LoginResponse> postLogin(LoginRequest loginRequest);
     Observable<ProfilePictureResponse> postProfilePicture(String token, @Part MultipartBody.Part picture);
     Observable<ResponseBody> getProfilePicture(String token);
 //    Observable<CaptureResponse> getCaptureData(Capture capture, String accessToken);

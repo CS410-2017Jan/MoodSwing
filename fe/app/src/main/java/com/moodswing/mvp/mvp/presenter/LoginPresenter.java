@@ -6,8 +6,8 @@ import android.content.Context;
 import com.moodswing.R;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.LoginUsecase;
+import com.moodswing.mvp.mvp.model.LoginRequest;
 import com.moodswing.mvp.mvp.model.response.LoginResponse;
-import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.mvp.view.LoginView;
 
 
@@ -52,7 +52,7 @@ public class LoginPresenter implements Presenter<LoginView> {
     }
 
     public void login(final String username, String password) {
-        loginUsecase.setUser(new User(username, password));
+        loginUsecase.setLoginRequest(new LoginRequest(username, password));
 
         final ProgressDialog progressDialog = new ProgressDialog((Context) loginView, R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);

@@ -1,6 +1,8 @@
 package com.moodswing.rest;
 
 import com.moodswing.mvp.mvp.model.Capture;
+import com.moodswing.mvp.mvp.model.LoginRequest;
+import com.moodswing.mvp.mvp.model.SignupRequest;
 import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.response.LoginResponse;
@@ -33,13 +35,13 @@ public class MoodSwingRestRepository implements Repository {
     }
 
     @Override
-    public Observable<SignupResponse> postUser(User user) {
-        return apiService.postUser(user);
+    public Observable<SignupResponse> postSignupRequest(SignupRequest signupRequest) {
+        return apiService.postSignupRequest(signupRequest);
     }
 
     @Override
-    public Observable<LoginResponse> postLogin(User user) {
-        return apiService.postLogin(user);
+    public Observable<LoginResponse> postLogin(LoginRequest loginRequest) {
+        return apiService.postLogin(loginRequest);
     }
 
     @Override

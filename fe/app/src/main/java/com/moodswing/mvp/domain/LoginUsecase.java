@@ -1,7 +1,7 @@
 package com.moodswing.mvp.domain;
 
+import com.moodswing.mvp.mvp.model.LoginRequest;
 import com.moodswing.mvp.mvp.model.response.LoginResponse;
-import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.network.Repository;
 
 import io.reactivex.Observable;
@@ -13,14 +13,14 @@ import io.reactivex.Observable;
 public class LoginUsecase implements Usecase<LoginResponse> {
 
     private Repository repository;
-    private User user;
+    private LoginRequest loginRequest;
 
     public LoginUsecase(Repository repository) {this.repository = repository;}
 
-    public void setUser(User user) {this.user = user;}
+    public void setLoginRequest(LoginRequest loginRequest) {this.loginRequest = loginRequest;}
 
     @Override
     public Observable<LoginResponse> execute() {
-        return repository.postLogin(user);
+        return repository.postLogin(loginRequest);
     }
 }

@@ -1,6 +1,8 @@
 package com.moodswing.rest;
 
 import com.moodswing.mvp.mvp.model.Capture;
+import com.moodswing.mvp.mvp.model.LoginRequest;
+import com.moodswing.mvp.mvp.model.SignupRequest;
 import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.response.LoginResponse;
@@ -34,11 +36,11 @@ public interface ApiService {
 
     @Headers("Content-Type: application/json")
     @POST("users")
-    Observable<SignupResponse> postUser(@Body User user);
+    Observable<SignupResponse> postSignupRequest(@Body SignupRequest signupRequest);
 
     @Headers("Content-Type: application/json")
     @POST("users/login")
-    Observable<LoginResponse> postLogin(@Body User user);
+    Observable<LoginResponse> postLogin(@Body LoginRequest loginRequest);
 
     @Headers("Content-Type: application/json")
     @POST("users/self/captures")

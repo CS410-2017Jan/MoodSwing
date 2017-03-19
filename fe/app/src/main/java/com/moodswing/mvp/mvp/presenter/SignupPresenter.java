@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.moodswing.R;
 import com.moodswing.mvp.domain.SignupUsecase;
+import com.moodswing.mvp.mvp.model.SignupRequest;
 import com.moodswing.mvp.mvp.model.response.SignupResponse;
 import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.mvp.view.SignupView;
@@ -49,7 +50,7 @@ public class SignupPresenter implements Presenter<SignupView> {
     }
 
     public void signup(String displayName, String username, String password) {
-        signupUsecase.setUser(new User(displayName, username, password));
+        signupUsecase.setSignupRequest(new SignupRequest(displayName, username, password));
 
         final ProgressDialog progressDialog = new ProgressDialog((Context) signupView, R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
