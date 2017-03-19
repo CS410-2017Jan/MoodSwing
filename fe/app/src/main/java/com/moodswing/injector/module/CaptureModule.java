@@ -1,6 +1,8 @@
 package com.moodswing.injector.module;
 
 import com.moodswing.injector.scope.PerActivity;
+import com.moodswing.mvp.domain.CaptureUsecase;
+import com.moodswing.mvp.domain.GetCommentsUsecase;
 import com.moodswing.mvp.domain.SearchUsecase;
 import com.moodswing.mvp.mvp.presenter.CapturePresenter;
 import com.moodswing.mvp.network.Repository;
@@ -15,10 +17,20 @@ import dagger.Provides2;
 @Module2
 public class CaptureModule {
 
-
+    @PerActivity
+    @Provides2
+    public CaptureUsecase provideCaptureUsecase(Repository repository) {
+        return new CaptureUsecase(repository);
+    }
 
     @PerActivity
     @Provides2
-    public CapturePresenter provideCapturePresenter() {return new CapturePresenter();}
+    public GetCommentsUsecase provideGetCommentsUsecase(Repository repository) {
+        return new GetCommentsUsecase(repository);
+    }
+
+    @PerActivity
+    @Provides2
+    public CapturePresenter provideCapturePresenter(CaptureUsecase captureUsecase, GetCommentsUsecase getCommentsUsecase) {return new CapturePresenter(captureUsecase, getCommentsUsecase);}
 
 }

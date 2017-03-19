@@ -3,16 +3,19 @@ package com.moodswing.rest;
 import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.LoginRequest;
 import com.moodswing.mvp.mvp.model.SignupRequest;
+import com.moodswing.mvp.mvp.model.Comment;
 import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.response.LoginResponse;
 import com.moodswing.mvp.mvp.model.response.NewEntryResponse;
+import com.moodswing.mvp.mvp.model.response.PostCommentResponse;
 import com.moodswing.mvp.mvp.model.response.SetTitleResponse;
 import com.moodswing.mvp.mvp.model.response.SignupResponse;
 import com.moodswing.mvp.mvp.model.response.ProfilePictureResponse;
 import com.moodswing.mvp.mvp.model.Title;
 import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.network.Repository;
+import com.moodswing.widget.DateBlock;
 
 
 import java.util.List;
@@ -47,7 +50,12 @@ public class MoodSwingRestRepository implements Repository {
     @Override
     public Observable<SetTitleResponse> setTitle(String accessToken, String entryId, Title title){
         return apiService.setTitle(accessToken, entryId, title);
-    };
+    }
+
+    @Override
+    public Observable<PostCommentResponse> postComment(String accessToken, String entryId, Comment comment){
+        return apiService.postComment(accessToken, entryId, comment);
+    }
 
     @Override
     public Observable<NewEntryResponse> postNewEntry(Capture capture, String accessToken) {
@@ -57,6 +65,11 @@ public class MoodSwingRestRepository implements Repository {
     @Override
     public Observable<List<JournalEntries>> getJournalEntries(String username){
         return apiService.getJournalEntries(username);
+    }
+
+    @Override
+    public Observable<DateBlock> getComments(String entryId){
+        return apiService.getComments(entryId);
     }
 
     @Override
@@ -80,7 +93,7 @@ public class MoodSwingRestRepository implements Repository {
     }
 
 //    @Override
-//    public Observable<CaptureResponse> getCaptureData(Capture capture, String accessToken) {
+//    public Observable<PostCommentResponse> getCaptureData(Capture capture, String accessToken) {
 //        return apiService.getCaptureData(capture, accessToken);
 //    }
 }

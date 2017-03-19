@@ -213,11 +213,13 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
         String capTitle = dBlock.getTitle();
         String capDate = dBlock.getDate();
         String capText = capture.getText();
+        String capId = dBlock.getId();
         capUsername = dBlock.getUsername();
         captureIntent = new Intent(jActivity, CaptureActivity.class);
         captureIntent.putExtra("EXTRA_TITLE", capTitle);
         captureIntent.putExtra("EXTRA_DATE", capDate);
         captureIntent.putExtra("EXTRA_TEXT", capText);
+        captureIntent.putExtra("EXTRA_ID", capId);
 
         _journalPresenter.getUsers();
     }

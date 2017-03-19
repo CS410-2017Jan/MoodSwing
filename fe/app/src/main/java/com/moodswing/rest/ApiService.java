@@ -3,15 +3,19 @@ package com.moodswing.rest;
 import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.LoginRequest;
 import com.moodswing.mvp.mvp.model.SignupRequest;
+import com.moodswing.mvp.mvp.model.Comment;
 import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.response.LoginResponse;
 import com.moodswing.mvp.mvp.model.response.NewEntryResponse;
+import com.moodswing.mvp.mvp.model.response.PostCommentResponse;
 import com.moodswing.mvp.mvp.model.response.ProfilePictureResponse;
 import com.moodswing.mvp.mvp.model.response.SetTitleResponse;
 import com.moodswing.mvp.mvp.model.response.SignupResponse;
 import com.moodswing.mvp.mvp.model.Title;
 import com.moodswing.mvp.mvp.model.User;
+import com.moodswing.widget.DateBlock;
+
 import java.util.List;
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
@@ -54,6 +58,12 @@ public interface ApiService {
                                           @Body Title title);
 
     @Headers("Content-Type: application/json")
+    @POST("entries/{entryId}/comments")
+    Observable<PostCommentResponse> postComment(@Header("x-access-token") String accessToken,
+                                                @Path("entryId") String entryId,
+                                                @Body Comment comment);
+
+    @Headers("Content-Type: application/json")
     @DELETE("users/self/captures/{captureId}")
     Observable<DeleteCaptureResponse> deleteCapture(@Path("captureId") String captureId,
                                                     @Header("x-access-token") String accessToken);
@@ -61,6 +71,10 @@ public interface ApiService {
     @Headers("Content-Type: application/json")
     @GET("users/{username}/entries")
     Observable<List<JournalEntries>> getJournalEntries(@Path("username") String username);
+
+    @Headers("Content-Type: application/json")
+    @GET("entries/{entryId}")
+    Observable<DateBlock> getComments(@Path("entryId") String entryId);
 
     @Multipart
     @POST("users/self/picture")
@@ -81,7 +95,7 @@ public interface ApiService {
 
 //    @Headers("Content-Type: application/json")
 //    @POST("users/self/captures")
-//    Observable<CaptureResponse> getCaptureData(@Body Capture capture,
+//    Observable<PostCommentResponse> getCaptureData(@Body Capture capture,
 //                                              @Header("x-access-token") String accessToken);
 
     @Headers("Content-Type: application/json")

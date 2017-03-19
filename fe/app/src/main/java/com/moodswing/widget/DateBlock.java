@@ -1,5 +1,9 @@
 package com.moodswing.widget;
 
+import com.moodswing.mvp.mvp.model.Comment;
+
+import java.util.List;
+
 /**
  * Created by Matthew on 2017-03-10.
  */
@@ -10,6 +14,7 @@ public class DateBlock {
     String date;
     String _id;
     String username;
+    List<Comment> comments;
 
     public DateBlock(){};
 
@@ -18,6 +23,14 @@ public class DateBlock {
         this.date = date;
         this._id = _id;
         this.username = username;
+    }
+
+    public DateBlock(String title, String date, String _id, String username, List<Comment> comments){
+        this.title = title;
+        this.date = date;
+        this._id = _id;
+        this.username = username;
+        this.comments = comments;
     }
 
     public String getTitle(){
@@ -50,5 +63,9 @@ public class DateBlock {
 
     public void setUsername(String u){
         username = u;
+    }
+
+    public List<Comment> getComments(){
+        return comments;
     }
 }

@@ -1,16 +1,23 @@
 package com.moodswing.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,10 +35,15 @@ import com.moodswing.injector.component.DaggerCaptureComponent;
 import com.moodswing.injector.module.ActivityModule;
 import com.moodswing.injector.module.CaptureModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
+import com.moodswing.mvp.mvp.model.CaptureDivider;
+import com.moodswing.mvp.mvp.model.Comment;
 import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.mvp.presenter.CapturePresenter;
 import com.moodswing.mvp.mvp.view.CaptureView;
+import com.moodswing.widget.CommentAdapter;
+import com.moodswing.widget.DateBlock;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject2;
@@ -39,14 +51,16 @@ import javax.inject.Inject2;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.text.TextUtils.isEmpty;
+
 /**
  * Created by Matthew on 2017-03-12.
  */
 
-public class CaptureActivity extends MoodSwingActivity implements CaptureView {
+public class CaptureActivity extends AppCompatActivity implements CaptureView {
 
-//    @Inject2
-//    CapturePresenter _capturePresenter;
+    @Inject2
+    CapturePresenter _capturePresenter;
 
     @Inject2
     SharedPreferencesManager _sharedPreferencesManager;
@@ -63,6 +77,12 @@ public class CaptureActivity extends MoodSwingActivity implements CaptureView {
     @BindView(R.id.cap_text)
     TextView _capText;
 
+    @BindView(R.id.post_comment)
+    TextView _postComment;
+
+    @BindView(R.id.comment)
+    EditText _comment;
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -76,6 +96,11 @@ public class CaptureActivity extends MoodSwingActivity implements CaptureView {
     String date;
     String text;
     String displayName;
+    String dateID;
+    private List<Comment> commentList = new ArrayList<>();
+    private List<Comment> tempList = new ArrayList<>();
+    private RecyclerView commentRecyclerView;
+    private CommentAdapter commentAdapter;
 
 
     @Override
@@ -85,6 +110,14 @@ public class CaptureActivity extends MoodSwingActivity implements CaptureView {
         ButterKnife.setDebug(true);
         ButterKnife.bind(this);
         ApplicationComponent applicationComponent = ((MoodSwingApplication) getApplication()).getApplicationComponent();
+
+        commentRecyclerView = (RecyclerView) findViewById(R.id.comments_recycler_view);
+
+        commentAdapter = new CommentAdapter(commentList);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        commentRecyclerView.setLayoutManager(mLayoutManager);
+        commentRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        commentRecyclerView.setAdapter(commentAdapter);
 
         _captureComponent = DaggerCaptureComponent.builder()
                 .captureModule(new CaptureModule())
@@ -96,9 +129,11 @@ public class CaptureActivity extends MoodSwingActivity implements CaptureView {
 
         setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
-        initializeBottomNavigationView();
+//        initializeBottomNavigationView();
 
-//        initializePresenter();
+        initializePresenter();
+
+        initializePostComment();
 
         // Facebook
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -113,11 +148,14 @@ public class CaptureActivity extends MoodSwingActivity implements CaptureView {
         date = getIntent().getStringExtra("EXTRA_DATE");
         text = getIntent().getStringExtra("EXTRA_TEXT");
         displayName = getIntent().getStringExtra("EXTRA_DISPLAYNAME");
+        dateID = getIntent().getStringExtra("EXTRA_ID");
 
         _capName.setText(displayName);
         _capDate.setText(date);
         _capTitle.setText(title);
         _capText.setText(text);
+        _comment.setHint("Write a comment...");
+        getComments();
     }
 
     @Override
@@ -125,10 +163,77 @@ public class CaptureActivity extends MoodSwingActivity implements CaptureView {
         super.onStop();
     }
 
-//    private void initializePresenter() {
-//        _capturePresenter.attachView(this);
-//        _capturePresenter.attachSharedPreferencesManager(_sharedPreferencesManager);
-//    }
+    private void initializePresenter() {
+        _capturePresenter.attachView(this);
+        _capturePresenter.attachSharedPreferencesManager(_sharedPreferencesManager);
+    }
+
+
+    public void initializePostComment(){
+        _postComment.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String comment = _comment.getText().toString();
+                if(!isEmpty(comment)){
+                    postComment(comment);
+                }
+                else{
+                    Toast.makeText(getBaseContext(), "Empty Comment", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    private void postComment(String comment) {
+        _capturePresenter.postComment(comment, dateID);
+    }
+
+    private void getComments() {
+        commentList.clear();
+        _capturePresenter.getComments(dateID);
+    }
+
+    @Override
+    public void onPostCommentSuccess() {
+        getComments();
+        _comment.setText("");
+        _comment.clearFocus();
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(_comment.getWindowToken(), 0);
+    }
+
+    @Override
+    public void showComments(DateBlock dateBlock) {
+        List<Comment> comments = dateBlock.getComments();
+        for(Comment c: comments){
+            Comment comment = new Comment(c.getDisplayName(), c.getText());
+            commentList.add(comment);
+        }
+        commentAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onPostCommentFailure() {
+        String message = "Post comment failure";
+        showToast(message);
+    }
+
+    @Override
+    public void onGetCommentFailure() {
+        String message = "Get comment failure";
+        showToast(message);
+    }
+
+    @Override
+    public void showError1() {
+        String message = "Post comment error";
+        showToast(message);
+    }
+
+    @Override
+    public void showError2() {
+        String message = "Get comment error";
+        showToast(message);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -175,6 +280,10 @@ public class CaptureActivity extends MoodSwingActivity implements CaptureView {
                 return true;
         }
         return super.onOptionsItemSelected(menuItem);
+    }
+
+    private void showToast(String s) {
+        Toast.makeText(CaptureActivity.this, s, Toast.LENGTH_LONG).show();
     }
 
     @Override

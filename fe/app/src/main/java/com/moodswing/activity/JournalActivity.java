@@ -174,9 +174,6 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
 
     @Override
     public void onGetUserInfoSuccess(List<User> users){
-        String message = "User Success";
-        showToast(message);
-
         Intent captureIntent = DateAdapter.getCaptureIntent();
         String username = DateAdapter.getCapUsername();
         for (User user: users){
