@@ -114,7 +114,12 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView {
         commentRecyclerView = (RecyclerView) findViewById(R.id.comments_recycler_view);
 
         commentAdapter = new CommentAdapter(commentList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext()){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
         commentRecyclerView.setLayoutManager(mLayoutManager);
         commentRecyclerView.setItemAnimator(new DefaultItemAnimator());
         commentRecyclerView.setAdapter(commentAdapter);
