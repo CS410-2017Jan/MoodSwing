@@ -140,7 +140,7 @@ router.get('/users/:username/entries', function(req, res) {
 })
 
 router.get('/users', function(req, res) {
-  User.find({}, 'username displayName', function(err, results) {
+  User.find({}, {'username': 1, 'displayName': 1, '_id': 0}, function(err, results) {
     let userList = results.sort(function(user1, user2) {
       if (user1.username.toLowerCase() < user2.username.toLowerCase())
         return -1;
