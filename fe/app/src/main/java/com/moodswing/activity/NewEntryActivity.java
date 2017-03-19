@@ -192,6 +192,7 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
                 if(db.getDate().equals(tempDate)){
                     _titleText.setEnabled(false);
                     _titleText.setHint(db.getTitle());
+                    _titleText.setText(db.getTitle());
                     _titleLayout.setBackgroundResource(R.drawable.background_newentrynotselectable);
                     break;
                 }else{
@@ -215,6 +216,9 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
             public void onClick(View v) {
                 String description = _descText.getText().toString();
                 title = _titleText.getText().toString();
+                Log.i("***" + title, "**********************************");
+                Log.i(description, "**********************************");
+                Log.i(date, "**********************************");
                 if(!isEmpty(description) && !isEmpty(date) && !isEmpty(title)){
                     shareEntry(description);
                 }
