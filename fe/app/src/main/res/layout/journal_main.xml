@@ -14,7 +14,6 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/date_recycler_view"
         android:background="#b3ccda"
-        android:layout_marginTop="56dp"
         android:layout_marginBottom="56dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

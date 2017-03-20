@@ -98,7 +98,6 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView {
     String displayName;
     String dateID;
     private List<Comment> commentList = new ArrayList<>();
-    private List<Comment> tempList = new ArrayList<>();
     private RecyclerView commentRecyclerView;
     private CommentAdapter commentAdapter;
 

@@ -10,7 +10,7 @@
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
     android:clickable="true"
-    android:background="@color/white"
+    android:background="#FFFFFF"
     android:orientation="vertical"
     tools:showIn="@layout/journal_main"
     tools:context=".activity.JournalActivity">
@@ -32,7 +32,7 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/capture_recycler_view"
-        android:background="#ffffff"
+        android:background="#FFFFFF"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"

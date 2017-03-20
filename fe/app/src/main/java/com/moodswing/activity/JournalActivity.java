@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.moodswing.MoodSwingApplication;
@@ -56,6 +57,9 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
     @Inject2
     SharedPreferencesManager _sharedPreferencesManager;
 
+    @BindView(R.id.user_displayname)
+    TextView _userDisplayName;
+
     @BindView(R.id.date_recycler_view)
     android.support.v7.widget.RecyclerView _dRecyclerView;
 
@@ -66,6 +70,8 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
     Toolbar toolbar;
 
     private JournalComponent _journalComponent;
+    private boolean isResuming = false;
+    private String displayName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +100,12 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
         }
 
         dAdapter = new DateAdapter(dBlocks, captures, this, getApplicationContext(), _journalPresenter);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
         _dRecyclerView.setLayoutManager(layoutManager);
         _dRecyclerView.setItemAnimator(new DefaultItemAnimator());
         _dRecyclerView.addItemDecoration(new DateDivider(this, R.drawable.divider));
@@ -109,6 +120,8 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
             setTitle(_sharedPreferencesManager.getCurrentUser() + "'s " + "MoodSwings");
             captures.clear();
             dBlocks.clear();
+            isResuming = true;
+            _journalPresenter.getUsers();
             _journalPresenter.getEntries();
         }
     }
@@ -176,13 +189,22 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
     public void onGetUserInfoSuccess(List<User> users){
         Intent captureIntent = DateAdapter.getCaptureIntent();
         String username = DateAdapter.getCapUsername();
+        if (isResuming){
+            username = _sharedPreferencesManager.getCurrentUser();
+        }
         for (User user: users){
             if (user.getUsername().equals(username)){
-                captureIntent.putExtra("EXTRA_DISPLAYNAME", user.getDisplayName());
+                displayName = user.getDisplayName();
                 break;
             }
         }
-        startActivity(captureIntent);
+        if (isResuming){
+            _userDisplayName.setText(displayName);
+            isResuming = false;
+        }else{
+            captureIntent.putExtra("EXTRA_DISPLAYNAME", displayName);
+            startActivity(captureIntent);
+        }
     }
 
     @Override

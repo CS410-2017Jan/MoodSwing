@@ -91,7 +91,12 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
 
             cAdapter = new CaptureAdapter();
             _cRecyclerView = (RecyclerView) itemView.findViewById(R.id.capture_recycler_view);
-            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context){
+                @Override
+                public boolean canScrollVertically() {
+                    return false;
+                }
+            };
             _cRecyclerView.setLayoutManager(layoutManager);
             _cRecyclerView.addItemDecoration(new CaptureDivider(context, LinearLayoutManager.VERTICAL));
             _cRecyclerView.setAdapter(cAdapter);
