@@ -637,6 +637,7 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
     private void forwardBitmap(byte[] byteArray) {
         Intent intent = new Intent(this, NewEntryActivity.class);
         intent.putExtra("CAPTURE", byteArray);
+        intent.putExtra("NEW_ENTRY_INTENT", "CAMERA_ACTIVITY");
         startActivity(intent);
     }
 

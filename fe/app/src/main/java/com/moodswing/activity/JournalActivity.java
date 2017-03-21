@@ -244,6 +244,7 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), NewEntryActivity.class);
+                intent.putExtra("NEW_ENTRY_INTENT", "JOURNAL_ACTIVITY");
                 startActivity(intent);
             }
         });

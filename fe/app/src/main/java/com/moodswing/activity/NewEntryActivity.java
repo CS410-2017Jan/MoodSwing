@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 
@@ -39,6 +40,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.zip.DataFormatException;
+import java.util.zip.Inflater;
 
 import javax.inject.Inject2;
 
@@ -115,19 +118,31 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
         initializePictureListener();
         initializeDate();
         initializeBottomNavigationView();
-
         checkIntent();
     }
 
     private void checkIntent() {
-        byteArray = getIntent().getByteArrayExtra("CAPTURE");
-
-        if (byteArray != null) {
-            capture = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-            _postImage.setImageBitmap(capture);
-            _postImage.setBackgroundColor(Color.TRANSPARENT);
-            _insideImage.setVisibility(View.INVISIBLE);
+        String activityIntent = getIntent().getStringExtra("NEW_ENTRY_INTENT");
+        if (activityIntent.equals("FULL_SCREEN_IMAGE_ACTIVITY")) {
+            String uri = getIntent().getStringExtra("CAPTURE_URI");
+            Uri uriPicture = Uri.parse(uri);
+            if (uriPicture != null) {
+                _postImage.setImageURI(uriPicture);
+                _postImage.setBackgroundColor(Color.TRANSPARENT);
+                _insideImage.setVisibility(View.INVISIBLE);
+            }
         }
+
+        if(activityIntent.equals("CAMERA_ACTIVITY")) {
+            byteArray = getIntent().getByteArrayExtra("CAPTURE");
+            if (byteArray != null) {
+                capture = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                _postImage.setImageBitmap(capture);
+                _postImage.setBackgroundColor(Color.TRANSPARENT);
+                _insideImage.setVisibility(View.INVISIBLE);
+            }
+        }
+
     }
 
     @Override
