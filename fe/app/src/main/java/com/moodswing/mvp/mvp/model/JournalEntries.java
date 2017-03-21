@@ -13,13 +13,15 @@ public class JournalEntries {
     String title;
     String entryDate;
     String _id;
+    List<Comment> comments;
 
-    public JournalEntries(String username, List<Capture> captures, String title, String date, String _id){
+    public JournalEntries(String username, List<Capture> captures, String title, String date, String _id, List<Comment> comments){
         this.username = username;
         this.captures = captures;
         this.title = title;
         this.entryDate = date;
         this._id = _id;
+        this.comments = comments;
     }
 
     public List<Capture> getEntry(){
@@ -45,4 +47,6 @@ public class JournalEntries {
     public void setId(String id){
         _id = id;
     }
+
+    public List<Comment> getComments(){ return comments; }
 }

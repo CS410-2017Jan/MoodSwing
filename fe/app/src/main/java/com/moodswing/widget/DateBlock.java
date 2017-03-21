@@ -1,5 +1,6 @@
 package com.moodswing.widget;
 
+import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.Comment;
 
 import java.util.List;

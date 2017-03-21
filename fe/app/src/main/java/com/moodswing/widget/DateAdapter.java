@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +23,7 @@ import com.moodswing.R;
 import com.moodswing.activity.CaptureActivity;
 import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.CaptureDivider;
+import com.moodswing.mvp.mvp.model.Comment;
 import com.moodswing.mvp.mvp.presenter.JournalPresenter;
 
 import java.text.DateFormat;
@@ -41,13 +44,12 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
     private List<Capture> captures;
     private static RecyclerView _cRecyclerView;
     Context jActivity;
-    //Context context1;
     JournalPresenter _journalPresenter;
     public static Intent captureIntent;
     public static String capUsername;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, date;
+        public TextView title, date, numComments;
         private CaptureAdapter cAdapter;
 
         public MyViewHolder(View view) {
@@ -56,6 +58,7 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
 
             title = (TextView) view.findViewById(R.id.title);
             date = (TextView) view.findViewById(R.id.date);
+            numComments = (TextView) view.findViewById(R.id.num_comments);
 
             title.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -108,7 +111,6 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
                     capturePos = getCaptureIndexInDateBlock(cAdapter, position);
                     Capture capture = captures.get(capturePos);
                     DateBlock dateBlock = dBlocks.get(cAdapter.getRowIndex());
-
                     openCapture(capture, dateBlock);
                 }
 
@@ -159,11 +161,10 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
     }
 
 
-    public DateAdapter(List<DateBlock> dBlocks, List<Capture> captures, Context c, Context context, JournalPresenter _journalPresenter) {
+    public DateAdapter(List<DateBlock> dBlocks, List<Capture> captures, Context c, JournalPresenter _journalPresenter) {
         this.dBlocks = dBlocks;
         this.captures = captures;
         this.jActivity = c;
-        //this.context1 = context;
         this._journalPresenter = _journalPresenter;
     }
 
@@ -176,8 +177,15 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         DateBlock db = dBlocks.get(position);
+        List<Comment> comments = db.getComments();
         holder.date.setText(db.getDate());
         holder.title.setText(db.getTitle());
+
+        int commentsSize = comments.size();
+        String comText = " comments";
+        if (commentsSize == 1) { comText = " comment"; }
+
+        holder.numComments.setText(Integer.toString(commentsSize) + comText);
 
         ArrayList<Capture> temp = new ArrayList<>();
         for(Capture c: captures){
@@ -186,8 +194,8 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
             }
         }
 
-        holder.cAdapter.setData(temp);
-        holder.cAdapter.setRowIndex(position);
+        holder.cAdapter.setData(temp, _journalPresenter, jActivity);                // TODO:AJKDHLKSDHKLSDH
+        holder.cAdapter.setRowIndex(position);                                      // TODO:AJKDHLKSDHKLSDH
     }
 
     @Override

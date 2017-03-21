@@ -25,4 +25,11 @@
         android:layout_toRightOf="@+id/listViewImage"
         android:layout_toEndOf="@+id/listViewImage" />
 
+    <ImageButton
+        android:id="@+id/entry_options"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:background="@drawable/chaliceoptions"
+        android:layout_alignParentRight="true" />/>
+
 </RelativeLayout>

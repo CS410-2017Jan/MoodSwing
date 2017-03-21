@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ import com.moodswing.injector.module.ActivityModule;
 import com.moodswing.injector.module.JournalModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.model.Capture;
+import com.moodswing.mvp.mvp.model.Comment;
 import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.widget.DateDivider;
 import com.moodswing.widget.DateAdapter;
@@ -59,6 +61,9 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
 
     @BindView(R.id.user_displayname)
     TextView _userDisplayName;
+
+    @BindView(R.id.entire_container)
+    RelativeLayout _entireContainer;
 
     @BindView(R.id.date_recycler_view)
     android.support.v7.widget.RecyclerView _dRecyclerView;
@@ -99,7 +104,7 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
             startActivity(intent);
         }
 
-        dAdapter = new DateAdapter(dBlocks, captures, this, getApplicationContext(), _journalPresenter);
+        dAdapter = new DateAdapter(dBlocks, captures, this, _journalPresenter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this){
             @Override
             public boolean canScrollVertically() {
@@ -140,8 +145,9 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
             String dbid = je.getId();
             String t = je.getTitle();
             String u = je.getUsername();
+            List<Comment> comments = je.getComments();
 
-            DateBlock db = new DateBlock(t, sDate, dbid, u);
+            DateBlock db = new DateBlock(t, sDate, dbid, u, comments);
             dBlocks.add(db);
 
             for(Capture e: capture){
