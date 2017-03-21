@@ -153,7 +153,7 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public interface EmotionThreadEventListener {
-        void onBitmapGenerated(Bitmap bitmap);
+        void onBitmapGenerated(Bitmap bitmap, String currentEmoji);
     }
 
     private class EmotionViewThread extends Thread {
@@ -163,6 +163,7 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
         private volatile boolean requestCaptureBitmap = false; //boolean to indicate a snapshot of the surface has been requested
         private EmotionThreadEventListener emotionThreadEventListener;
         private GifDrawable currentAnimation;
+        private String currentEmoji;
         private int currentAnimationResource = -1;
 
         public EmotionViewThread(SurfaceHolder surfaceHolder, EmotionThreadEventListener emotionThreadEventListener) {
@@ -235,7 +236,7 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
                         surfaceHolder.unlockCanvasAndPost(c);
                     }
                     if (screenshotBitmap != null && emotionThreadEventListener != null) {
-                        emotionThreadEventListener.onBitmapGenerated(Bitmap.createBitmap(screenshotBitmap));
+                        emotionThreadEventListener.onBitmapGenerated(Bitmap.createBitmap(screenshotBitmap), currentEmoji);
                         screenshotBitmap.recycle();
                     }
                 }
@@ -274,7 +275,9 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         private void drawFaceAttributes(Canvas c, Face nextFaceToDraw) {
-            //Draw the Emoji markers
+            // Record current emoji
+            currentEmoji = nextFaceToDraw.emojis.getDominantEmoji().name();
+            // Draw the Emoji markers
             drawDominantEmoji(c, nextFaceToDraw);
             drawEmotionProgressCircle(c, getDominantEmojiScore(nextFaceToDraw));
             drawEmotionAnimation(c, nextFaceToDraw);

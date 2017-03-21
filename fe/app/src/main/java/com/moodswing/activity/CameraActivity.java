@@ -550,16 +550,16 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
     }
 
     @Override
-    public void onBitmapGenerated(@NonNull final Bitmap bitmap) {
+    public void onBitmapGenerated(@NonNull final Bitmap bitmap, final String currentEmoji) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                processScreenshot(bitmap);
+                processScreenshot(bitmap, currentEmoji);
             }
         });
     }
 
-    private void processScreenshot(final Bitmap emotionViewBitmap) {
+    private void processScreenshot(final Bitmap emotionViewBitmap, final String currentEmoji) {
         if (mostRecentFrame == null) {
             Toast.makeText(getApplicationContext(), "No frame detected, aborting screenshot", Toast.LENGTH_SHORT).show();
             return;
@@ -600,7 +600,7 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
                         finalScreenshot.recycle();
                         previewImage.recycle();
                     }
-                }).setNeutralButton("Post", new DialogInterface.OnClickListener() {
+                }).setNeutralButton("Share", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -611,7 +611,7 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
                         finalScreenshot.recycle();
                         previewImage.recycle();
 
-                        forwardBitmap(byteArray);
+                        forwardBitmap(byteArray, currentEmoji);
                     }
                 }).setPositiveButton("Discard", new DialogInterface.OnClickListener() {
                     @Override
@@ -634,9 +634,10 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
         dialog.show();
     }
 
-    private void forwardBitmap(byte[] byteArray) {
+    private void forwardBitmap(byte[] byteArray, String currentEmoji) {
         Intent intent = new Intent(this, NewEntryActivity.class);
         intent.putExtra("CAPTURE", byteArray);
+        intent.putExtra("CURRENT_EMOJI", currentEmoji);
         intent.putExtra("NEW_ENTRY_INTENT", "CAMERA_ACTIVITY");
         startActivity(intent);
     }
