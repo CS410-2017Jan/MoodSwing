@@ -56,9 +56,9 @@ public class CaptureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             text = (TextView) view.findViewById(R.id.description);
             _options = (ImageButton) view.findViewById(R.id.entry_options);
 
-            _options.setOnClickListener(new View.OnClickListener() {
+            _options.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public void onClick(View v) {
+                public boolean onLongClick(View v) {
                     int pos = (int) text.getTag();
                     final Capture capture = captures.get(pos);
 
@@ -76,6 +76,7 @@ public class CaptureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         }
                     });
                     popup.show();
+                    return true;
                 }
             });
         }
