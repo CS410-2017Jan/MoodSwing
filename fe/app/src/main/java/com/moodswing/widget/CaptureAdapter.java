@@ -3,6 +3,7 @@ package com.moodswing.widget;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -17,10 +18,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.moodswing.R;
+import com.moodswing.activity.EditEntryActivity;
 import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.presenter.JournalPresenter;
 
 import java.util.List;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by Matthew on 2017-03-10.
@@ -69,8 +73,8 @@ public class CaptureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         public boolean onMenuItemClick(MenuItem item) {
                             if(item.getTitle().equals("Delete")){
                                 displayDeleteWarning("Are you sure you want to delete your post?", capture);
-                            }else{
-                                Toast.makeText(jActivity, item.getTitle(), Toast.LENGTH_SHORT).show();
+                            }if(item.getTitle().equals("Edit")){
+                                StartEditActivity(capture.getText(), capture.getId());
                             }
                             return true;
                         }
@@ -80,6 +84,13 @@ public class CaptureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
             });
         }
+    }
+
+    private void StartEditActivity(String text, String id){
+        Intent intent = new Intent(jActivity, EditEntryActivity.class);
+        intent.putExtra("TEXT", text);
+        intent.putExtra("ID", id);
+        jActivity.startActivity(intent);
     }
 
     private void displayDeleteWarning(String s, final Capture capture) {

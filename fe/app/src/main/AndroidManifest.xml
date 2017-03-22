@@ -60,6 +60,10 @@
             android:theme="@style/AppTheme"
             android:label="New Journal Entry"/>
         <activity
+            android:name=".activity.EditEntryActivity"
+            android:theme="@style/AppTheme"
+            android:label="Edit Journal Entry"/>
+        <activity
             android:name=".activity.CameraActivity"
             android:label="@string/title_activity_camera"
             android:theme="@style/NoBarAppTheme"

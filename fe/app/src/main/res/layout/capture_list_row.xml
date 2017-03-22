@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
+    android:layout_height="92dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:focusable="true"
     android:clickable="true"
@@ -10,7 +10,7 @@
 
     <ImageView
         android:id="@+id/listViewImage"
-        android:layout_width="80dp"
+        android:layout_width="85dp"
         android:layout_height="match_parent"
         app:srcCompat="@color/colorPrimaryDark"
         android:layout_alignParentLeft="true" />
@@ -21,7 +21,10 @@
         android:layout_height="wrap_content"
         android:textSize="12dp"
         android:layout_alignParentTop="true"
-        android:layout_margin="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         android:layout_toRightOf="@+id/listViewImage"
         android:layout_toEndOf="@+id/listViewImage" />
 

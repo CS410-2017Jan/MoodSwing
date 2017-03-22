@@ -4,8 +4,10 @@ import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.LoginRequest;
 import com.moodswing.mvp.mvp.model.SignupRequest;
 import com.moodswing.mvp.mvp.model.Comment;
+import com.moodswing.mvp.mvp.model.Text;
 import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
+import com.moodswing.mvp.mvp.model.response.EditEntryResponse;
 import com.moodswing.mvp.mvp.model.response.LoginResponse;
 import com.moodswing.mvp.mvp.model.response.NewEntryResponse;
 import com.moodswing.mvp.mvp.model.response.PostCommentResponse;
@@ -50,6 +52,11 @@ public class MoodSwingRestRepository implements Repository {
     @Override
     public Observable<SetTitleResponse> setTitle(String accessToken, String entryId, Title title){
         return apiService.setTitle(accessToken, entryId, title);
+    }
+
+    @Override
+    public Observable<EditEntryResponse> editEntryText(String accessToken, String id, Text text){
+        return apiService.editEntryText(accessToken, id, text);
     }
 
     @Override

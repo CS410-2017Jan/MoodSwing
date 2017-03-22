@@ -4,8 +4,10 @@ import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.LoginRequest;
 import com.moodswing.mvp.mvp.model.SignupRequest;
 import com.moodswing.mvp.mvp.model.Comment;
+import com.moodswing.mvp.mvp.model.Text;
 import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
+import com.moodswing.mvp.mvp.model.response.EditEntryResponse;
 import com.moodswing.mvp.mvp.model.response.LoginResponse;
 import com.moodswing.mvp.mvp.model.response.NewEntryResponse;
 import com.moodswing.mvp.mvp.model.response.PostCommentResponse;
@@ -32,6 +34,7 @@ import retrofit2.http.Part;
 public interface Repository {
     Observable<NewEntryResponse> postNewEntry(Capture capture, String accessToken);
     Observable<SetTitleResponse> setTitle(String accessToken, String entryId, Title title);
+    Observable<EditEntryResponse> editEntryText(String accessToken, String id, Text text);
     Observable<DeleteCaptureResponse> deleteCapture(String _id, String accessToken);
     Observable<List<JournalEntries>> getJournalEntries(String username);
     Observable<DateBlock> getComments(String entryId);

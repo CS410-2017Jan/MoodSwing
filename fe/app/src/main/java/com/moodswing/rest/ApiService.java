@@ -4,8 +4,10 @@ import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.LoginRequest;
 import com.moodswing.mvp.mvp.model.SignupRequest;
 import com.moodswing.mvp.mvp.model.Comment;
+import com.moodswing.mvp.mvp.model.Text;
 import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
+import com.moodswing.mvp.mvp.model.response.EditEntryResponse;
 import com.moodswing.mvp.mvp.model.response.LoginResponse;
 import com.moodswing.mvp.mvp.model.response.NewEntryResponse;
 import com.moodswing.mvp.mvp.model.response.PostCommentResponse;
@@ -56,6 +58,12 @@ public interface ApiService {
     Observable<SetTitleResponse> setTitle(@Header("x-access-token") String accessToken,
                                           @Path("entryId") String entryId,
                                           @Body Title title);
+
+    @Headers("Content-Type: application/json")
+    @PUT("users/self/captures/{captureId}")
+    Observable<EditEntryResponse> editEntryText(@Header("x-access-token") String accessToken,
+                                                @Path("captureId") String captureId,
+                                                @Body Text text);
 
     @Headers("Content-Type: application/json")
     @POST("entries/{entryId}/comments")
