@@ -49,6 +49,44 @@
                     android:layout_alignParentStart="true"
                     android:layout_marginTop="5dp" />
 
+                <ImageView
+                    android:id="@+id/emoji1"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignTop="@+id/imageView"
+                    android:layout_toLeftOf="@+id/imageView"
+                    android:layout_toStartOf="@+id/imageView"
+                    android:layout_marginRight="43dp"
+                    android:layout_marginEnd="43dp"
+                    android:layout_marginTop="25dp" />
+
+                <ImageView
+                    android:id="@+id/emoji2"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignTop="@+id/imageView"
+                    android:layout_toRightOf="@+id/imageView"
+                    android:layout_marginLeft="43dp"
+                    android:layout_marginTop="25dp" />
+
+                <TextView
+                    android:id="@+id/emoji1Count"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/emoji1"
+                    android:layout_marginRight="43dp"
+                    android:layout_toLeftOf="@+id/imageView"
+                    android:gravity="center" />
+
+                <TextView
+                    android:id="@+id/emoji2Count"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/emoji2"
+                    android:layout_marginLeft="43dp"
+                    android:layout_toRightOf="@+id/imageView"
+                    android:gravity="center" />
+
             </RelativeLayout>
 
             <RelativeLayout

@@ -96,6 +96,7 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
     private boolean loadingDate = false;
     private String date = "";
     String title = "";
+    String currentEmoji;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +123,7 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
     }
 
     private void checkIntent() {
+        currentEmoji = "NONE";
         String activityIntent = getIntent().getStringExtra("NEW_ENTRY_INTENT");
         if (activityIntent.equals("FULL_SCREEN_IMAGE_ACTIVITY")) {
             String uri = getIntent().getStringExtra("CAPTURE_URI");
@@ -135,6 +137,8 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
 
         if(activityIntent.equals("CAMERA_ACTIVITY")) {
             byteArray = getIntent().getByteArrayExtra("CAPTURE");
+            currentEmoji = getIntent().getStringExtra("CURRENT_EMOJI");
+            Log.i("***" + currentEmoji, "************************************");
             if (byteArray != null) {
                 capture = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
                 _postImage.setImageBitmap(capture);

@@ -3,8 +3,12 @@ package com.moodswing.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.media.Image;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,6 +69,21 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
 
     @BindView(R.id.entire_container)
     RelativeLayout _entireContainer;
+
+    @BindView(R.id.relativeLayout7)
+    RelativeLayout _emojiGradient;
+
+    @BindView(R.id.emoji1)
+    ImageView _emoji1;
+
+    @BindView(R.id.emoji2)
+    ImageView _emoji2;
+
+    @BindView(R.id.emoji1Count)
+    TextView _e1Count;
+
+    @BindView(R.id.emoji2Count)
+    TextView _e2Count;
 
     @BindView(R.id.date_recycler_view)
     android.support.v7.widget.RecyclerView _dRecyclerView;
@@ -195,21 +215,100 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
     public void onGetUserInfoSuccess(List<User> users){
         Intent captureIntent = DateAdapter.getCaptureIntent();
         String username = DateAdapter.getCapUsername();
+        int e1Count = 0;
+        int e2Count = 0;
         if (isResuming){
             username = _sharedPreferencesManager.getCurrentUser();
         }
         for (User user: users){
             if (user.getUsername().equals(username)){
                 displayName = user.getDisplayName();
+                e1Count = 36;
+                e2Count = 11;
                 break;
             }
         }
         if (isResuming){
             _userDisplayName.setText(displayName);
+            _e1Count.setText(Integer.toString(e1Count));
+            _e2Count.setText(Integer.toString(e2Count));
+            setEmojiDetails("RELAXED", "DISAPPOINTED");
             isResuming = false;
         }else{
             captureIntent.putExtra("EXTRA_DISPLAYNAME", displayName);
             startActivity(captureIntent);
+        }
+    }
+
+    private void setEmojiDetails(String e1, String e2) {
+        _emoji1.setBackground(setEmoji(e1));
+        _emoji2.setBackground(setEmoji(e2));
+        int e1Color = setColor(e1);
+        int e2Color = setColor(e2);
+        GradientDrawable gd = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, new int[] {e1Color, e2Color});
+        gd.setCornerRadius(0f);
+        _emojiGradient.setBackgroundDrawable(gd);
+    }
+
+    private Drawable setEmoji(String emotion) {
+        switch (emotion) {
+            case "RELAXED":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.relaxed_emoji, null);
+            case "SMILEY":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.smiley_emoji, null);
+            case "LAUGHING":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.laughing_emoji, null);
+            case "WINK":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.wink_emoji, null);
+            case "SMIRK":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.smirk_emoji, null);
+            case "KISSING":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.kissing_emoji, null);
+            case "STUCK_OUT_TONGUE":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.stuck_out_tongue_emoji, null);
+            case "STUCK_OUT_TONGUE_WINKING_EYE":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.stuck_out_tongue_winking_eye_emoji, null);
+            case "DISAPPOINTED":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.disappointed_emoji, null);
+            case "RAGE":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.rage_emoji, null);
+            case "SCREAM":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.scream_emoji, null);
+            case "FLUSHED":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.flushed_emoji, null);
+            default: // UNKNOWN
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.blank_emoji, null);
+        }
+    }
+
+    private int setColor(String emotion) {
+        switch (emotion) {
+            case "RELAXED":
+                return 0xFFFFF696;
+            case "SMILEY":
+                return 0xFFFCEF62;
+            case "LAUGHING":
+                return 0xFFFFAB5A;
+            case "WINK":
+                return 0xFF8AC980;
+            case "SMIRK":
+                return 0xFFB26731;
+            case "KISSING":
+                return 0xFFFF9696;
+            case "STUCK_OUT_TONGUE":
+                return 0xFFEA9550;
+            case "STUCK_OUT_TONGUE_WINKING_EYE":
+                return 0xFFEA9550;
+            case "DISAPPOINTED":
+                return 0xFFBFFCFF;
+            case "RAGE":
+                return 0xFFFF912D;
+            case "SCREAM":
+                return 0xFFD39EFF;
+            case "FLUSHED":
+                return 0xFFFF3F3F;
+            default: // UNKNOWN
+                return 0xFFFFFFFF;
         }
     }
 
