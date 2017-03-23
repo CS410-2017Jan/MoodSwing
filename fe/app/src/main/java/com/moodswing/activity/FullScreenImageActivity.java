@@ -113,7 +113,6 @@ public class FullScreenImageActivity extends AppCompatActivity implements FullSc
         Intent intent = new Intent(this, NewEntryActivity.class);
         intent.putExtra("CAPTURE_URI", uri);
         intent.putExtra("NEW_ENTRY_INTENT", "FULL_SCREEN_IMAGE_ACTIVITY");
-
         startActivity(intent);
     }
 
@@ -121,7 +120,9 @@ public class FullScreenImageActivity extends AppCompatActivity implements FullSc
         // First check that we have storage permissions
         if (!storagePermissionsAvailable) {
             checkForStoragePermissions();
-        } else {
+        }
+
+        if (storagePermissionsAvailable)  {
             // Create intent to Open Image applications like Gallery, Google Photos
             // select a file
             Intent intent = new Intent();

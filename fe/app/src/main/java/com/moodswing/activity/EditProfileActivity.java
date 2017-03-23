@@ -12,6 +12,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -78,6 +80,10 @@ public class EditProfileActivity extends MoodSwingActivity implements EditProfil
     private EditProfileComponent _editProfileComponent;
     private boolean storagePermissionsAvailable;
     private Uri selectedProfileUri;
+    private TextWatcher newPasswordWatcher;
+    private TextWatcher displayWatcher;
+    private boolean newPasswordChanged;
+    private boolean displayNameChanged;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,14 +100,16 @@ public class EditProfileActivity extends MoodSwingActivity implements EditProfil
                 .build();
         _editProfileComponent.inject(this);
 
+        newPasswordChanged = false;
+        displayNameChanged = false;
         selectedProfileUri = null;
         initializePresenter();
-        initializeButtons();
         initializeProfileInformation();
+        initializeButtonsAndText();
         initializeBottomNavigationView();
     }
 
-    private void initializeButtons() {
+    private void initializeButtonsAndText() {
         _editProfilePictureButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -117,18 +125,52 @@ public class EditProfileActivity extends MoodSwingActivity implements EditProfil
                 saveProfile();
             }
         });
+
+
+        //Check for Changes
+        displayWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {    }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                displayNameChanged = true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {  }
+        };
+
+        newPasswordWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {    }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                newPasswordChanged = true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {  }
+        };
+
+        _displayNameText.addTextChangedListener(displayWatcher);
+        _newPasswordText.addTextChangedListener(newPasswordWatcher);
     }
+
+
 
     private void initializeProfileInformation() {
         _editProfilePresenter.getPicture();
-
     }
 
     private void changeProfilePicture() {
         // First check that we have storage permissions
         if (!storagePermissionsAvailable) {
             checkForStoragePermissions();
-        } else {
+        }
+
+        if (storagePermissionsAvailable) {
             // Create intent to Open Image applications like Gallery, Google Photos
             // select a file
             Intent intent = new Intent();
@@ -202,9 +244,21 @@ public class EditProfileActivity extends MoodSwingActivity implements EditProfil
             savePicture();
         }
 
+        String newPassword;
+        String displayName;
         String oldPassword = _oldPasswordText.getText().toString();
-        String newPassword = _newPasswordText.getText().toString();
-        String displayName = _displayNameText.getText().toString();
+
+        if (newPasswordChanged) {
+            newPassword = _newPasswordText.getText().toString();
+        } else {
+            newPassword = null;
+        }
+
+        if (displayNameChanged) {
+            displayName = _displayNameText.getText().toString();
+        } else {
+            displayName = null;
+        }
 
         saveDetails(oldPassword, newPassword, displayName);
         Toast.makeText(getBaseContext(), "Profile Updated", Toast.LENGTH_LONG).show();

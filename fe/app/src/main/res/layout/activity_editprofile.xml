@@ -26,7 +26,7 @@
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             app:srcCompat="@drawable/logo"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"/>
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_saveprofile"
@@ -35,23 +35,17 @@
             android:padding="8dp"
             android:text="@string/savechanges"
             android:textAlignment="center"
-            android:layout_below="@+id/textInputLayout4"
+            android:layout_below="@+id/textInputLayout3"
             android:layout_marginTop="10dp"
             android:layout_centerHorizontal="true" />
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="150dp"
-            android:layout_marginBottom="8dp"
-            android:id="@+id/textInputLayout1"></android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="175dp"
             android:layout_marginBottom="8dp"
-            android:id="@+id/textInputLayout2">
+            android:id="@+id/textInputLayout1">
 
             <EditText
                 android:id="@+id/change_old_password"
@@ -69,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="230dp"
             android:layout_marginBottom="8dp"
-            android:id="@+id/textInputLayout3">
+            android:id="@+id/textInputLayout2">
             <EditText
                 android:id="@+id/change_new_password"
                 android:layout_width="match_parent"
@@ -86,7 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="285dp"
             android:layout_marginBottom="8dp"
-            android:id="@+id/textInputLayout4">
+            android:id="@+id/textInputLayout3">
             <EditText
                 android:id="@+id/change_displayname"
                 android:layout_width="match_parent"
