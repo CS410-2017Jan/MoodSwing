@@ -1,5 +1,6 @@
 package com.moodswing.activity;
 
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -33,6 +34,10 @@ import com.moodswing.mvp.mvp.presenter.NewEntryPresenter;
 import com.moodswing.mvp.mvp.view.NewEntryView;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -127,12 +132,14 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
         String activityIntent = getIntent().getStringExtra("NEW_ENTRY_INTENT");
         if (activityIntent.equals("FULL_SCREEN_IMAGE_ACTIVITY")) {
             String uri = getIntent().getStringExtra("CAPTURE_URI");
+            String type[] = uri.split("/");
             Uri uriPicture = Uri.parse(uri);
             if (uriPicture != null) {
                 _postImage.setImageURI(uriPicture);
                 _postImage.setBackgroundColor(Color.TRANSPARENT);
                 _insideImage.setVisibility(View.INVISIBLE);
             }
+            byteArray = convertImageToByte(uriPicture);
         }
 
         if(activityIntent.equals("CAMERA_ACTIVITY")) {
@@ -146,7 +153,21 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
                 _insideImage.setVisibility(View.INVISIBLE);
             }
         }
+    }
 
+    public byte[] convertImageToByte(Uri uri){
+        byte[] data = null;
+        try {
+            ContentResolver cr = getBaseContext().getContentResolver();
+            InputStream inputStream = cr.openInputStream(uri);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 10, baos);
+            data = baos.toByteArray();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return data;
     }
 
     @Override

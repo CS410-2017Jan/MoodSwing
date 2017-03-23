@@ -1,10 +1,12 @@
 package com.moodswing.rest;
 
 import com.moodswing.mvp.mvp.model.Capture;
+import com.moodswing.mvp.mvp.model.ChangeProfileRequest;
 import com.moodswing.mvp.mvp.model.LoginRequest;
 import com.moodswing.mvp.mvp.model.SignupRequest;
 import com.moodswing.mvp.mvp.model.Comment;
 import com.moodswing.mvp.mvp.model.Text;
+import com.moodswing.mvp.mvp.model.response.ChangeProfileResponse;
 import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.response.EditEntryResponse;
@@ -99,6 +101,10 @@ public class MoodSwingRestRepository implements Repository {
         return apiService.deleteCapture(_id, token);
     }
 
+    @Override
+    public Observable<ChangeProfileResponse> changeUser(String accessToken, ChangeProfileRequest changeProfileRequest){
+        return apiService.changeUser(accessToken, changeProfileRequest);
+    }
 //    @Override
 //    public Observable<PostCommentResponse> getCaptureData(Capture capture, String accessToken) {
 //        return apiService.getCaptureData(capture, accessToken);

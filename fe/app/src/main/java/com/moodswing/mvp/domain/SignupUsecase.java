@@ -16,7 +16,9 @@ public class SignupUsecase implements Usecase<SignupResponse> {
 
     public SignupUsecase(Repository repository) {this.repository = repository;}
 
-    public void setSignupRequest(SignupRequest signupRequest) {this.signupRequest = signupRequest;}
+    public void setSignupRequest(SignupRequest signupRequest) {
+        this.signupRequest = signupRequest;
+    }
 
     @Override
     public Observable<SignupResponse> execute() {

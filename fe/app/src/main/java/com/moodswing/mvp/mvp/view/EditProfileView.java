@@ -9,4 +9,5 @@ import okhttp3.ResponseBody;
 public interface EditProfileView {
 
     void getPicture(ResponseBody picture);
+    void noPictureMessage();
 }

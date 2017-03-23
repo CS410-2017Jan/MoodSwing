@@ -589,7 +589,6 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
         canvas.drawBitmap(emotionViewBitmap, null, new Rect(0, 0, faceBitmap.getWidth(), scaledHeight), paint);
 
         emotionViewBitmap.recycle();
-
         final Bitmap previewImage = finalScreenshot.copy(finalScreenshot.getConfig(), true);
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setNegativeButton("Save to device", new DialogInterface.OnClickListener() {

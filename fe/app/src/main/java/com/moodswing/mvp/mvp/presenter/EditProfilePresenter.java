@@ -5,6 +5,9 @@ import android.util.Log;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.EditProfilePictureUsecase;
 import com.moodswing.mvp.domain.GetProfilePictureUsecase;
+import com.moodswing.mvp.domain.PutProfileUsecase;
+import com.moodswing.mvp.mvp.model.ChangeProfileRequest;
+import com.moodswing.mvp.mvp.model.response.ChangeProfileResponse;
 import com.moodswing.mvp.mvp.model.response.ProfilePictureResponse;
 import com.moodswing.mvp.mvp.view.EditProfileView;
 
@@ -22,15 +25,19 @@ import okhttp3.ResponseBody;
 public class EditProfilePresenter implements Presenter<EditProfileView> {
     private EditProfilePictureUsecase editProfilePictureUseCase;
     private GetProfilePictureUsecase getProfilePictureUsecase;
+    private PutProfileUsecase putProfileUsecase;
     private EditProfileView editProfileView;
     private SharedPreferencesManager sharedPreferencesManager;
     private Disposable newProfilePictureSubscription;
     private Disposable getProfilePictureSubcscription;
+    private Disposable putProfileSubscription;
 
     public EditProfilePresenter(EditProfilePictureUsecase editProfilePictureUsecase,
-                                GetProfilePictureUsecase getProfilePictureUsecase) {
+                                GetProfilePictureUsecase getProfilePictureUsecase,
+                                PutProfileUsecase putProfileUsecase) {
         this.editProfilePictureUseCase = editProfilePictureUsecase;
         this.getProfilePictureUsecase = getProfilePictureUsecase;
+        this.putProfileUsecase = putProfileUsecase;
     }
 
     @Override
@@ -80,6 +87,28 @@ public class EditProfilePresenter implements Presenter<EditProfileView> {
                 });
     }
 
+    public void putProfile(String oldPassword, String newPassword, String newDisplayName) {
+        String token = sharedPreferencesManager.getToken();
+        putProfileUsecase.seToken(token);
+        putProfileUsecase.setChangeProfileRequest(new ChangeProfileRequest(oldPassword, newPassword, newDisplayName));
+
+        putProfileSubscription = putProfileUsecase.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ChangeProfileResponse>() {
+                    @Override
+                    public void accept(ChangeProfileResponse response) throws Exception {
+                        Log.d("GET_PROFILE_PICTURE", "SUCCESS");
+                    }
+
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.d("GET_PROFILE_PICTURE", "FAILURE: " + throwable.getMessage());
+                    }
+                });
+    }
+
     public void getPicture() {
         String token = sharedPreferencesManager.getToken();
         getProfilePictureUsecase.setToken(token);
@@ -97,6 +126,7 @@ public class EditProfilePresenter implements Presenter<EditProfileView> {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                        editProfileView.noPictureMessage();
                         Log.d("GET_PROFILE_PICTURE", "FAILURE: " + throwable.getMessage());
                     }
                 });

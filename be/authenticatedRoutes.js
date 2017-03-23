@@ -105,7 +105,7 @@ router.get('/users/self/picture', (req, res) => {
 			return res.status(404).send({ success: false })
 		}
 
-		if (!user.profilePicture) {
+		if (!user.profilePicture.data) {
 			return res.status(404).send({ success: false, message: 'User does not have a profile picture'})
 		}
 
@@ -504,6 +504,3 @@ router.get('/users/self/notifications', function(req, res) {
 */
 
 module.exports = router
-
-
-

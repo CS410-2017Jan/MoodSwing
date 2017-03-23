@@ -12,10 +12,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.moodswing.MoodSwingApplication;
 import com.moodswing.R;
@@ -67,11 +69,11 @@ public class EditProfileActivity extends MoodSwingActivity implements EditProfil
     @BindView(R.id.change_displayname)
     EditText _displayNameText;
 
-    @BindView(R.id.change_username)
-    EditText _usernameText;
+    @BindView(R.id.change_old_password)
+    EditText _oldPasswordText;
 
-    @BindView(R.id.change_password)
-    EditText _passwordText;
+    @BindView(R.id.change_new_password)
+    EditText _newPasswordText;
 
     private EditProfileComponent _editProfileComponent;
     private boolean storagePermissionsAvailable;
@@ -118,7 +120,6 @@ public class EditProfileActivity extends MoodSwingActivity implements EditProfil
     }
 
     private void initializeProfileInformation() {
-        _usernameText.setText(_sharedPreferencesManager.getCurrentUser());
         _editProfilePresenter.getPicture();
 
     }
@@ -182,6 +183,11 @@ public class EditProfileActivity extends MoodSwingActivity implements EditProfil
         }
     }
 
+    @Override
+    public void noPictureMessage() {
+        Toast.makeText(getBaseContext(), "Add a Profile Picture!", Toast.LENGTH_LONG).show();
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PICTURE) {
@@ -192,14 +198,32 @@ public class EditProfileActivity extends MoodSwingActivity implements EditProfil
     }
 
     private void saveProfile() {
-        File picture = new File(getPath(selectedProfileUri));
+        if (selectedProfileUri != null) {
+            savePicture();
+        }
 
+        String oldPassword = _oldPasswordText.getText().toString();
+        String newPassword = _newPasswordText.getText().toString();
+        String displayName = _displayNameText.getText().toString();
+
+        saveDetails(oldPassword, newPassword, displayName);
+        Toast.makeText(getBaseContext(), "Profile Updated", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(this, JournalActivity.class);
+        startActivity(intent);
+
+    }
+
+    private void saveDetails(String oldPassword, String newPassword, String newDisplayName) {
+        _editProfilePresenter.putProfile(oldPassword, newPassword, newDisplayName);
+    }
+
+    private void savePicture() {
+        File picture = new File(getPath(selectedProfileUri));
         RequestBody requestFile =
                 RequestBody.create(
                         MediaType.parse(getContentResolver().getType(selectedProfileUri)),
                         picture
                 );
-
         MultipartBody.Part body =
                 MultipartBody.Part.createFormData("profilePicture", picture.getName(), requestFile);
 

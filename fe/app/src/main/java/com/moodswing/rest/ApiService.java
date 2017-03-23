@@ -1,10 +1,12 @@
 package com.moodswing.rest;
 
 import com.moodswing.mvp.mvp.model.Capture;
+import com.moodswing.mvp.mvp.model.ChangeProfileRequest;
 import com.moodswing.mvp.mvp.model.LoginRequest;
 import com.moodswing.mvp.mvp.model.SignupRequest;
 import com.moodswing.mvp.mvp.model.Comment;
 import com.moodswing.mvp.mvp.model.Text;
+import com.moodswing.mvp.mvp.model.response.ChangeProfileResponse;
 import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.response.EditEntryResponse;
@@ -92,14 +94,10 @@ public interface ApiService {
     @GET("users/self/picture")
     Observable<ResponseBody> getProfilePicture(@Header("x-access-token") String token);
 
-    /*
+    @Headers("Content-Type: application/json")
     @PUT("users/self")
-    Observable<ChangeUsernameResponse>  changeUsername(@Header("x-access-token") String token,
-                                                       String )
-
-    @PUT("users/self")
-    Observable
-    */
+    Observable<ChangeProfileResponse>  changeUser(@Header("x-access-token") String token,
+                                                  @Body ChangeProfileRequest changeProfileRequest);
 
 //    @Headers("Content-Type: application/json")
 //    @POST("users/self/captures")
