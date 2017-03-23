@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 const User   = require('./app/models/user')
 const JournalEntry   = require('./app/models/journalentry')
 const config = require('./config')
+const mongoose = require('mongoose')
 const _ = require('lodash')
 
 /*
@@ -122,6 +123,8 @@ router.get('/users/:username/entries', function(req, res) {
 
   JournalEntry.find({
     username: username
+  }, {
+    "captures.image": 0
   }, function(err, journalEntries) {
     if (err) throw err
 
@@ -136,6 +139,32 @@ router.get('/users/:username/entries', function(req, res) {
     }).reverse();
 
     return res.status(200).json(sortedEntries)
+  })
+})
+
+router.get('/captures/:captureId/image', (req, res) => {
+
+  let captureId = req.params.captureId
+
+  JournalEntry.findOne({
+    "captures._id": mongoose.Types.ObjectId(captureId)
+  }, {
+    'captures.$': 1
+  }, function(err, entry) {
+    if (err || !entry) {
+      return res.status(400).json({ success: false })
+    }
+
+    let capture = entry.captures[0]
+    let imageBuffer = capture.image.data
+    let imageType = capture.image.contentType
+
+    let img = new Buffer(imageBuffer, 'base64')
+    res.writeHead(200, {
+      'Content-Type': imageType,
+      'Content-Length': img.length
+    })
+    res.status(200).end(img)
   })
 })
 
@@ -154,7 +183,7 @@ router.get('/users', function(req, res) {
 
 router.get('/entries/:entryId', function(req, res) {
   let entryId = req.params.entryId
-  JournalEntry.findById(entryId, function(err, entry) {
+  JournalEntry.findById(entryId, {"captures.image": 0}, function(err, entry) {
     entry = entry.toObject()
 
     if (err || !entry) {
