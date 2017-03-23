@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 
+import android.text.InputFilter;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -173,6 +175,8 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
     @Override
     protected void onResume() {
         super.onResume();
+        _titleText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(30)});
+        _titleText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         loadingDate = true;
         _newEntryPresenter.getEntries();
     }

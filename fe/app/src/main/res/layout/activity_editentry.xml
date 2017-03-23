@@ -5,6 +5,16 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <Button
+        android:id="@+id/btn_save"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:layout_alignParentRight="true"
+        android:textSize="12dp"
+        android:layout_weight="1"
+        android:text="Save" />
+
     <RelativeLayout
         android:id="@+id/newentry_main"
         android:layout_width="match_parent"
@@ -17,24 +27,13 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
-        <Button
-            android:id="@+id/btn_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_weight="1"
-            android:text="Save" />
-
         <RelativeLayout
             android:id="@+id/editDescLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/btn_save"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="55dp"
             android:background="@drawable/background_newentryselectable">
 
             <android.support.design.widget.TextInputLayout

@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.media.Image;
+import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
@@ -40,6 +41,11 @@ import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.presenter.JournalPresenter;
 import com.moodswing.mvp.mvp.view.JournalView;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,6 +57,7 @@ import javax.inject.Inject2;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.ResponseBody;
 
 public class JournalActivity extends MoodSwingActivity implements JournalView {
 
@@ -72,6 +79,9 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
 
     @BindView(R.id.relativeLayout7)
     RelativeLayout _emojiGradient;
+
+    @BindView(R.id.imageView)
+    ImageView _profilePic;
 
     @BindView(R.id.emoji1)
     ImageView _emoji1;
@@ -135,11 +145,14 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
         _dRecyclerView.setItemAnimator(new DefaultItemAnimator());
         _dRecyclerView.addItemDecoration(new DateDivider(this, R.drawable.divider));
         _dRecyclerView.setAdapter(dAdapter);
+
+        _journalPresenter.getProfilePic();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        _dRecyclerView.setFocusable(false);
         if (_journalPresenter.isUserLoggedIn()) {
             toolbar.setTitleTextColor(Color.WHITE);
             setTitle(_sharedPreferencesManager.getCurrentUser() + "'s " + "MoodSwings");
@@ -183,6 +196,49 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
         String message = "Capture Deleted";
         showToast(message);
         onResume();
+    }
+
+    @Override
+    public void getPicture(ResponseBody picture){
+        try {
+            String[] type = picture.contentType().toString().split("/");
+            File profilePictureFile = new File(getExternalFilesDir(null) + File.separator + "OurProfilePicture." + type[1]);
+            InputStream inputStream = null;
+            OutputStream outputStream = null;
+
+            try {
+                byte[] fileReader = new byte[4096];
+                long fileSize = picture.contentLength();
+                long fileSizeDownloaded = 0;
+
+                inputStream = picture.byteStream();
+                outputStream = new FileOutputStream(profilePictureFile);
+
+                while (true) {
+                    int read = inputStream.read(fileReader);
+                    if (read == -1) {
+                        break;
+                    }
+                    outputStream.write(fileReader, 0, read);
+                    fileSizeDownloaded += read;
+                }
+                //SET PICTURE TO IMAGEVIEW
+                _profilePic.setImageURI(Uri.fromFile(profilePictureFile));
+                _profilePic.setBackgroundColor(Color.parseColor("#000000"));
+                outputStream.flush();
+            } catch (IOException e) {
+
+            } finally {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            }
+        } catch (IOException e) {
+
+        }
     }
 
     @Override
