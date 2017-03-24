@@ -96,7 +96,7 @@ public interface ApiService {
 
     @Headers("Content-Type: application/json")
     @PUT("users/self")
-    Observable<ChangeProfileResponse>  changeUser(@Header("x-access-token") String token,
+    Observable<Response<ChangeProfileResponse>>  changeUser(@Header("x-access-token") String token,
                                                   @Body ChangeProfileRequest changeProfileRequest);
 
 //    @Headers("Content-Type: application/json")

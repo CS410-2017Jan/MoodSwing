@@ -10,4 +10,6 @@ public interface EditProfileView {
 
     void getPicture(ResponseBody picture);
     void noPictureMessage();
+    void displaySavedProfile();
+    void displaySaveError(String message);
 }

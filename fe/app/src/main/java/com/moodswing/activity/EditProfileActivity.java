@@ -240,15 +240,16 @@ public class EditProfileActivity extends MoodSwingActivity implements EditProfil
     }
 
     private void saveProfile() {
-        if (selectedProfileUri != null) {
-            savePicture();
-        }
-
         String newPassword;
         String displayName;
         String oldPassword = _oldPasswordText.getText().toString();
 
         if (newPasswordChanged) {
+            if (_newPasswordText.getText().toString().length() < 4) {
+                Toast.makeText(getBaseContext(), "Your new password must be longer than 4 characters!", Toast.LENGTH_LONG).show();
+                return;
+            }
+
             newPassword = _newPasswordText.getText().toString();
         } else {
             newPassword = null;
@@ -260,15 +261,22 @@ public class EditProfileActivity extends MoodSwingActivity implements EditProfil
             displayName = null;
         }
 
-        saveDetails(oldPassword, newPassword, displayName);
+        _editProfilePresenter.putProfile(oldPassword, newPassword, displayName);
+    }
+
+    @Override
+    public void displaySavedProfile() {
+        if (selectedProfileUri != null) {
+            savePicture();
+        }
         Toast.makeText(getBaseContext(), "Profile Updated", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, JournalActivity.class);
         startActivity(intent);
-
     }
 
-    private void saveDetails(String oldPassword, String newPassword, String newDisplayName) {
-        _editProfilePresenter.putProfile(oldPassword, newPassword, newDisplayName);
+    @Override
+    public void displaySaveError(String message) {
+        Toast.makeText(getBaseContext(), message, Toast.LENGTH_LONG).show();
     }
 
     private void savePicture() {

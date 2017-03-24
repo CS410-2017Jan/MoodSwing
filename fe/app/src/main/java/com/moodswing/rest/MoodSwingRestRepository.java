@@ -102,7 +102,7 @@ public class MoodSwingRestRepository implements Repository {
     }
 
     @Override
-    public Observable<ChangeProfileResponse> changeUser(String accessToken, ChangeProfileRequest changeProfileRequest){
+    public Observable<Response<ChangeProfileResponse>> changeUser(String accessToken, ChangeProfileRequest changeProfileRequest){
         return apiService.changeUser(accessToken, changeProfileRequest);
     }
 //    @Override

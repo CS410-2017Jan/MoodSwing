@@ -5,12 +5,13 @@ import com.moodswing.mvp.mvp.model.response.ChangeProfileResponse;
 import com.moodswing.mvp.network.Repository;
 
 import io.reactivex.Observable;
+import retrofit2.Response;
 
 /**
  * Created by Kenny on 2017-03-22.
  */
 
-public class PutProfileUsecase implements Usecase<ChangeProfileResponse>{
+public class PutProfileUsecase implements Usecase<Response<ChangeProfileResponse>>{
     private Repository repository;
     private String accessToken;
     private ChangeProfileRequest changeProfileRequest;
@@ -28,7 +29,7 @@ public class PutProfileUsecase implements Usecase<ChangeProfileResponse>{
     }
 
     @Override
-    public Observable<ChangeProfileResponse> execute() {
+    public Observable<Response<ChangeProfileResponse>> execute() {
         return repository.changeUser(accessToken, changeProfileRequest);
     }
 }

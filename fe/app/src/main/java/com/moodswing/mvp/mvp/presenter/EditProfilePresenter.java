@@ -17,6 +17,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
+import retrofit2.Response;
 
 /**
  * Created by Kenny on 2017-02-27.
@@ -95,16 +96,26 @@ public class EditProfilePresenter implements Presenter<EditProfileView> {
         putProfileSubscription = putProfileUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<ChangeProfileResponse>() {
+                .subscribe(new Consumer<Response<ChangeProfileResponse>>() {
                     @Override
-                    public void accept(ChangeProfileResponse response) throws Exception {
-                        Log.d("GET_PROFILE_PICTURE", "SUCCESS");
+                    public void accept(Response<ChangeProfileResponse> response) throws Exception {
+                        if (response.code() == 200) {
+                            editProfileView.displaySavedProfile();
+                        } else {
+//                            Log.i("RESPONSE ERROR", "IMMMM IN THE ELSSSEEEE");
+//                            Log.i("RESPONSE ERROR", response.errorBody().string().toString());
+//                            String t[] = response.errorBody().string().toString().split(":");
+//                            String temp = t[1];
+//                            temp = temp.substring(0, temp.length() - 1);
+                            editProfileView.displaySaveError("Your password is wrong");
+                        }
                     }
 
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        Log.d("GET_PROFILE_PICTURE", "FAILURE: " + throwable.getMessage());
+                        Log.i("THROWABLE ERROR", throwable.getMessage());
+
                     }
                 });
     }
