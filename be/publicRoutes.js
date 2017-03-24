@@ -124,7 +124,8 @@ router.get('/users/:username/entries', function(req, res) {
   JournalEntry.find({
     username: username
   }, {
-    "captures.image": 0
+    'captures.image': 0,
+    'captures.thumbnail': 0
   }, function(err, journalEntries) {
     if (err) throw err
 
