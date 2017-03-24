@@ -1,5 +1,10 @@
 package com.moodswing.mvp.mvp.presenter;
 
+import android.util.Log;
+import android.widget.Toast;
+
+import com.moodswing.activity.SearchActivity;
+import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.SearchUsecase;
 import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.mvp.view.SearchView;
@@ -18,6 +23,7 @@ import retrofit2.Response;
 
 public class SearchPresenter implements Presenter<SearchView> {
     private SearchView searchView;
+    private SharedPreferencesManager sharedPreferencesManager;
     private SearchUsecase searchUsecase;
     private Disposable searchSubscription;
 
@@ -46,6 +52,10 @@ public class SearchPresenter implements Presenter<SearchView> {
         searchView = view;
     }
 
+    public void attachSharedPreferencesManager(SharedPreferencesManager sharedPreferencesManager) {
+        this.sharedPreferencesManager = sharedPreferencesManager;
+    }
+
     public void search() {
         searchSubscription = searchUsecase.execute()
                 .subscribeOn(Schedulers.io())
@@ -53,8 +63,10 @@ public class SearchPresenter implements Presenter<SearchView> {
                 .subscribe(new Consumer<Response<List<User>>>() {
                     @Override
                     public void accept(Response<List<User>> listResponse) throws Exception {
+                        String currentUser = sharedPreferencesManager.getCurrentUser();
+                        List<User> users = listResponse.body();
                         if (listResponse.code() == 200) {
-                            searchView.initializeListView(listResponse.body());
+                            searchView.initializeListView(users);
                         } else {
                             searchView.showError("Server responded with: " + listResponse.errorBody());
                         }
