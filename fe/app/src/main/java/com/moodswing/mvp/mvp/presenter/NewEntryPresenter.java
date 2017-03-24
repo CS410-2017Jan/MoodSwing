@@ -68,7 +68,6 @@ public class NewEntryPresenter implements Presenter<NewEntryView> {
 
 
     public void uploadCapture(MultipartBody.Part data, RequestBody entryText, RequestBody entryDate) {
-//        newEntryUsecase.setCapture(new Capture(description, date));
         newEntryUsecase.setData(data);
         newEntryUsecase.setText(entryText);
         newEntryUsecase.setDate(entryDate);

@@ -98,6 +98,11 @@ public class MoodSwingRestRepository implements Repository {
     }
 
     @Override
+    public Observable<ResponseBody> getEntryPic(String token, String captureId) {
+        return apiService.getEntryPic(token, captureId);
+    }
+
+    @Override
     public Observable<Response<List<User>>> getUsers() {
         return apiService.getUsers();
     }
@@ -111,6 +116,12 @@ public class MoodSwingRestRepository implements Repository {
     public Observable<Response<ChangeProfileResponse>> changeUser(String accessToken, ChangeProfileRequest changeProfileRequest){
         return apiService.changeUser(accessToken, changeProfileRequest);
     }
+
+    @Override
+    public Observable<Response<User>> getUser(String username) {
+        return apiService.getUser(username);
+    }
+
 //    @Override
 //    public Observable<PostCommentResponse> getCaptureData(Capture capture, String accessToken) {
 //        return apiService.getCaptureData(capture, accessToken);

@@ -2,6 +2,7 @@ package com.moodswing.injector.module;
 
 import com.moodswing.injector.scope.PerActivity;
 import com.moodswing.mvp.domain.DeleteCaptureUsecase;
+import com.moodswing.mvp.domain.GetEntryPicUsecase;
 import com.moodswing.mvp.domain.GetJournalsUsecase;
 import com.moodswing.mvp.domain.GetProfilePictureUsecase;
 import com.moodswing.mvp.domain.SearchUsecase;
@@ -48,8 +49,14 @@ public class JournalModule {
         return new GetProfilePictureUsecase(repository);
     }
 
+    @PerActivity
+    @Provides2
+    public GetEntryPicUsecase provideGetEntryPicUsecase(Repository repository) {
+        return new GetEntryPicUsecase(repository);
+    }
+
 
     @PerActivity
     @Provides2
-    public JournalPresenter provideJournalPresenter(GetJournalsUsecase getJournalsUsecase, DeleteCaptureUsecase deleteCaptureUsecase, SetTitleUsecase setTitleUsecase, SearchUsecase searchUsecase, GetProfilePictureUsecase getProfilePictureUsecase) {return new JournalPresenter(getJournalsUsecase, deleteCaptureUsecase, setTitleUsecase, searchUsecase, getProfilePictureUsecase);}
+    public JournalPresenter provideJournalPresenter(GetJournalsUsecase getJournalsUsecase, DeleteCaptureUsecase deleteCaptureUsecase, SetTitleUsecase setTitleUsecase, SearchUsecase searchUsecase, GetProfilePictureUsecase getProfilePictureUsecase, GetEntryPicUsecase getEntryPicUsecase) {return new JournalPresenter(getJournalsUsecase, deleteCaptureUsecase, setTitleUsecase, searchUsecase, getProfilePictureUsecase, getEntryPicUsecase);}
 }

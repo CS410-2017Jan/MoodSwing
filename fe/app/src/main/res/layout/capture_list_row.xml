@@ -12,7 +12,7 @@
         android:id="@+id/listViewImage"
         android:layout_width="85dp"
         android:layout_height="match_parent"
-        app:srcCompat="@color/colorPrimaryDark"
+        android:background="#FFFFFF"
         android:layout_alignParentLeft="true" />
 
     <TextView

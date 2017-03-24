@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,11 +55,13 @@ public class CaptureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView text;
+        private ImageView entryPic;
         private ImageButton _options;
 
         public MyViewHolder(View view) {
             super(view);
             text = (TextView) view.findViewById(R.id.description);
+            entryPic = (ImageView) view.findViewById(R.id.listViewImage);
             _options = (ImageButton) view.findViewById(R.id.entry_options);
 
             _options.setOnLongClickListener(new View.OnLongClickListener() {
@@ -125,6 +129,12 @@ public class CaptureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         Capture capture = captures.get(position);
         holder.text.setText(capture.getText());
         holder.text.setTag(position);
+        if (capture.getHasImage()){
+            holder.entryPic.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            holder.entryPic.setImageURI(capture.getImage());
+        }else{
+            holder.entryPic.setBackgroundResource(R.drawable.empty_profile_pic);
+        }
         holder.itemView.setTag(position);
     }
 

@@ -102,6 +102,10 @@ public interface ApiService {
     @GET("users/self/thumbnail")
     Observable<ResponseBody> getProfilePicture(@Header("x-access-token") String token);
 
+    @GET("captures/{captureId}/thumbnail")
+    Observable<ResponseBody> getEntryPic(@Header("x-access-token") String token,
+                                         @Path("captureId") String captureId);
+
     @Headers("Content-Type: application/json")
     @PUT("users/self")
     Observable<Response<ChangeProfileResponse>>  changeUser(@Header("x-access-token") String token,
@@ -114,4 +118,7 @@ public interface ApiService {
     @Headers("Content-Type: application/json")
     @GET("users/self/notifications")
     Observable<List<JournalEntries>> getNotifications(@Header("x-access-token") String username);
+
+    @GET("users/{username}")
+    Observable<Response<User>> getUser(@Path("username") String username);
 }

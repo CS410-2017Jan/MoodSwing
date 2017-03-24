@@ -545,7 +545,10 @@ router.get('/users/self/notifications', function(req, res) {
 		}
 
 		JournalEntry.find({
-    '_id': { $in: userInfo.notifications}
+			'_id': { $in: userInfo.notifications}
+		}, {
+			'captures.image': 0,
+			'captures.thumbnail': 0
 		}, function(err, docs){
 
 			if (err || !docs) {

@@ -1,7 +1,11 @@
 package com.moodswing.mvp.mvp.presenter;
 
+import android.util.Log;
+import android.widget.Toast;
+
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.DeleteCaptureUsecase;
+import com.moodswing.mvp.domain.GetEntryPicUsecase;
 import com.moodswing.mvp.domain.GetJournalsUsecase;
 import com.moodswing.mvp.domain.GetProfilePictureUsecase;
 import com.moodswing.mvp.domain.SearchUsecase;
@@ -34,15 +38,17 @@ public class JournalPresenter implements Presenter<JournalView> {
     private SetTitleUsecase setTitleUsecase;
     private SearchUsecase searchUsecase;
     private GetProfilePictureUsecase getProfilePictureUsecase;
+    private GetEntryPicUsecase getEntryPicUsecase;
     private Disposable getJournalsSubscription;
     private SharedPreferencesManager sharedPreferencesManager;
 
-    public JournalPresenter(GetJournalsUsecase getJournalsUsecase, DeleteCaptureUsecase deleteCaptureUsecase, SetTitleUsecase setTitleUsecase, SearchUsecase searchUsecase, GetProfilePictureUsecase getProfilePictureUsecase) {
+    public JournalPresenter(GetJournalsUsecase getJournalsUsecase, DeleteCaptureUsecase deleteCaptureUsecase, SetTitleUsecase setTitleUsecase, SearchUsecase searchUsecase, GetProfilePictureUsecase getProfilePictureUsecase, GetEntryPicUsecase getEntryPicUsecase) {
         this.getJournalsUsecase = getJournalsUsecase;
         this.deleteCaptureUsecase = deleteCaptureUsecase;
         this.setTitleUsecase = setTitleUsecase;
         this.searchUsecase = searchUsecase;
         this.getProfilePictureUsecase = getProfilePictureUsecase;
+        this.getEntryPicUsecase = getEntryPicUsecase;
     }
 
     @Override
@@ -165,8 +171,7 @@ public class JournalPresenter implements Presenter<JournalView> {
     }
 
     public void getProfilePic() {
-        String token = sharedPreferencesManager.getToken();
-        getProfilePictureUsecase.setToken(token);
+        getProfilePictureUsecase.setToken(sharedPreferencesManager.getToken());
 
         getJournalsSubscription = getProfilePictureUsecase.execute()
                 .subscribeOn(Schedulers.io())
@@ -180,6 +185,28 @@ public class JournalPresenter implements Presenter<JournalView> {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                    }
+                });
+
+    }
+
+    public void getEntryPic(final String captureId) {
+        getEntryPicUsecase.setCaptureId(captureId);
+        getEntryPicUsecase.setToken(sharedPreferencesManager.getToken());
+
+        getJournalsSubscription = getEntryPicUsecase.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseBody>() {
+                    @Override
+                    public void accept(ResponseBody picture) throws Exception {
+                        journalView.showEntryPic(picture, captureId);
+                    }
+
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.i("", "****GET " + captureId + " ERROR****");
                     }
                 });
 

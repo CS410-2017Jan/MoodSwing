@@ -101,7 +101,7 @@ router.get('/users/:username', function(req, res) {
 
   User.findOne({
     username: username
-  }, '_id username displayName followers following', //TODO: Return profile picture if FE wants it
+  }, '_id username displayName followers following',
   function(err, userInfo) {
     if (!userInfo || err) {
       return res.status(400).json({success: false, message: 'User not found'})
@@ -156,6 +156,14 @@ router.get('/captures/:captureId/image', (req, res) => {
       return res.status(400).json({ success: false })
     }
 
+    if (!entry.captures[0] || !entry.captures[0].image || !entry.captures[0].image.data) {
+      res.writeHead(200, {
+        'Content-Type': "image/jpeg",
+        'Content-Length': 0
+      })
+      return res.end()
+    }
+
     let capture = entry.captures[0]
     let imageBuffer = capture.image.data
     let imageType = capture.image.contentType
@@ -180,6 +188,14 @@ router.get('/captures/:captureId/thumbnail', (req, res) => {
   }, function(err, entry) {
     if (err || !entry) {
       return res.status(400).json({ success: false })
+    }
+
+    if (!entry.captures[0] || !entry.captures[0].thumbnail || !entry.captures[0].thumbnail.data) {
+      res.writeHead(200, {
+        'Content-Type': "image/jpeg",
+        'Content-Length': 0
+      })
+      return res.end()
     }
 
     let capture = entry.captures[0]
