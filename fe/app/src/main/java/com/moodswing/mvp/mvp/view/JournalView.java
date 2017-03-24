@@ -5,6 +5,8 @@ import com.moodswing.mvp.mvp.model.User;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
+
 /**
  * Created by daniel on 11/02/17.
  */
@@ -19,5 +21,6 @@ public interface JournalView extends View {
     void onSetTitleFailure();
     void onGetUserInfoSuccess(List<User> users);
     void onGetUserInfoFailure();
+    void getPicture(ResponseBody picture);
     void showError();
 }

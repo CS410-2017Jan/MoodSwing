@@ -3,6 +3,7 @@ package com.moodswing.mvp.mvp.presenter;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.DeleteCaptureUsecase;
 import com.moodswing.mvp.domain.GetJournalsUsecase;
+import com.moodswing.mvp.domain.GetProfilePictureUsecase;
 import com.moodswing.mvp.domain.SearchUsecase;
 import com.moodswing.mvp.domain.SetTitleUsecase;
 import com.moodswing.mvp.mvp.model.Capture;
@@ -19,6 +20,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 /**
@@ -31,14 +33,16 @@ public class JournalPresenter implements Presenter<JournalView> {
     private DeleteCaptureUsecase deleteCaptureUsecase;
     private SetTitleUsecase setTitleUsecase;
     private SearchUsecase searchUsecase;
+    private GetProfilePictureUsecase getProfilePictureUsecase;
     private Disposable getJournalsSubscription;
     private SharedPreferencesManager sharedPreferencesManager;
 
-    public JournalPresenter(GetJournalsUsecase getJournalsUsecase, DeleteCaptureUsecase deleteCaptureUsecase, SetTitleUsecase setTitleUsecase, SearchUsecase searchUsecase) {
+    public JournalPresenter(GetJournalsUsecase getJournalsUsecase, DeleteCaptureUsecase deleteCaptureUsecase, SetTitleUsecase setTitleUsecase, SearchUsecase searchUsecase, GetProfilePictureUsecase getProfilePictureUsecase) {
         this.getJournalsUsecase = getJournalsUsecase;
         this.deleteCaptureUsecase = deleteCaptureUsecase;
         this.setTitleUsecase = setTitleUsecase;
         this.searchUsecase = searchUsecase;
+        this.getProfilePictureUsecase = getProfilePictureUsecase;
     }
 
     @Override
@@ -158,6 +162,28 @@ public class JournalPresenter implements Presenter<JournalView> {
                         journalView.showError();
                     }
                 });
+    }
+
+    public void getProfilePic() {
+        String token = sharedPreferencesManager.getToken();
+        getProfilePictureUsecase.setToken(token);
+
+        getJournalsSubscription = getProfilePictureUsecase.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseBody>() {
+                    @Override
+                    public void accept(ResponseBody picture) throws Exception {
+                        journalView.getPicture(picture);
+                    }
+
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        journalView.showError();
+                    }
+                });
+
     }
 
 

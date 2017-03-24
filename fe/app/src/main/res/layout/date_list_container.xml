@@ -28,6 +28,8 @@
         android:layout_alignParentLeft="true"
         android:textSize="13dp"
         android:textStyle="bold"
+        android:inputType="textFilter"
+        android:maxLength="35"
         android:clickable="true"/>
 
     <android.support.v7.widget.RecyclerView

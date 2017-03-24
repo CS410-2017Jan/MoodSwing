@@ -24,6 +24,7 @@ import com.moodswing.injector.component.DaggerSearchComponent;
 import com.moodswing.injector.component.SearchComponent;
 import com.moodswing.injector.module.ActivityModule;
 import com.moodswing.injector.module.SearchModule;
+import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.mvp.presenter.SearchPresenter;
 import com.moodswing.mvp.mvp.view.SearchView;
@@ -44,6 +45,9 @@ import butterknife.ButterKnife;
 public class SearchActivity extends MoodSwingActivity implements SearchView {
     @Inject2
     SearchPresenter _searchPresenter;
+
+    @Inject2
+    SharedPreferencesManager _sharedPreferencesManager;
 
     @BindView(R.id.search_list_view)
     ListView listView;
@@ -75,6 +79,7 @@ public class SearchActivity extends MoodSwingActivity implements SearchView {
 
     private void initializePresenter() {
         _searchPresenter.attachView(this);
+        _searchPresenter.attachSharedPreferencesManager(_sharedPreferencesManager);
     }
 
     @Override
@@ -202,12 +207,16 @@ public class SearchActivity extends MoodSwingActivity implements SearchView {
             charText = charText.toLowerCase(Locale.getDefault());
             parkingList.clear();
 
+            String currentUser = _sharedPreferencesManager.getCurrentUser();
+
             for (User user : usersList)  {
                 if (charText.length() != 0 && user.getUsername().
-                        toLowerCase(Locale.getDefault()).contains(charText)) {
+                        toLowerCase(Locale.getDefault()).contains(charText) &&
+                        !user.getUsername().equals(currentUser)) {
                     parkingList.add(user);
                 } else if (charText.length() != 0 && user.getDisplayName().
-                        toLowerCase(Locale.getDefault()).contains(charText)) {
+                        toLowerCase(Locale.getDefault()).contains(charText) &&
+                        !user.getUsername().equals(currentUser)) {
                     parkingList.add(user);
                 }
             }

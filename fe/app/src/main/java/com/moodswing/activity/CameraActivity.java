@@ -47,9 +47,7 @@ import com.moodswing.injector.component.ApplicationComponent;
 import com.moodswing.injector.component.CameraComponent;
 import com.moodswing.injector.component.DaggerCameraComponent;
 import com.moodswing.injector.module.ActivityModule;
-import com.moodswing.injector.module.CameraModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
-import com.moodswing.mvp.mvp.presenter.CameraPresenter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -68,8 +66,6 @@ import butterknife.ButterKnife;
  */
 
 public class CameraActivity extends AppCompatActivity implements Detector.ImageListener, Detector.FaceListener, CameraDetector.CameraEventListener, EmotionView.EmotionThreadEventListener {
-    @Inject2
-    CameraPresenter _cameraPresenter;
 
     @Inject2
     SharedPreferencesManager _sharedPreferencesManager;
@@ -133,7 +129,6 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
         ApplicationComponent applicationComponent = ((MoodSwingApplication) getApplication()).getApplicationComponent();
 
         _cameraComponent = DaggerCameraComponent.builder()
-                .cameraModule(new CameraModule())
                 .activityModule(new ActivityModule(this))
                 .applicationComponent(applicationComponent)
                 .applicationComponent(applicationComponent)

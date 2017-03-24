@@ -10,7 +10,8 @@ module.exports = mongoose.model('User', new Schema({
 	following: [String],
 	followers: [String],
 	notifications: [String],
-	profilePicture: { data: Buffer, contentType: String }
+	profilePicture: { data: Buffer, contentType: String },
+	thumbnail: { data: Buffer, contentType: String }
 }, {
 	versionKey: '1'
 }))

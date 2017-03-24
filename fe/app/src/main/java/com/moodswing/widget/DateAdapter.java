@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -68,8 +69,10 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
                     builder.setTitle("Edit Title");
 
                     final EditText input = new EditText(jActivity);
-
-                    input.setInputType(InputType.TYPE_CLASS_TEXT);
+                    input.setText(title.getText());
+                    input.setSelection(input.getText().length());
+                    input.setFilters(new InputFilter[] { new InputFilter.LengthFilter(30)});
+                    input.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
                     builder.setView(input);
 
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
