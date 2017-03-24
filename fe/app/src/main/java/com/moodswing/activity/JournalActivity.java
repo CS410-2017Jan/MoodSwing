@@ -185,9 +185,9 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
             for(Capture e: capture){
                 e.setCaptureDate(sDate);
                 captures.add(e);
+                _journalPresenter.getEntryPic(e.getId());
             }
         }
-        dAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -237,6 +237,63 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
         } catch (IOException e) {
 
         }
+    }
+
+    @Override
+    public void showEntryPic(ResponseBody picture, String captureId){
+        Boolean hasImage = true;
+        try {
+            if (picture.contentLength() == 0){
+                hasImage = false;
+            }
+            String[] type = picture.contentType().toString().split("/");
+            File entryPictureFile = new File(getExternalFilesDir(null) + File.separator + captureId + "." + type[1]);
+            InputStream inputStream = null;
+            OutputStream outputStream = null;
+
+            try {
+                byte[] fileReader = new byte[4096];
+                long fileSize = picture.contentLength();
+                long fileSizeDownloaded = 0;
+
+                inputStream = picture.byteStream();
+                outputStream = new FileOutputStream(entryPictureFile);
+
+                while (true) {
+                    int read = inputStream.read(fileReader);
+                    if (read == -1) {
+                        break;
+                    }
+                    outputStream.write(fileReader, 0, read);
+                    fileSizeDownloaded += read;
+                }
+                //SET PICTURE TO IMAGEVIEW
+                Uri uri = Uri.fromFile(entryPictureFile);
+                updatePicture(uri, captureId, hasImage);
+                outputStream.flush();
+            } catch (IOException e) {
+
+            } finally {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            }
+        } catch (IOException e) {
+
+        }
+    }
+
+    private void updatePicture(Uri uri, String captureId, Boolean hasImage) {
+        for(Capture c: captures){
+            if (c.getId().equals(captureId)){
+                c.setImage(uri);
+                c.setHasImage(hasImage);
+            }
+        }
+        dAdapter.notifyDataSetChanged();
     }
 
     @Override

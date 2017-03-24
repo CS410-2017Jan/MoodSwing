@@ -14,6 +14,7 @@ import okhttp3.ResponseBody;
 public interface JournalView extends View {
 
     void showEntries(List<JournalEntries> je);
+    void showEntryPic(ResponseBody picture, String captureId);
     void onDeletionSuccess();
     void onEntryFailure();
     void onDeletionFailure();

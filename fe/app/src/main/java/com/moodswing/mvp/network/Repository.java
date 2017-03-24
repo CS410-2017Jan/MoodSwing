@@ -46,6 +46,7 @@ public interface Repository {
     Observable<LoginResponse> postLogin(LoginRequest loginRequest);
     Observable<ProfilePictureResponse> postProfilePicture(String token, @Part MultipartBody.Part picture);
     Observable<ResponseBody> getProfilePicture(String token);
+    Observable<ResponseBody> getEntryPic(String token, String captureId);
 //    Observable<PostCommentResponse> getCaptureData(Capture capture, String accessToken);
     Observable<Response<List<User>>> getUsers();
     Observable<PostCommentResponse> postComment(String accessToken, String entryId, Comment comment);
