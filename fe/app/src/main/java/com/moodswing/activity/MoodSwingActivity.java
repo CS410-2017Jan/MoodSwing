@@ -35,7 +35,8 @@ public class MoodSwingActivity extends AppCompatActivity {
                         startActivity(intent2);
                         break;
                     case R.id.action_follows:
-                        // TODO: Re-direct to follows
+                        Intent intent3 = new Intent(getApplicationContext(), FollowingActivity.class);
+                        startActivity(intent3);
                         break;
                     default:
                         return false;

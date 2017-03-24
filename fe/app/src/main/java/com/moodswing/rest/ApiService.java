@@ -111,4 +111,7 @@ public interface ApiService {
     @GET("users")
     Observable<Response<List<User>>> getUsers();
 
+    @Headers("Content-Type: application/json")
+    @GET("users/{username}")
+    Observable<Response<User>> getUser(@Path("username") String username);
 }

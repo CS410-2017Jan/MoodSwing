@@ -15,15 +15,15 @@ import android.widget.Toast;
 import com.moodswing.MoodSwingApplication;
 import com.moodswing.R;
 import com.moodswing.injector.component.ApplicationComponent;
-import com.moodswing.injector.component.DaggerSearchComponent;
-import com.moodswing.injector.component.SearchComponent;
+import com.moodswing.injector.component.DaggerFollowingComponent;
+import com.moodswing.injector.component.FollowingComponent;
 import com.moodswing.injector.module.ActivityModule;
-import com.moodswing.injector.module.SearchModule;
+import com.moodswing.injector.module.FollowingModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.model.User;
-import com.moodswing.mvp.mvp.presenter.SearchPresenter;
-import com.moodswing.mvp.mvp.view.SearchView;
-import com.moodswing.widget.SearchViewAdapter;
+import com.moodswing.mvp.mvp.presenter.FollowingPresenter;
+import com.moodswing.mvp.mvp.view.FollowingView;
+import com.moodswing.widget.SearchAdapter;
 
 import java.util.List;
 
@@ -33,53 +33,57 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by daniel on 16/03/17.
+ * Created by daniel on 23/03/17.
  */
-
-public class SearchActivity extends MoodSwingActivity implements SearchView {
+public class FollowingActivity extends MoodSwingActivity implements FollowingView {
     @Inject2
-    SearchPresenter _searchPresenter;
+    FollowingPresenter _followingPresenter;
 
     @Inject2
     SharedPreferencesManager _sharedPreferencesManager;
 
-    @BindView(R.id.search_list_view)
+    @BindView(R.id.following_list_view)
     ListView listView;
 
-    private SearchViewAdapter searchViewAdapter;
+    private SearchAdapter searchAdapter;
 
-    private SearchComponent _searchComponent;
+    private FollowingComponent _followingComponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+        setContentView(R.layout.activity_following);
         ButterKnife.bind(this);
         ApplicationComponent applicationComponent = ((MoodSwingApplication) getApplication()).getApplicationComponent();
 
-        _searchComponent = DaggerSearchComponent.builder()
-                .searchModule(new SearchModule())
+        _followingComponent = DaggerFollowingComponent.builder()
+                .followingModule(new FollowingModule())
                 .activityModule(new ActivityModule(this))
                 .applicationComponent(applicationComponent)
                 .build();
-        _searchComponent.inject(this);
+
+        _followingComponent.inject(this);
 
         initializePresenter();
-        // Fetch users
-        _searchPresenter.search();
-
         initializeBottomNavigationView();
+
+        _followingPresenter.getFollowing();
     }
 
     private void initializePresenter() {
-        _searchPresenter.attachView(this);
-        _searchPresenter.attachSharedPreferencesManager(_sharedPreferencesManager);
+        _followingPresenter.attachView(this);
+        _followingPresenter.attachSharedPreferencesManager(_sharedPreferencesManager);
     }
 
     @Override
-    public void initializeListView(List<User> users) {
-        searchViewAdapter = new SearchViewAdapter(users, SearchActivity.this, _sharedPreferencesManager);
-        listView.setAdapter(searchViewAdapter);
+    public void showError(String error) {
+        Toast.makeText(getApplicationContext(), error , Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void initializeListView(List<User> following) {
+        searchAdapter = new SearchAdapter(following, FollowingActivity.this);
+        listView.setAdapter(searchAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -96,7 +100,7 @@ public class SearchActivity extends MoodSwingActivity implements SearchView {
         final android.support.v7.widget.SearchView searchView = (android.support.v7.widget.SearchView)
                 MenuItemCompat.getActionView(searchItem);
         searchItem.expandActionView();
-        searchView.setQueryHint("Search...");
+        searchView.setQueryHint("Search following...");
 
         searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
             @Override
@@ -106,8 +110,8 @@ public class SearchActivity extends MoodSwingActivity implements SearchView {
 
             @Override
             public boolean onQueryTextChange(String searchQuery) {
-                if (searchViewAdapter != null) {
-                    searchViewAdapter.filter(searchQuery.trim());
+                if (searchAdapter != null) {
+                    searchAdapter.filter(searchQuery.trim());
                     listView.invalidate();
                 }
                 return true;
@@ -139,11 +143,6 @@ public class SearchActivity extends MoodSwingActivity implements SearchView {
     }
 
     @Override
-    public void showError(String error) {
-        Toast.makeText(getApplicationContext(), "Error encountered while searching: " + error ,Toast.LENGTH_LONG).show();
-    }
-
-    @Override
     public void initializeBottomNavigationView() {
         bottomNavigationView.setOnNavigationItemSelectedListener( new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -151,15 +150,15 @@ public class SearchActivity extends MoodSwingActivity implements SearchView {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_search:
-                        // Do nothing
+                        Intent intent1 = new Intent(getApplicationContext(), SearchActivity.class);
+                        startActivity(intent1);
                         break;
                     case R.id.action_camera:
                         Intent intent2 = new Intent(getApplicationContext(), CameraActivity.class);
                         startActivity(intent2);
                         break;
                     case R.id.action_follows:
-                        Intent intent3 = new Intent(getApplicationContext(), FollowingActivity.class);
-                        startActivity(intent3);
+                        // Do nothing
                         break;
                     default:
                         return false;
