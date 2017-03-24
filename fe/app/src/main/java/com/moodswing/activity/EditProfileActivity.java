@@ -269,6 +269,10 @@ public class EditProfileActivity extends MoodSwingActivity implements EditProfil
         if (selectedProfileUri != null) {
             savePicture();
         }
+    }
+
+    @Override
+    public void returnFromSavedProfile() {
         Toast.makeText(getBaseContext(), "Profile Updated", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(this, JournalActivity.class);
         startActivity(intent);

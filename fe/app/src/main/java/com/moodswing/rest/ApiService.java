@@ -91,7 +91,7 @@ public interface ApiService {
     Observable<ProfilePictureResponse> postProfilePicture(@Header("x-access-token") String token,
                                                           @Part MultipartBody.Part picture);
 
-    @GET("users/self/picture")
+    @GET("users/self/thumbnail")
     Observable<ResponseBody> getProfilePicture(@Header("x-access-token") String token);
 
     @Headers("Content-Type: application/json")

@@ -12,4 +12,5 @@ public interface EditProfileView {
     void noPictureMessage();
     void displaySavedProfile();
     void displaySaveError(String message);
+    void returnFromSavedProfile();
 }

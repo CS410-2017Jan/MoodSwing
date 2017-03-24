@@ -78,6 +78,7 @@ public class EditProfilePresenter implements Presenter<EditProfileView> {
                     @Override
                     public void accept(ProfilePictureResponse profilePictureResponse) throws Exception {
                         Log.v("PROFILE_PICTURE", "SUCCESS");
+                        editProfileView.returnFromSavedProfile();
                     }
 
                 }, new Consumer<Throwable>() {
