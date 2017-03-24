@@ -235,7 +235,26 @@ router.post('/users/self/captures', upload.single('image'), function(req, res) {
 		}
 
 		newCapture.image = {data: req.file.buffer, contentType: req.file.mimetype}
+
+		gm(req.file.buffer, 'thumbnail.jpg')
+			.resize(200, 200)
+			.extent(200, 200)
+			.toBuffer('JPEG',function (err, thumbnailBuffer) {
+				if (err || !thumbnailBuffer) {
+					return status(400).json({success: false, message: 'Could not make thumbnail'})
+				}
+				newCapture.thumbnail = {data: thumbnailBuffer, contentType: 'image/jpeg'}
+				makeEntry(req, res, newCapture)
+			})
+	} else {
+		makeEntry(req, res, newCapture)
 	}
+})
+
+function makeEntry(req, res, newCapture) {
+	let username = req.username
+	let text = req.body.text
+	let captureDate = req.body.captureDate
 
   JournalEntry.findOne({
 		username: username,
@@ -269,7 +288,7 @@ router.post('/users/self/captures', upload.single('image'), function(req, res) {
 			  })
 		}
   })
-})
+}
 
 function notifyFollowers(username, entryId) {
 	User.findOne({

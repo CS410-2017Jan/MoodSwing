@@ -168,6 +168,32 @@ router.get('/captures/:captureId/image', (req, res) => {
   })
 })
 
+router.get('/captures/:captureId/thumbnail', (req, res) => {
+
+  let captureId = req.params.captureId
+
+  JournalEntry.findOne({
+    "captures._id": mongoose.Types.ObjectId(captureId)
+  }, {
+    'captures.$': 1
+  }, function(err, entry) {
+    if (err || !entry) {
+      return res.status(400).json({ success: false })
+    }
+
+    let capture = entry.captures[0]
+    let imageBuffer = capture.thumbnail.data
+    let imageType = capture.thumbnail.contentType
+
+    let img = new Buffer(imageBuffer, 'base64')
+    res.writeHead(200, {
+      'Content-Type': imageType,
+      'Content-Length': img.length
+    })
+    res.status(200).end(img)
+  })
+})
+
 router.get('/users', function(req, res) {
   User.find({}, {'username': 1, 'displayName': 1, '_id': 0}, function(err, results) {
     let userList = results.sort(function(user1, user2) {
