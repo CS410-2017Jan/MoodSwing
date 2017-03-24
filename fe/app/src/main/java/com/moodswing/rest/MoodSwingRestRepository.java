@@ -26,6 +26,7 @@ import java.util.List;
 
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -67,8 +68,13 @@ public class MoodSwingRestRepository implements Repository {
     }
 
     @Override
-    public Observable<NewEntryResponse> postNewEntry(Capture capture, String accessToken) {
-        return apiService.postNewEntry(capture, accessToken);
+    public Observable<NewEntryResponse> postNewEntry(String accessToken, MultipartBody.Part data, RequestBody entryText, RequestBody entryDate) {
+        return apiService.postNewEntry(accessToken, data, entryText, entryDate);
+    }
+
+    @Override
+    public Observable<NewEntryResponse> postNewEntryNoPic(Capture capture, String accessToken) {
+        return apiService.postNewEntryNoPic(capture, accessToken);
     }
 
     @Override

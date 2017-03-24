@@ -23,6 +23,7 @@ import com.moodswing.widget.DateBlock;
 import java.util.List;
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.http.Part;
@@ -34,7 +35,8 @@ import retrofit2.http.Part;
  */
 
 public interface Repository {
-    Observable<NewEntryResponse> postNewEntry(Capture capture, String accessToken);
+    Observable<NewEntryResponse> postNewEntry(String accessToken, @Part MultipartBody.Part data, RequestBody entryText, RequestBody entryDate);
+    Observable<NewEntryResponse> postNewEntryNoPic(Capture capture, String accessToken);
     Observable<SetTitleResponse> setTitle(String accessToken, String entryId, Title title);
     Observable<EditEntryResponse> editEntryText(String accessToken, String id, Text text);
     Observable<DeleteCaptureResponse> deleteCapture(String _id, String accessToken);

@@ -23,6 +23,7 @@ import com.moodswing.widget.DateBlock;
 import java.util.List;
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 import retrofit2.http.Body;
@@ -52,14 +53,21 @@ public interface ApiService {
 
     @Headers("Content-Type: application/json")
     @POST("users/self/captures")
-    Observable<NewEntryResponse> postNewEntry(@Body Capture capture,
+    Observable<NewEntryResponse> postNewEntryNoPic(@Body Capture capture,
                                               @Header("x-access-token") String accessToken);
+
+    @Multipart
+    @POST("users/self/captures")
+    Observable<NewEntryResponse> postNewEntry(@Header("x-access-token") String accessToken,
+                                              @Part MultipartBody.Part image,
+                                              @Part("text")RequestBody entryText,
+                                              @Part("captureDate")RequestBody captureDate);
 
     @Headers("Content-Type: application/json")
     @PUT("users/self/entries/{entryId}")
     Observable<SetTitleResponse> setTitle(@Header("x-access-token") String accessToken,
-                                          @Path("entryId") String entryId,
-                                          @Body Title title);
+                                              @Path("entryId") String entryId,
+                                              @Body Title title);
 
     @Headers("Content-Type: application/json")
     @PUT("users/self/captures/{captureId}")
@@ -98,11 +106,6 @@ public interface ApiService {
     @PUT("users/self")
     Observable<Response<ChangeProfileResponse>>  changeUser(@Header("x-access-token") String token,
                                                   @Body ChangeProfileRequest changeProfileRequest);
-
-//    @Headers("Content-Type: application/json")
-//    @POST("users/self/captures")
-//    Observable<PostCommentResponse> getCaptureData(@Body Capture capture,
-//                                              @Header("x-access-token") String accessToken);
 
     @Headers("Content-Type: application/json")
     @GET("users")

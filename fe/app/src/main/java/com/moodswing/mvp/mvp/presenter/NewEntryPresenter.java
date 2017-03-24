@@ -2,6 +2,7 @@ package com.moodswing.mvp.mvp.presenter;
 
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.GetJournalsUsecase;
+import com.moodswing.mvp.domain.NewEntryNoPicUsecase;
 import com.moodswing.mvp.domain.NewEntryUsecase;
 import com.moodswing.mvp.domain.SetTitleUsecase;
 import com.moodswing.mvp.mvp.model.Capture;
@@ -17,6 +18,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 /**
  * Created by Matthew on 2017-03-04.
@@ -27,13 +30,15 @@ public class NewEntryPresenter implements Presenter<NewEntryView> {
     private NewEntryUsecase newEntryUsecase;
     private SetTitleUsecase setTitleUsecase;
     private GetJournalsUsecase getJournalsUsecase;
+    private NewEntryNoPicUsecase newEntryNoPicUsecase;
     private Disposable newEntrySubscription;
     private SharedPreferencesManager sharedPreferencesManager;
 
-    public NewEntryPresenter(NewEntryUsecase newEntryUsecase, SetTitleUsecase setTitleUsecase, GetJournalsUsecase getJournalsUsecase) {
+    public NewEntryPresenter(NewEntryUsecase newEntryUsecase, SetTitleUsecase setTitleUsecase, GetJournalsUsecase getJournalsUsecase, NewEntryNoPicUsecase newEntryNoPicUsecase) {
         this.newEntryUsecase = newEntryUsecase;
         this.setTitleUsecase = setTitleUsecase;
         this.getJournalsUsecase = getJournalsUsecase;
+        this.newEntryNoPicUsecase = newEntryNoPicUsecase;
     }
 
     @Override
@@ -62,11 +67,38 @@ public class NewEntryPresenter implements Presenter<NewEntryView> {
     }
 
 
-    public void uploadCapture(String description, String date) {
-        newEntryUsecase.setCapture(new Capture(description, date));
+    public void uploadCapture(MultipartBody.Part data, RequestBody entryText, RequestBody entryDate) {
+//        newEntryUsecase.setCapture(new Capture(description, date));
+        newEntryUsecase.setData(data);
+        newEntryUsecase.setText(entryText);
+        newEntryUsecase.setDate(entryDate);
         newEntryUsecase.setToken(sharedPreferencesManager.getToken());
 
         newEntrySubscription = newEntryUsecase.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<NewEntryResponse>() {
+                    @Override
+                    public void accept(NewEntryResponse newEntryResponse) throws Exception {
+                        if (newEntryResponse.isSuccessful()) {
+                            newEntryView.onNewEntrySuccess();
+                        } else {
+                            newEntryView.onNewEntryFailure();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        newEntryView.showError();
+                    }
+                });
+    }
+
+    public void uploadCapture(String description, String date) {
+        newEntryNoPicUsecase.setCapture(new Capture(description, date));
+        newEntryNoPicUsecase.setToken(sharedPreferencesManager.getToken());
+
+        newEntrySubscription = newEntryNoPicUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<NewEntryResponse>() {

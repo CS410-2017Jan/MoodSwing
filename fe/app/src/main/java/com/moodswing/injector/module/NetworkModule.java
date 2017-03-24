@@ -24,7 +24,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class NetworkModule {
 
 
-    private String apiEndpointUrl = "http://206.87.134.19:3000";
+
+    private String apiEndpointUrl = "http://128.189.208.147:3000";
 
     @Provides2
     @PerApplication

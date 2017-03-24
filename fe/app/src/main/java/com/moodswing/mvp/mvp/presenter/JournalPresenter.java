@@ -180,7 +180,6 @@ public class JournalPresenter implements Presenter<JournalView> {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        journalView.showError();
                     }
                 });
 

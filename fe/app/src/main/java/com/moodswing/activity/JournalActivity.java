@@ -145,8 +145,6 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
         _dRecyclerView.setItemAnimator(new DefaultItemAnimator());
         _dRecyclerView.addItemDecoration(new DateDivider(this, R.drawable.divider));
         _dRecyclerView.setAdapter(dAdapter);
-
-        _journalPresenter.getProfilePic();
     }
 
     @Override
@@ -160,6 +158,7 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
             dBlocks.clear();
             isResuming = true;
             _journalPresenter.getUsers();
+            _journalPresenter.getProfilePic();
             _journalPresenter.getEntries();
         }
     }
@@ -224,7 +223,6 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
                 }
                 //SET PICTURE TO IMAGEVIEW
                 _profilePic.setImageURI(Uri.fromFile(profilePictureFile));
-                _profilePic.setBackgroundColor(Color.parseColor("#000000"));
                 outputStream.flush();
             } catch (IOException e) {
 

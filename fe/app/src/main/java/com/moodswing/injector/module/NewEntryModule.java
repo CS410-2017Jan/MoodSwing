@@ -2,6 +2,7 @@ package com.moodswing.injector.module;
 
 import com.moodswing.injector.scope.PerActivity;
 import com.moodswing.mvp.domain.GetJournalsUsecase;
+import com.moodswing.mvp.domain.NewEntryNoPicUsecase;
 import com.moodswing.mvp.domain.NewEntryUsecase;
 import com.moodswing.mvp.domain.SetTitleUsecase;
 import com.moodswing.mvp.mvp.presenter.NewEntryPresenter;
@@ -35,10 +36,16 @@ public class NewEntryModule {
         return new GetJournalsUsecase(repository);
     }
 
+    @PerActivity
+    @Provides2
+    public NewEntryNoPicUsecase provideNewEntryNoPicUsecase(Repository repository) {
+        return new NewEntryNoPicUsecase(repository);
+    }
+
 
     @PerActivity
     @Provides2
-    public NewEntryPresenter provideNewEntryPresenter(NewEntryUsecase newEntryUsecase, SetTitleUsecase setTitleUsecase, GetJournalsUsecase getJournalsUsecase) {
-        return new NewEntryPresenter(newEntryUsecase, setTitleUsecase, getJournalsUsecase);
+    public NewEntryPresenter provideNewEntryPresenter(NewEntryUsecase newEntryUsecase, SetTitleUsecase setTitleUsecase, GetJournalsUsecase getJournalsUsecase, NewEntryNoPicUsecase newEntryNoPicUsecase) {
+        return new NewEntryPresenter(newEntryUsecase, setTitleUsecase, getJournalsUsecase, newEntryNoPicUsecase);
     }
 }

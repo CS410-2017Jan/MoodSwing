@@ -37,6 +37,7 @@ import com.moodswing.mvp.mvp.view.NewEntryView;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,6 +55,9 @@ import javax.inject.Inject2;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 /**
  * Created by Matthew on 2017-03-04.
@@ -309,7 +313,17 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
     }
 
     private void shareEntry(String description) {
-        _newEntryPresenter.uploadCapture(description, date);
+        if (byteArray != null){
+            MediaType mediaType = MediaType.parse("image/jpeg");
+            RequestBody entryPic = RequestBody.create(mediaType, byteArray);
+            RequestBody entryText = RequestBody.create(MediaType.parse("text/plain"), description);
+            RequestBody entryDate = RequestBody.create(MediaType.parse("text/plain"), date);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("image", "image", entryPic);
+            _newEntryPresenter.uploadCapture(body, entryText, entryDate);
+        } else {
+            _newEntryPresenter.uploadCapture(description, date);
+        }
+
     }
 
     private boolean isEmpty(String s) {

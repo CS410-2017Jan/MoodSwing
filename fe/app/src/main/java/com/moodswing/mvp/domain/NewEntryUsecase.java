@@ -5,6 +5,8 @@ import com.moodswing.mvp.mvp.model.response.NewEntryResponse;
 import com.moodswing.mvp.network.Repository;
 
 import io.reactivex.Observable;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 /**
  * Created by Matthew on 2017-03-04.
@@ -15,6 +17,9 @@ public class NewEntryUsecase implements Usecase<NewEntryResponse> {
     private Repository repository;
     private Capture capture;
     private String accessToken;
+    private MultipartBody.Part data;
+    private RequestBody entryText;
+    private RequestBody entryDate;
 
     public NewEntryUsecase(Repository repository) {this.repository = repository;}
 
@@ -24,8 +29,21 @@ public class NewEntryUsecase implements Usecase<NewEntryResponse> {
         this.accessToken = token;
     }
 
+    public void setText(RequestBody entryText){
+        this.entryText = entryText;
+    }
+
+    public void setData(MultipartBody.Part data){
+        this.data = data;
+    }
+
+    public void setDate(RequestBody entryDate){
+        this.entryDate = entryDate;
+    }
+
     @Override
     public Observable<NewEntryResponse> execute() {
-        return repository.postNewEntry(capture, accessToken);
+//        return repository.postNewEntry(capture, accessToken);
+        return repository.postNewEntry(accessToken, data, entryText, entryDate);
     }
 }
