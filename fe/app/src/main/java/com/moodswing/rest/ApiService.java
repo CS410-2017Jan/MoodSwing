@@ -111,4 +111,7 @@ public interface ApiService {
     @GET("users")
     Observable<Response<List<User>>> getUsers();
 
+    @Headers("Content-Type: application/json")
+    @GET("users/self/notifications")
+    Observable<List<JournalEntries>> getNotifications(@Header("x-access-token") String username);
 }
