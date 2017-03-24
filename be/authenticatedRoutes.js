@@ -6,6 +6,7 @@ const JournalEntry   = require('./app/models/journalentry')
 const config = require('./config')
 const multer = require('multer')
 const mongoose = require('mongoose')
+const gm = require('gm')
 const _ = require('lodash')
 
 const KB = 1024
@@ -55,6 +56,8 @@ var upload = multer({ storage: multer.memoryStorage({}) })
 
 router.post('/users/self/picture', upload.single('profilePicture'), (req, res) => {
 
+  let username = req.username
+
 	if (req.file.size > 16*MB) {
 		return res.status(400).json({ success: false, message: 'File too large' })
 	}
@@ -70,27 +73,36 @@ router.post('/users/self/picture', upload.single('profilePicture'), (req, res) =
 			return res.status(415).json({ success: false, message: 'File type not supported' })
 	}
 
-  let username = req.username
+	gm(req.file.buffer, 'thumbnail.jpg')
+		.resize(200, 200)
+		.extent(200, 200)
+		.toBuffer('JPEG',function (err, thumbnailBuffer) {
 
-	User.findOne({
-	  username: username
-	}, function(err, user) {
-		if (err) throw err
+		  if (err || !thumbnailBuffer) {
+				return res.status(400).json({ success: false, message: 'Cannot create thumbnail'});
+		  }
 
-		if (!user) {
-			return res.status(400).json({success: false, message: 'User not found'})
-		}
+			User.findOne({
+			  username: username
+			}, function(err, user) {
+				if (err) throw err
 
-		user.profilePicture = {data: req.file.buffer, contentType: req.file.mimetype}
+				if (!user) {
+					return res.status(400).json({success: false, message: 'User not found'})
+				}
 
-		user.save()
-	    .then(function (doc) {
-	      return res.status(200).json({ success: true })
-	    })
-	    .catch(function(err) {
-	      return res.status(400).json({ success: false })
-	    })
-	})
+				user.profilePicture = {data: req.file.buffer, contentType: req.file.mimetype}
+				user.thumbnail = {data: thumbnailBuffer, contentType: 'image/jpeg'}
+
+				user.save()
+			    .then(function (doc) {
+			      return res.status(200).json({ success: true })
+			    })
+			    .catch(function(err) {
+			      return res.status(400).json({ success: false })
+			    })
+			})
+		})
 })
 
 router.get('/users/self/picture', (req, res) => {
@@ -99,7 +111,7 @@ router.get('/users/self/picture', (req, res) => {
 
   User.findOne({
     username: username
-  }, function(err, user) {
+  }, 'profilePicture', function(err, user) {
 
 		if (err || !user) {
 			return res.status(404).send({ success: false })
@@ -120,6 +132,35 @@ router.get('/users/self/picture', (req, res) => {
     res.status(200).end(img)
   })
 })
+
+router.get('/users/self/thumbnail', (req, res) => {
+
+	let username = req.username
+
+  User.findOne({
+    username: username
+  }, 'thumbnail' ,function(err, user) {
+
+		if (err || !user) {
+			return res.status(404).send({ success: false })
+		}
+
+		if (!user.thumbnail.data) {
+			return res.status(404).send({ success: false, message: 'User does not have a profile picture'})
+		}
+
+    let imageBuffer = user.thumbnail.data
+    let imageType = user.thumbnail.contentType
+
+    let img = new Buffer(imageBuffer, 'base64')
+    res.writeHead(200, {
+      'Content-Type': imageType,
+      'Content-Length': img.length
+    })
+    res.status(200).end(img)
+  })
+})
+
 
 router.put('/users/self', (req, res) => {
 	let username = req.username
