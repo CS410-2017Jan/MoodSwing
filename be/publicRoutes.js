@@ -124,7 +124,8 @@ router.get('/users/:username/entries', function(req, res) {
   JournalEntry.find({
     username: username
   }, {
-    "captures.image": 0
+    'captures.image': 0,
+    'captures.thumbnail': 0
   }, function(err, journalEntries) {
     if (err) throw err
 
@@ -158,6 +159,32 @@ router.get('/captures/:captureId/image', (req, res) => {
     let capture = entry.captures[0]
     let imageBuffer = capture.image.data
     let imageType = capture.image.contentType
+
+    let img = new Buffer(imageBuffer, 'base64')
+    res.writeHead(200, {
+      'Content-Type': imageType,
+      'Content-Length': img.length
+    })
+    res.status(200).end(img)
+  })
+})
+
+router.get('/captures/:captureId/thumbnail', (req, res) => {
+
+  let captureId = req.params.captureId
+
+  JournalEntry.findOne({
+    "captures._id": mongoose.Types.ObjectId(captureId)
+  }, {
+    'captures.$': 1
+  }, function(err, entry) {
+    if (err || !entry) {
+      return res.status(400).json({ success: false })
+    }
+
+    let capture = entry.captures[0]
+    let imageBuffer = capture.thumbnail.data
+    let imageType = capture.thumbnail.contentType
 
     let img = new Buffer(imageBuffer, 'base64')
     res.writeHead(200, {
