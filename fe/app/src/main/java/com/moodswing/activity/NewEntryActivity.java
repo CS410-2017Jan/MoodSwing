@@ -377,6 +377,7 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
     }
 
     public void exitToJounal(){
+        capture.recycle();
         Intent intent = new Intent(getApplicationContext(), JournalActivity.class);
         startActivity(intent);
     }

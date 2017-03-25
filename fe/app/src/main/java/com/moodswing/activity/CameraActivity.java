@@ -196,7 +196,6 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
 
     private void initializeCameraSwitchButton() {
         _cameraSwitchButton.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 setCameraType(cameraType == CameraDetector.CameraType.CAMERA_FRONT ?
@@ -228,7 +227,6 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
                 default:
                     Log.e(LOG_TAG, "Unknown camera type selected");
             }
-
             detector.setCameraType(cameraType);
             _sharedPreferencesManager.setCameraType(cameraType.name());
         }
@@ -471,9 +469,8 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
 
     @Override
     public void onImageResults(List<Face> faces, Frame image, float v) {
+        mostRecentFrame = image;
         if (emotionEffectsEnabled) {
-            mostRecentFrame = image;
-
             //If the faces object is null, we received an unprocessed frame
             if (faces == null) {
                 return;
@@ -605,7 +602,8 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
                         finalScreenshot.recycle();
                         previewImage.recycle();
 
-                        forwardBitmap(byteArray, currentEmoji);
+                        String current = new String(currentEmoji);
+                        forwardBitmap(byteArray, current);
                     }
                 }).setPositiveButton("Discard", new DialogInterface.OnClickListener() {
                     @Override
