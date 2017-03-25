@@ -257,7 +257,7 @@ function makeEntry(req, res, newCapture) {
 	let username = req.username
 	let text = req.body.text
 	let captureDate = req.body.captureDate
-	let dominantEmotion = req.body.emotion
+	let dominantEmotion = req.body.emotion || 'UNKNOWN'
 
   JournalEntry.findOne({
 		username: username,
