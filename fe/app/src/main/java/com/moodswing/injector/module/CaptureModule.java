@@ -3,6 +3,8 @@ package com.moodswing.injector.module;
 import com.moodswing.injector.scope.PerActivity;
 import com.moodswing.mvp.domain.CaptureUsecase;
 import com.moodswing.mvp.domain.GetCommentsUsecase;
+import com.moodswing.mvp.domain.GetEntryPicHighResUsecase;
+import com.moodswing.mvp.domain.GetEntryPicUsecase;
 import com.moodswing.mvp.domain.SearchUsecase;
 import com.moodswing.mvp.mvp.presenter.CapturePresenter;
 import com.moodswing.mvp.network.Repository;
@@ -31,6 +33,12 @@ public class CaptureModule {
 
     @PerActivity
     @Provides2
-    public CapturePresenter provideCapturePresenter(CaptureUsecase captureUsecase, GetCommentsUsecase getCommentsUsecase) {return new CapturePresenter(captureUsecase, getCommentsUsecase);}
+    public GetEntryPicHighResUsecase provideGetEntryPicHighResUsecase(Repository repository) {
+        return new GetEntryPicHighResUsecase(repository);
+    }
+
+    @PerActivity
+    @Provides2
+    public CapturePresenter provideCapturePresenter(CaptureUsecase captureUsecase, GetCommentsUsecase getCommentsUsecase, GetEntryPicHighResUsecase getEntryPicHighResUsecase) {return new CapturePresenter(captureUsecase, getCommentsUsecase, getEntryPicHighResUsecase);}
 
 }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -12,12 +13,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,14 +36,17 @@ import com.moodswing.injector.component.DaggerCaptureComponent;
 import com.moodswing.injector.module.ActivityModule;
 import com.moodswing.injector.module.CaptureModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
-import com.moodswing.mvp.mvp.model.CaptureDivider;
 import com.moodswing.mvp.mvp.model.Comment;
-import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.mvp.presenter.CapturePresenter;
 import com.moodswing.mvp.mvp.view.CaptureView;
 import com.moodswing.widget.CommentAdapter;
 import com.moodswing.widget.DateBlock;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +54,7 @@ import javax.inject.Inject2;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.ResponseBody;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -64,6 +69,9 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView {
 
     @Inject2
     SharedPreferencesManager _sharedPreferencesManager;
+
+    @BindView(R.id.captureImage)
+    ImageView _capImage;
 
     @BindView(R.id.cap_name)
     TextView _capName;
@@ -97,6 +105,7 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView {
     String text;
     String displayName;
     String dateID;
+    String capID;
     private List<Comment> commentList = new ArrayList<>();
     private RecyclerView commentRecyclerView;
     private CommentAdapter commentAdapter;
@@ -152,13 +161,15 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView {
         date = getIntent().getStringExtra("EXTRA_DATE");
         text = getIntent().getStringExtra("EXTRA_TEXT");
         displayName = getIntent().getStringExtra("EXTRA_DISPLAYNAME");
-        dateID = getIntent().getStringExtra("EXTRA_ID");
+        dateID = getIntent().getStringExtra("EXTRA_DATEID");
+        capID = getIntent().getStringExtra("EXTRA_CAPID");
 
         _capName.setText(displayName);
         _capDate.setText(date);
         _capTitle.setText(title);
         _capText.setText(text);
         _comment.setHint("Write a comment...");
+        getPic();
         getComments();
     }
 
@@ -194,6 +205,63 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView {
     private void getComments() {
         commentList.clear();
         _capturePresenter.getComments(dateID);
+    }
+
+    private void getPic(){
+        _capturePresenter.getPic(capID);
+    }
+
+    @Override
+    public void showEntryPic(ResponseBody picture){
+        Boolean hasImage = true;
+        try {
+            if (picture.contentLength() == 0){
+                hasImage = false;
+            }
+            String cId = capID; //TODO: fix this
+            String[] type = picture.contentType().toString().split("/");
+            File entryPictureFile = new File(getExternalFilesDir(null) + File.separator + cId + "captureactivity." + type[1]);
+            InputStream inputStream = null;
+            OutputStream outputStream = null;
+
+            try {
+                byte[] fileReader = new byte[4096];
+                long fileSize = picture.contentLength();
+                long fileSizeDownloaded = 0;
+
+                inputStream = picture.byteStream();
+                outputStream = new FileOutputStream(entryPictureFile);
+
+                while (true) {
+                    int read = inputStream.read(fileReader);
+                    if (read == -1) {
+                        break;
+                    }
+                    outputStream.write(fileReader, 0, read);
+                    fileSizeDownloaded += read;
+                }
+                //SET PICTURE TO IMAGEVIEW
+                Uri uri = Uri.fromFile(entryPictureFile);
+                if (hasImage){
+                    _capImage.setBackgroundResource(android.R.color.transparent);
+                    _capImage.setImageURI(uri);
+                }else{
+                    _capImage.setBackgroundResource(R.drawable.empty_profile_pic);
+                }
+                outputStream.flush();
+            } catch (IOException e) {
+
+            } finally {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            }
+        } catch (IOException e) {
+
+        }
     }
 
     @Override

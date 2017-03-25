@@ -106,6 +106,10 @@ public interface ApiService {
     Observable<ResponseBody> getEntryPic(@Header("x-access-token") String token,
                                          @Path("captureId") String captureId);
 
+    @GET("captures/{captureId}/image")
+    Observable<ResponseBody> getEntryPicHighRes(@Header("x-access-token") String token,
+                                         @Path("captureId") String captureId);
+
     @Headers("Content-Type: application/json")
     @PUT("users/self")
     Observable<Response<ChangeProfileResponse>>  changeUser(@Header("x-access-token") String token,

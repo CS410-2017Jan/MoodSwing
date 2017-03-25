@@ -197,8 +197,8 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
             }
         }
 
-        holder.cAdapter.setData(temp, _journalPresenter, jActivity);                // TODO:AJKDHLKSDHKLSDH
-        holder.cAdapter.setRowIndex(position);                                      // TODO:AJKDHLKSDHKLSDH
+        holder.cAdapter.setData(temp, _journalPresenter, jActivity);
+        holder.cAdapter.setRowIndex(position);
     }
 
     @Override
@@ -229,13 +229,15 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
         String capTitle = dBlock.getTitle();
         String capDate = dBlock.getDate();
         String capText = capture.getText();
-        String capId = dBlock.getId();
+        String dateId = dBlock.getId();
+        String capId = capture.getId();
         capUsername = dBlock.getUsername();
         captureIntent = new Intent(jActivity, CaptureActivity.class);
         captureIntent.putExtra("EXTRA_TITLE", capTitle);
         captureIntent.putExtra("EXTRA_DATE", capDate);
         captureIntent.putExtra("EXTRA_TEXT", capText);
-        captureIntent.putExtra("EXTRA_ID", capId);
+        captureIntent.putExtra("EXTRA_DATEID", dateId);
+        captureIntent.putExtra("EXTRA_CAPID", capId);
 
         _journalPresenter.getUsers();
     }

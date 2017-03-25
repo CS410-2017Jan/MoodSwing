@@ -6,6 +6,8 @@ import com.moodswing.mvp.data.SharedPreferencesManager;
 //import com.moodswing.mvp.domain.CaptureUsecase;
 import com.moodswing.mvp.domain.CaptureUsecase;
 import com.moodswing.mvp.domain.GetCommentsUsecase;
+import com.moodswing.mvp.domain.GetEntryPicHighResUsecase;
+import com.moodswing.mvp.domain.GetEntryPicUsecase;
 import com.moodswing.mvp.mvp.model.Comment;
 import com.moodswing.mvp.mvp.model.response.PostCommentResponse;
 import com.moodswing.mvp.mvp.view.CaptureView;
@@ -15,6 +17,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
 
 /**
  * Created by Matthew on 2017-03-12.
@@ -24,12 +27,14 @@ public class CapturePresenter implements Presenter<CaptureView> {
     private CaptureView captureView;
     private CaptureUsecase captureUsecase;
     private GetCommentsUsecase getCommentsUsecase;
+    private GetEntryPicHighResUsecase getEntryPicHighResUsecase;
     private Disposable captureSubscription;
     private SharedPreferencesManager sharedPreferencesManager;
 
-    public CapturePresenter(CaptureUsecase captureUsecase, GetCommentsUsecase getCommentsUsecase) {
+    public CapturePresenter(CaptureUsecase captureUsecase, GetCommentsUsecase getCommentsUsecase, GetEntryPicHighResUsecase getEntryPicHighResUsecase) {
         this.captureUsecase = captureUsecase;
         this.getCommentsUsecase = getCommentsUsecase;
+        this.getEntryPicHighResUsecase = getEntryPicHighResUsecase;
     }
 
     @Override
@@ -104,6 +109,28 @@ public class CapturePresenter implements Presenter<CaptureView> {
                         captureView.showError2();
                     }
                 });
+    }
+
+    public void getPic(final String captureId) {
+        getEntryPicHighResUsecase.setCaptureId(captureId);
+        getEntryPicHighResUsecase.setToken(sharedPreferencesManager.getToken());
+
+        captureSubscription = getEntryPicHighResUsecase.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseBody>() {
+                    @Override
+                    public void accept(ResponseBody picture) throws Exception {
+                        captureView.showEntryPic(picture);
+                    }
+
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.i("", "****GET " + captureId + " ERROR****");
+                    }
+                });
+
     }
 
 

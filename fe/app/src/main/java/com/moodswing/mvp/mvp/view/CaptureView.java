@@ -6,6 +6,8 @@ import com.moodswing.widget.DateBlock;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
+
 /**
  * Created by Matthew on 2017-03-12.
  */
@@ -13,6 +15,7 @@ import java.util.List;
 public interface CaptureView extends View {
     void onPostCommentSuccess();
     void showComments(DateBlock dateBlock);
+    void showEntryPic(ResponseBody picture);
     void onPostCommentFailure();
     void onGetCommentFailure();
     void showError1();

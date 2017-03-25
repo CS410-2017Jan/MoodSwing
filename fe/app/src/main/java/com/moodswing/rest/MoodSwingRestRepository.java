@@ -103,6 +103,11 @@ public class MoodSwingRestRepository implements Repository {
     }
 
     @Override
+    public Observable<ResponseBody> getEntryPicHighRes(String token, String captureId) {
+        return apiService.getEntryPicHighRes(token, captureId);
+    }
+
+    @Override
     public Observable<Response<List<User>>> getUsers() {
         return apiService.getUsers();
     }
