@@ -11,6 +11,7 @@ const _ = require('lodash')
 
 const KB = 1024
 const MB = KB*KB
+const EMOTIONLIST = _.keys(User.schema.obj.emotionCount.default)
 
 /*
 ---------------------------------------------------------
@@ -214,9 +215,10 @@ router.post('/users/self/captures', upload.single('image'), function(req, res) {
 	let username = req.username
 	let text = req.body.text
 	let captureDate = req.body.captureDate
+	let dominantEmotion = req.body.emotion
 	let file = req.file
 
-	let newCapture = {text: text};
+	let newCapture = {text: text, emotion: dominantEmotion};
 
 	if (file) {
 		if (file.size > 16*MB) {
@@ -255,6 +257,7 @@ function makeEntry(req, res, newCapture) {
 	let username = req.username
 	let text = req.body.text
 	let captureDate = req.body.captureDate
+	let dominantEmotion = req.body.emotion
 
   JournalEntry.findOne({
 		username: username,
@@ -266,6 +269,7 @@ function makeEntry(req, res, newCapture) {
 
 			entry.save()
 				.then(function(doc) {
+					incrementEmotionCount(username, dominantEmotion)
 					notifyFollowers(username, entry._id)
 					return res.status(200).json({ success: true, message: 'Added to existing date'})
 				})
@@ -278,7 +282,8 @@ function makeEntry(req, res, newCapture) {
 			})
 
 			newEntry.save()
-			  .then(function (createdEntry) {
+				.then(function (createdEntry) {
+					incrementEmotionCount(username, dominantEmotion)
 					notifyFollowers(username, createdEntry._id)
 					return res.status(200).json({ success: true, message: 'Created new journal entry'})
 			  })
@@ -315,6 +320,26 @@ function notifyFollowers(username, entryId) {
 	})
 }
 
+function incrementEmotionCount(username, emotion, amount=1) {
+
+	let incrementable = {}
+
+	if (!_.includes(EMOTIONLIST, emotion)) {
+		incrementable['emotionCount.UNKNOWN'] = amount
+	} else {
+		let key = 'emotionCount.' + emotion
+		incrementable[key] = amount
+	}
+
+	User.findOneAndUpdate({
+		username: username
+	}, {$inc: incrementable }, function(err, data) {
+		if (err) {
+			console.log(err)
+		}
+	})
+}
+
 router.get('/users/self/entries', function(req, res) {
 	let username = req.username
 	res.redirect('/users/' + username + '/entries')
@@ -332,6 +357,9 @@ router.delete('/users/self/entries/:entryId', function(req, res) {
 
     entry.remove()
       .then(function () {
+			_.forEach(entry.captures, function(capture) {
+				incrementEmotionCount(username, capture.emotion, -1)
+			})
         return res.status(200).json({ success: true})
       })
       .catch(function(err) {
@@ -354,6 +382,7 @@ router.delete('/users/self/captures/:captureId', function(req, res) {
 		if (entry.captures.length === 1) {
 			entry.remove()
 				.then(function () {
+					findCaptureByIdAndDecrementEmotion(username, entry, captureId)
 					return res.status(200).json({ success: true, message: "Deleted entire entry"})
 				})
 				.catch(function(err) {
@@ -362,6 +391,7 @@ router.delete('/users/self/captures/:captureId', function(req, res) {
 		} else {
 			entry.update({'$pull': {'captures': {'_id': mongoose.Types.ObjectId(captureId)}}})
 				.then(function() {
+					findCaptureByIdAndDecrementEmotion(username, entry, captureId)
 					return res.status(200).json({ success: true })
 				})
 				.catch(function(err) {
@@ -370,6 +400,14 @@ router.delete('/users/self/captures/:captureId', function(req, res) {
 			}
 	})
 })
+
+function findCaptureByIdAndDecrementEmotion(username, entry, captureId) {
+	_.forEach(entry.captures, function(capture) {
+		if (capture._id == captureId) {
+			incrementEmotionCount(username, capture.emotion, -1)
+		}
+	})
+}
 
 router.put('/users/self/entries/:entryId', function(req, res) {
 	let entryId = req.params.entryId

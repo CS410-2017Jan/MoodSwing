@@ -14,7 +14,8 @@ var Comment = new Schema({
 var Capture = new Schema({
 	text: String,
 	image: { data: Buffer, contentType: String },
-	thumbnail: { data: Buffer, contentType: String }
+	thumbnail: { data: Buffer, contentType: String },
+	emotion: String
 }, {
 	versionKey: '1'
 })
