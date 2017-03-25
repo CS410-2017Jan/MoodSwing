@@ -5,6 +5,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -12,9 +15,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.PopupMenu;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -77,6 +83,9 @@ public class EditProfileActivity extends MoodSwingActivity implements EditProfil
     @BindView(R.id.change_new_password)
     EditText _newPasswordText;
 
+    @BindView(R.id.toolbar)
+    Toolbar _toolbar;
+
     private EditProfileComponent _editProfileComponent;
     private boolean storagePermissionsAvailable;
     private Uri selectedProfileUri;
@@ -110,6 +119,10 @@ public class EditProfileActivity extends MoodSwingActivity implements EditProfil
     }
 
     private void initializeButtonsAndText() {
+        // Toolbar
+        setSupportActionBar(_toolbar);
+        _toolbar.setTitleTextColor(Color.WHITE);
+
         _editProfilePictureButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -158,8 +171,6 @@ public class EditProfileActivity extends MoodSwingActivity implements EditProfil
         _newPasswordText.addTextChangedListener(newPasswordWatcher);
     }
 
-
-
     private void initializeProfileInformation() {
         _editProfilePresenter.getPicture();
     }
@@ -185,43 +196,12 @@ public class EditProfileActivity extends MoodSwingActivity implements EditProfil
 
     @Override
     public void getPicture(ResponseBody picture) {
-        try {
-            String[] type = picture.contentType().toString().split("/");
-            File profilePictureFile = new File(getExternalFilesDir(null) + File.separator + "OurProfilePicture." + type[1]);
-            InputStream inputStream = null;
-            OutputStream outputStream = null;
-
-            try {
-                byte[] fileReader = new byte[4096];
-                long fileSize = picture.contentLength();
-                long fileSizeDownloaded = 0;
-
-                inputStream = picture.byteStream();
-                outputStream = new FileOutputStream(profilePictureFile);
-
-                while (true) {
-                    int read = inputStream.read(fileReader);
-                    if (read == -1) {
-                        break;
-                    }
-                    outputStream.write(fileReader, 0, read);
-                    fileSizeDownloaded += read;
-                }
-                //SET PICTURE TO IMAGEVIEW
-                _editProfilePictureButton.setImageURI(Uri.fromFile(profilePictureFile));
-                outputStream.flush();
-            } catch (IOException e) {
-
-            } finally {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-                if (outputStream != null) {
-                    outputStream.close();
-                }
-            }
-        } catch (IOException e) {
-
+        if (picture.contentLength() == 0) {
+            _editProfilePictureButton.setVisibility(View.GONE);
+        } else {
+            Bitmap bitmap = BitmapFactory.decodeStream(picture.byteStream());
+            _editProfilePictureButton.setBackgroundResource(android.R.color.transparent);
+            _editProfilePictureButton.setImageBitmap(bitmap);
         }
     }
 
@@ -405,5 +385,39 @@ public class EditProfileActivity extends MoodSwingActivity implements EditProfil
                 changeProfilePicture();
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_followers, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        int id = menuItem.getItemId();
+
+        switch (id) {
+            case R.id.action_followers:
+                View menuItemView = findViewById(R.id.action_followers);
+                PopupMenu popupMenu = new PopupMenu(this, menuItemView);
+                popupMenu.inflate(R.menu.followers_popup_menu);
+
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.followers_popup_action:
+                                Intent intent = new Intent(getApplicationContext(), FollowersActivity.class);
+                                startActivity(intent);
+                                break;
+                        }
+                        return true;
+                    }
+                });
+                popupMenu.show();
+                return true;
+        }
+        return super.onOptionsItemSelected(menuItem);
     }
 }

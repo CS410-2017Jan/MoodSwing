@@ -126,6 +126,7 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
         initializeBottomNavigationView();
         initializeNewEntryFab();
         setSupportActionBar(toolbar);
+        initializeProfilePic();
 
         if (!_journalPresenter.isUserLoggedIn()) {
             Intent intent = new Intent(this, LoginActivity.class);
@@ -143,6 +144,16 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
         _dRecyclerView.setItemAnimator(new DefaultItemAnimator());
         _dRecyclerView.addItemDecoration(new DateDivider(this, R.drawable.divider));
         _dRecyclerView.setAdapter(dAdapter);
+    }
+
+    private void initializeProfilePic() {
+        _profilePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

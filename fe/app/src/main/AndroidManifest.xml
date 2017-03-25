@@ -53,8 +53,8 @@
             android:name=".activity.FullScreenImageActivity"
             android:theme="@style/NoBarAppTheme"/>
         <activity android:name=".activity.EditProfileActivity"
-            android:theme="@style/AppTheme"
-            android:label="Edit Profile"/>
+            android:theme="@style/NoBarAppTheme"
+            android:label="My Profile"/>
         <activity
             android:name=".activity.NewEntryActivity"
             android:theme="@style/AppTheme"
@@ -80,6 +80,10 @@
             android:name=".activity.FollowingActivity"
             android:theme="@style/AppTheme"
             android:label="Following"/>
+        <activity
+            android:name=".activity.FollowersActivity"
+            android:theme="@style/AppTheme"
+            android:label="Followers"/>
         // Faceboook
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <provider android:authorities="com.facebook.app.FacebookContentProvider100716993800806"

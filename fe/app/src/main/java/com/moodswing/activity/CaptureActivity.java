@@ -42,11 +42,6 @@ import com.moodswing.mvp.mvp.view.CaptureView;
 import com.moodswing.widget.CommentAdapter;
 import com.moodswing.widget.DateBlock;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
