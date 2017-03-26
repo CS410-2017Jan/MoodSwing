@@ -1,5 +1,4 @@
 const express = require('express');
-const app = express();
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User   = require('./app/models/user');
@@ -84,7 +83,7 @@ function createToken(user) {
   return jwt.sign({username: user.username}, config.secret, {
     expiresIn: 86400  // 24 hours
   });
-};
+}
 
 router.get('/users/:username/picture', (req, res) => {
 
@@ -181,8 +180,8 @@ router.get('/users/:username', function(req, res) {
     userInfo.emotionCount = undefined;
 
     return res.status(200).json(userInfo);
-  })
-})
+  });
+});
 
 
  /*
@@ -239,7 +238,7 @@ router.get('/captures/:captureId/image', (req, res) => {
     let imageBuffer = capture.image.data;
     let imageType = capture.image.contentType;
 
-    let img = new Buffer(imageBuffer, 'base64')
+    let img = new Buffer(imageBuffer, 'base64');
     res.writeHead(200, {
       'Content-Type': imageType,
       'Content-Length': img.length
@@ -290,7 +289,7 @@ router.get('/users', function(req, res) {
       if (user1.username.toLowerCase() > user2.username.toLowerCase())
         return 1;
       return 0;
-    })
+    });
     return res.status(200).json(userList);
   });
 });
@@ -324,10 +323,9 @@ router.get('/entries/:entryId', function(req, res) {
 
         return res.status(200).json(entry);
       }
-    )
+    );
   });
 });
-
 
 
  /*

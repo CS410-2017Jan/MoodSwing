@@ -87,7 +87,7 @@ router.post('/users/self/picture', upload.single('profilePicture'), (req, res) =
 			  username: username
 			}, function(err, user) {
 				if (err || !user) {
-					return res.status(400).json({success: false, message: 'User not found'})
+					return res.status(400).json({success: false, message: 'User not found'});
 				}
 
 				user.profilePicture = {data: req.file.buffer, contentType: req.file.mimetype};
@@ -265,7 +265,7 @@ function makeEntry(req, res, newCapture) {
 			  });
 		}
   });
-};
+}
 
 function notifyFollowers(username, entryId) {
 	User.findOne({
@@ -290,7 +290,7 @@ function notifyFollowers(username, entryId) {
 			console.log("Notified " + stats.nModified + " people");
 		});
 	});
-};
+}
 
 function incrementEmotionCount(username, emotion, amount=1) {
 
@@ -309,7 +309,7 @@ function incrementEmotionCount(username, emotion, amount=1) {
 			console.log(err);
 		}
 	});
-};
+}
 
 router.get('/users/self/entries', function(req, res) {
 	let username = req.username;
@@ -322,7 +322,7 @@ router.delete('/users/self/entries/:entryId', function(req, res) {
 
 	JournalEntry.findById(entryId, function(err, entry) {
 		if (err || !entry) {
-      return res.status(400).json({ success: false, message: 'Entry not found'})
+      return res.status(400).json({ success: false, message: 'Entry not found'});
     }
 
     entry.remove()
@@ -377,7 +377,7 @@ function findCaptureByIdAndDecrementEmotion(username, entry, captureId) {
 			incrementEmotionCount(username, capture.emotion, -1);
 		}
 	});
-};
+}
 
 router.put('/users/self/entries/:entryId', function(req, res) {
 	let entryId = req.params.entryId;
