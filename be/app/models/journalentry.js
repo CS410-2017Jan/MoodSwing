@@ -1,7 +1,7 @@
-var mongoose = require('mongoose')
-var Schema = mongoose.Schema
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
-mongoose.Promise = Promise
+mongoose.Promise = Promise;
 
 var Comment = new Schema({
 	dateCreated: { type: Date, default: Date.now },
@@ -9,7 +9,7 @@ var Comment = new Schema({
 	text: String
 }, {
 	versionKey: '1'
-})
+});
 
 var Capture = new Schema({
 	text: String,
@@ -18,7 +18,7 @@ var Capture = new Schema({
 	emotion: String
 }, {
 	versionKey: '1'
-})
+});
 
 var JournalEntry = new Schema({
 	username: String,
@@ -29,6 +29,6 @@ var JournalEntry = new Schema({
 	comments: [Comment]
 }, {
 	versionKey: '1'
-})
+});
 
-module.exports = mongoose.model('JournalEntry', JournalEntry)
+module.exports = mongoose.model('JournalEntry', JournalEntry);

@@ -1,7 +1,7 @@
-var mongoose = require('mongoose')
-var Schema = mongoose.Schema
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
-mongoose.Promise = Promise
+mongoose.Promise = Promise;
 
 let emotionCount = {
 	'RELAXED': 0,
@@ -16,7 +16,7 @@ let emotionCount = {
 	'RAGE': 0,
 	'SCREAM': 0,
 	'FLUSHED': 0
-}
+};
 
 module.exports = mongoose.model('User', new Schema({
 	username: String,
@@ -30,4 +30,4 @@ module.exports = mongoose.model('User', new Schema({
 	thumbnail: { data: Buffer, contentType: String }
 }, {
 	versionKey: '1'
-}))
+}));

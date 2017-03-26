@@ -1,12 +1,12 @@
-const express = require('express')
-const app = express()
-const router = express.Router()
-const jwt = require('jsonwebtoken')
-const User   = require('./app/models/user')
-const JournalEntry   = require('./app/models/journalentry')
-const config = require('./config')
-const mongoose = require('mongoose')
-const _ = require('lodash')
+const express = require('express');
+const app = express();
+const router = express.Router();
+const jwt = require('jsonwebtoken');
+const User   = require('./app/models/user');
+const JournalEntry   = require('./app/models/journalentry');
+const config = require('./config');
+const mongoose = require('mongoose');
+const _ = require('lodash');
 
 /*
 ---------------------------------------------------------
@@ -15,8 +15,8 @@ const _ = require('lodash')
 */
 
 router.get('/hello', (req, res) => {
-  res.status(200).send('Hello World')
-})
+  res.status(200).send('Hello World');
+});
 
 /*
 ---------------------------------------------------------
@@ -25,134 +25,130 @@ router.get('/hello', (req, res) => {
 */
 
 router.post('/users', function(req, res) {
-  let username = req.body.username
-  let password = req.body.password
-  let displayName = req.body.displayName || ''
+  let username = req.body.username;
+  let password = req.body.password;
+  let displayName = req.body.displayName || '';
 
   if (!username || !password) {
-    return res.status(400).json({ success: false, message: 'Malformed http body'})
+    return res.status(400).json({ success: false, message: 'Malformed http body'});
   }
 
   User.findOne({
     username: req.body.username
   }, function(err, user) {
-    if (err) throw err
-
-    if (user) {
-      return res.status(409).json({ success: false, message: 'Username already exists'})
+    if (err || user) {
+      return res.status(409).json({ success: false, message: 'Username already exists'});
     }
 
     let newUser = new User({
       username: username,
       password: password,
       displayName: displayName
-    })
+    });
 
     newUser.save()
       .then(function (doc) {
-        let token = createToken(doc)
-        return res.status(201).json({ success: true, token: token})
+        let token = createToken(doc);
+        return res.status(201).json({ success: true, token: token});
       })
       .catch(function(err) {
-        return res.status(400).json({ success: false })
-      })
-  })
-})
+        return res.status(400).json({ success: false });
+      });
+  });
+});
 
 router.post('/users/login', function(req, res) {
 
   User.findOne({
     username: req.body.username
   }, function(err, user) {
-    if (err) throw err
-
-    if (!user) {
-      return res.status(400).json({ success: false, message: 'Error: User not found.' })
+    if (err || !user) {
+      return res.status(400).json({ success: false, message: 'Error: User not found.' });
     }
 
     if (user.password != req.body.password) {
-      return res.status(400).json({ success: false, message: 'Error: Wrong password.' })
+      return res.status(400).json({ success: false, message: 'Error: Wrong password.' });
     }
 
-    let token = createToken(user)
+    let token = createToken(user);
 
     return res.status(200).json({
       success: true,
       message: 'Enjoy your token!',
       token: token
-    })
-  })
-})
+    });
+  });
+});
 
 function createToken(user) {
   return jwt.sign({username: user.username}, config.secret, {
     expiresIn: 86400  // 24 hours
-  })
-}
+  });
+};
 
 router.get('/users/:username/picture', (req, res) => {
 
-  let username = req.params.username
+  let username = req.params.username;
 
   User.findOne({
     username: username
   }, 'profilePicture', function(err, user) {
 
     if (err || !user) {
-      return res.status(404).send({ success: false })
+      return res.status(404).send({ success: false });
     }
 
     if (!user.profilePicture.data) {
       res.writeHead(200, {
         'Content-Type': "image/jpeg",
         'Content-Length': 0
-      })
-      return res.end()
+      });
+      return res.end();
     }
 
-    let imageBuffer = user.profilePicture.data
-    let imageType = user.profilePicture.contentType
+    let imageBuffer = user.profilePicture.data;
+    let imageType = user.profilePicture.contentType;
 
-    let img = new Buffer(imageBuffer, 'base64')
+    let img = new Buffer(imageBuffer, 'base64');
     res.writeHead(200, {
       'Content-Type': imageType,
       'Content-Length': img.length
-    })
-    res.status(200).end(img)
-  })
-})
+    });
+    res.status(200).end(img);
+  });
+});
 
 router.get('/users/:username/thumbnail', (req, res) => {
 
-  let username = req.params.username
+  let username = req.params.username;
 
   User.findOne({
     username: username
   }, 'thumbnail' ,function(err, user) {
 
     if (err || !user) {
-      return res.status(404).send({ success: false })
+      return res.status(404).send({ success: false });
     }
 
     if (!user.thumbnail.data) {
       res.writeHead(200, {
         'Content-Type': "image/jpeg",
         'Content-Length': 0
-      })
-      return res.end()
+      });
+      return res.end();
     }
 
-    let imageBuffer = user.thumbnail.data
-    let imageType = user.thumbnail.contentType
+    let imageBuffer = user.thumbnail.data;
+    let imageType = user.thumbnail.contentType;
 
-    let img = new Buffer(imageBuffer, 'base64')
+    let img = new Buffer(imageBuffer, 'base64');
     res.writeHead(200, {
       'Content-Type': imageType,
       'Content-Length': img.length
-    })
-    res.status(200).end(img)
-  })
-})
+    });
+    res.status(200).end(img);
+  });
+});
 
 /*
 ---------------------------------------------------------
@@ -161,30 +157,30 @@ User information
  */
 
 router.get('/users/:username', function(req, res) {
-  let username = req.params.username
+  let username = req.params.username;
 
   User.findOne({
     username: username
   }, '_id username displayName followers following emotionCount',
   function(err, userInfo) {
     if (!userInfo || err) {
-      return res.status(400).json({success: false, message: 'User not found'})
+      return res.status(400).json({success: false, message: 'User not found'});
     }
 
-    userInfo = userInfo.toObject()
+    userInfo = userInfo.toObject();
 
     if (userInfo.emotionCount && _.keys(userInfo.emotionCount).length > 1) {
       userInfo.sortedEmotions = _.toPairs(userInfo.emotionCount).sort(function(a, b) {
         return b[1] - a[1];
-      }).slice(0,2)
+      }).slice(0,2);
 
-      userInfo.sortedEmotions[0][1] = '' + userInfo.sortedEmotions[0][1]
-      userInfo.sortedEmotions[1][1] = '' + userInfo.sortedEmotions[1][1]
+      userInfo.sortedEmotions[0][1] = '' + userInfo.sortedEmotions[0][1];
+      userInfo.sortedEmotions[1][1] = '' + userInfo.sortedEmotions[1][1];
     }
 
-    userInfo.emotionCount = undefined
+    userInfo.emotionCount = undefined;
 
-    return res.status(200).json(userInfo)
+    return res.status(200).json(userInfo);
   })
 })
 
@@ -196,7 +192,7 @@ Captures
  */
 
 router.get('/users/:username/entries', function(req, res) {
-  let username = req.params.username
+  let username = req.params.username;
 
   JournalEntry.find({
     username: username
@@ -204,10 +200,8 @@ router.get('/users/:username/entries', function(req, res) {
     'captures.image': 0,
     'captures.thumbnail': 0
   }, function(err, journalEntries) {
-    if (err) throw err
-
-    if (!journalEntries) {
-      return res.status(400).json({ success: false, message: 'No entries found'})
+    if (err || !journalEntries) {
+      return res.status(400).json({ success: false, message: 'No entries found'});
     }
 
     let sortedEntries = journalEntries.sort(function(a, b){
@@ -216,13 +210,13 @@ router.get('/users/:username/entries', function(req, res) {
       return a[2] - b[2] || a[1] - b[1] || a[0] - b[0];
     }).reverse();
 
-    return res.status(200).json(sortedEntries)
-  })
-})
+    return res.status(200).json(sortedEntries);
+  });
+});
 
 router.get('/captures/:captureId/image', (req, res) => {
 
-  let captureId = req.params.captureId
+  let captureId = req.params.captureId;
 
   JournalEntry.findOne({
     "captures._id": mongoose.Types.ObjectId(captureId)
@@ -230,33 +224,33 @@ router.get('/captures/:captureId/image', (req, res) => {
     'captures.$': 1
   }, function(err, entry) {
     if (err || !entry) {
-      return res.status(400).json({ success: false })
+      return res.status(400).json({ success: false });
     }
 
     if (!entry.captures[0] || !entry.captures[0].image || !entry.captures[0].image.data) {
       res.writeHead(200, {
         'Content-Type': "image/jpeg",
         'Content-Length': 0
-      })
-      return res.end()
+      });
+      return res.end();
     }
 
-    let capture = entry.captures[0]
-    let imageBuffer = capture.image.data
-    let imageType = capture.image.contentType
+    let capture = entry.captures[0];
+    let imageBuffer = capture.image.data;
+    let imageType = capture.image.contentType;
 
     let img = new Buffer(imageBuffer, 'base64')
     res.writeHead(200, {
       'Content-Type': imageType,
       'Content-Length': img.length
-    })
-    res.status(200).end(img)
-  })
-})
+    });
+    res.status(200).end(img);
+  });
+});
 
 router.get('/captures/:captureId/thumbnail', (req, res) => {
 
-  let captureId = req.params.captureId
+  let captureId = req.params.captureId;
 
   JournalEntry.findOne({
     "captures._id": mongoose.Types.ObjectId(captureId)
@@ -264,29 +258,29 @@ router.get('/captures/:captureId/thumbnail', (req, res) => {
     'captures.$': 1
   }, function(err, entry) {
     if (err || !entry) {
-      return res.status(400).json({ success: false })
+      return res.status(400).json({ success: false });
     }
 
     if (!entry.captures[0] || !entry.captures[0].thumbnail || !entry.captures[0].thumbnail.data) {
       res.writeHead(200, {
         'Content-Type': "image/jpeg",
         'Content-Length': 0
-      })
-      return res.end()
+      });
+      return res.end();
     }
 
-    let capture = entry.captures[0]
-    let imageBuffer = capture.thumbnail.data
-    let imageType = capture.thumbnail.contentType
+    let capture = entry.captures[0];
+    let imageBuffer = capture.thumbnail.data;
+    let imageType = capture.thumbnail.contentType;
 
-    let img = new Buffer(imageBuffer, 'base64')
+    let img = new Buffer(imageBuffer, 'base64');
     res.writeHead(200, {
       'Content-Type': imageType,
       'Content-Length': img.length
-    })
-    res.status(200).end(img)
-  })
-})
+    });
+    res.status(200).end(img);
+  });
+});
 
 router.get('/users', function(req, res) {
   User.find({}, {'username': 1, 'displayName': 1, '_id': 0}, function(err, results) {
@@ -297,42 +291,42 @@ router.get('/users', function(req, res) {
         return 1;
       return 0;
     })
-    return res.status(200).json(userList)
-  })
-})
+    return res.status(200).json(userList);
+  });
+});
 
 router.get('/entries/:entryId', function(req, res) {
-  let entryId = req.params.entryId
+  let entryId = req.params.entryId;
   JournalEntry.findById(entryId, {"captures.image": 0}, function(err, entry) {
-    entry = entry.toObject()
+    entry = entry.toObject();
 
     if (err || !entry) {
-      return res.status(400).json({ success: false, message: "No entry found"})
+      return res.status(400).json({ success: false, message: "No entry found"});
     }
 
-    let commenters = _.map(entry.comments, 'commenter')
+    let commenters = _.map(entry.comments, 'commenter');
 
     User.find({
       username: { $in: commenters }
       }, 'username displayName', function(err, commentersUserInfo) {
         if (err || !commentersUserInfo) {
-          return res.status(400).json({ success: false, message: "Commenter error"})
+          return res.status(400).json({ success: false, message: "Commenter error"});
         }
 
         let usernameDisplayNameHash = {};
         _.forEach(commentersUserInfo, function(commenterUserInfo) {
-          usernameDisplayNameHash[commenterUserInfo.username] = commenterUserInfo.displayName
-        })
+          usernameDisplayNameHash[commenterUserInfo.username] = commenterUserInfo.displayName;
+        });
 
         _.forEach(entry.comments, function(comment) {
-          comment.displayName = usernameDisplayNameHash[comment.commenter]
-        })
+          comment.displayName = usernameDisplayNameHash[comment.commenter];
+        });
 
-        return res.status(200).json(entry)
+        return res.status(200).json(entry);
       }
     )
-  })
-})
+  });
+});
 
 
 
@@ -342,4 +336,4 @@ router.get('/entries/:entryId', function(req, res) {
 ---------------------------------------------------------
  */
 
- module.exports = router
+ module.exports = router;

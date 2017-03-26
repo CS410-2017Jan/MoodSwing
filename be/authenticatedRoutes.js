@@ -1,17 +1,17 @@
-const express = require('express')
-const router = express.Router()
-const jwt = require('jsonwebtoken')
-const User   = require('./app/models/user')
-const JournalEntry   = require('./app/models/journalentry')
-const config = require('./config')
-const multer = require('multer')
-const mongoose = require('mongoose')
-const gm = require('gm')
-const _ = require('lodash')
+const express = require('express');
+const router = express.Router();
+const jwt = require('jsonwebtoken');
+const User   = require('./app/models/user');
+const JournalEntry   = require('./app/models/journalentry');
+const config = require('./config');
+const multer = require('multer');
+const mongoose = require('mongoose');
+const gm = require('gm');
+const _ = require('lodash');
 
-const KB = 1024
-const MB = KB*KB
-const EMOTIONLIST = _.keys(User.schema.obj.emotionCount.default)
+const KB = 1024;
+const MB = KB*KB;
+const EMOTIONLIST = _.keys(User.schema.obj.emotionCount.default);
 
 /*
 ---------------------------------------------------------
@@ -21,25 +21,25 @@ const EMOTIONLIST = _.keys(User.schema.obj.emotionCount.default)
 
 router.use(/.*\/self\/.*|^\/users\/self$|^\/entries\/\w*\/comments$|^\/entries\/\w*\/comments\/\w*$|^\/users\/\w*\/(un)?follow$/,
 	function(req, res, next) {
-		var token = req.body.token || req.headers['x-access-token']
+		let token = req.body.token || req.headers['x-access-token'];
 
 		if (token) {
 			jwt.verify(token, config.secret, function(err, decoded) {
 				if (err) {
-					return res.json({ success: false, message: 'Failed to authenticate token.' })
+					return res.json({ success: false, message: 'Failed to authenticate token.' });
 				}
 
-				req.username = decoded.username
-				next()
-			})
+				req.username = decoded.username;
+				next();
+			});
 
 		} else {
 			return res.status(403).send({
 				success: false,
 				message: 'No token provided.'
-			})
+			});
 		}
-})
+});
 
 /*
 ---------------------------------------------------------
@@ -48,19 +48,19 @@ User Information
 */
 
 router.get('/self/hi', function(req, res) {
-	console.log(req.username) //how you get user information
-	res.json({ message: 'Welcome to the coolest API on earth!' })
-})
+	console.log(req.username); //how you get user information
+	res.json({ message: 'Welcome to the coolest API on earth!' });
+});
 
 
-var upload = multer({ storage: multer.memoryStorage({}) })
+var upload = multer({ storage: multer.memoryStorage({}) });
 
 router.post('/users/self/picture', upload.single('profilePicture'), (req, res) => {
 
-  let username = req.username
+  let username = req.username;
 
 	if (req.file.size > 16*MB) {
-		return res.status(400).json({ success: false, message: 'File too large' })
+		return res.status(400).json({ success: false, message: 'File too large' });
 	}
 
 	switch (req.file.mimetype) {
@@ -69,9 +69,9 @@ router.post('/users/self/picture', upload.single('profilePicture'), (req, res) =
 		case 'image/jpeg':
 		case 'image/png':
 		case 'image/tiff':
-			break
+			break;
 		default:
-			return res.status(415).json({ success: false, message: 'File type not supported' })
+			return res.status(415).json({ success: false, message: 'File type not supported' });
 	}
 
 	gm(req.file.buffer, 'thumbnail.jpg')
@@ -86,95 +86,92 @@ router.post('/users/self/picture', upload.single('profilePicture'), (req, res) =
 			User.findOne({
 			  username: username
 			}, function(err, user) {
-				if (err) throw err
-
-				if (!user) {
+				if (err || !user) {
 					return res.status(400).json({success: false, message: 'User not found'})
 				}
 
-				user.profilePicture = {data: req.file.buffer, contentType: req.file.mimetype}
-				user.thumbnail = {data: thumbnailBuffer, contentType: 'image/jpeg'}
+				user.profilePicture = {data: req.file.buffer, contentType: req.file.mimetype};
+				user.thumbnail = {data: thumbnailBuffer, contentType: 'image/jpeg'};
 
 				user.save()
 			    .then(function (doc) {
-			      return res.status(200).json({ success: true })
+			      return res.status(200).json({ success: true });
 			    })
 			    .catch(function(err) {
-			      return res.status(400).json({ success: false })
-			    })
-			})
-		})
-})
+			      return res.status(400).json({ success: false });
+			    });
+			});
+		});
+});
 
 router.get('/users/self/thumbnail', (req, res) => {
 
-	let username = req.username
+	let username = req.username;
 
   User.findOne({
     username: username
   }, 'thumbnail' ,function(err, user) {
 
 		if (err || !user) {
-			return res.status(404).send({ success: false })
+			return res.status(404).send({ success: false });
 		}
 
 		if (!user.thumbnail.data) {
-			return res.status(404).send({ success: false, message: 'User does not have a profile picture'})
+			return res.status(404).send({ success: false, message: 'User does not have a profile picture'});
 		}
 
-    let imageBuffer = user.thumbnail.data
-    let imageType = user.thumbnail.contentType
+    let imageBuffer = user.thumbnail.data;
+    let imageType = user.thumbnail.contentType;
 
-    let img = new Buffer(imageBuffer, 'base64')
+    let img = new Buffer(imageBuffer, 'base64');
     res.writeHead(200, {
       'Content-Type': imageType,
       'Content-Length': img.length
-    })
-    res.status(200).end(img)
-  })
-})
+    });
+    res.status(200).end(img);
+  });
+});
 
 
 router.put('/users/self', (req, res) => {
-	let username = req.username
-	let oldPassword = req.body.oldPassword
-	let newPassword = req.body.newPassword
-	let newDisplayName = req.body.newDisplayName
+	let username = req.username;
+	let oldPassword = req.body.oldPassword;
+	let newPassword = req.body.newPassword;
+	let newDisplayName = req.body.newDisplayName;
 
 	if (!newPassword && !newDisplayName) {
-		return res.status(400).send({ success: false , message: 'Malformed request'})
+		return res.status(400).send({ success: false , message: 'Malformed request'});
 	}
 
   User.findOne({
     username: username,
     password: oldPassword
   }, function(err, user) {
-
 		if (err || !user) {
-			return res.status(404).send({ success: false , message: 'Error: Incorrect password'})
+			return res.status(404).send({ success: false , message: 'Error: Incorrect password'});
 		}
 
-		let changedParameters = ''
+		let changedParameters = '';
 
 		if (newPassword) {
-			user.password = newPassword
-			changedParameters += 'password '
+			user.password = newPassword;
+			changedParameters += 'password ';
 		}
 
 		if (newDisplayName) {
-			user.displayName = newDisplayName
-			changedParameters += 'displayName'
+			user.displayName = newDisplayName;
+			changedParameters += 'displayName';
 		}
 
 		user.save()
 	    .then(function (doc) {
-	      return res.status(200).json({ success: true, message: "Changed user information: " + changedParameters})
+	      return res.status(200).json({ success: true, message: "Changed user information: " + changedParameters});
 	    })
 	    .catch(function(err) {
-	      return res.status(400).json({ success: false, message: "Error saving changes"})
-	    })
-	})
-})
+	      return res.status(400).json({ success: false, message: "Error saving changes"});
+	    });
+	});
+});
 
 
 /*
@@ -184,17 +181,17 @@ Journal Entries
 */
 
 router.post('/users/self/captures', upload.single('image'), function(req, res) {
-	let username = req.username
-	let text = req.body.text
-	let captureDate = req.body.captureDate
-	let dominantEmotion = req.body.emotion
-	let file = req.file
+	let username = req.username;
+	let text = req.body.text;
+	let captureDate = req.body.captureDate;
+	let dominantEmotion = req.body.emotion;
+	let file = req.file;
 
 	let newCapture = {text: text, emotion: dominantEmotion};
 
 	if (file) {
 		if (file.size > 16*MB) {
-			return res.status(400).json({ success: false, message: 'File too large' })
+			return res.status(400).json({ success: false, message: 'File too large' });
 		}
 
 		switch (file.mimetype) {
@@ -203,77 +200,80 @@ router.post('/users/self/captures', upload.single('image'), function(req, res) {
 			case 'image/jpeg':
 			case 'image/png':
 			case 'image/tiff':
-				break
+				break;
 			default:
-				return res.status(415).json({ success: false, message: 'File type not supported' })
+				return res.status(415).json({ success: false, message: 'File type not supported' });
 		}
 
-		newCapture.image = {data: req.file.buffer, contentType: req.file.mimetype}
+		newCapture.image = {data: req.file.buffer, contentType: req.file.mimetype};
 
 		gm(req.file.buffer, 'thumbnail.jpg')
 			.resize(200, 200)
 			.extent(200, 200)
 			.toBuffer('JPEG',function (err, thumbnailBuffer) {
 				if (err || !thumbnailBuffer) {
-					return status(400).json({success: false, message: 'Could not make thumbnail'})
+					return status(400).json({success: false, message: 'Could not make thumbnail'});
 				}
-				newCapture.thumbnail = {data: thumbnailBuffer, contentType: 'image/jpeg'}
-				makeEntry(req, res, newCapture)
-			})
+				newCapture.thumbnail = {data: thumbnailBuffer, contentType: 'image/jpeg'};
+				makeEntry(req, res, newCapture);
+			});
 	} else {
-		makeEntry(req, res, newCapture)
+		makeEntry(req, res, newCapture);
 	}
-})
+});
 
 function makeEntry(req, res, newCapture) {
-	let username = req.username
-	let text = req.body.text
-	let captureDate = req.body.captureDate
-	let dominantEmotion = req.body.emotion || ''
+	let username = req.username;
+	let text = req.body.text;
+	let captureDate = req.body.captureDate;
+	let dominantEmotion = req.body.emotion || '';
 
   JournalEntry.findOne({
 		username: username,
 		entryDate: captureDate
   }, function(err, entry) {
-
 		if (entry) {
-			entry.captures.push(newCapture)
+			entry.captures.push(newCapture);
 
 			entry.save()
 				.then(function(doc) {
-					incrementEmotionCount(username, dominantEmotion)
-					notifyFollowers(username, entry._id)
-					return res.status(200).json({ success: true, message: 'Added to existing date'})
+					incrementEmotionCount(username, dominantEmotion);
+					notifyFollowers(username, entry._id);
+					return res.status(200).json({ success: true, message: 'Added to existing date'});
 				})
+				.catch(function(err) {
+					console.log(err);
+					return res.status(400).json({ success: false });
+			  });
 		} else {
 
 			let newEntry = new JournalEntry({
 			  username: username,
 			  entryDate: captureDate,
 			  captures: [newCapture]
-			})
+			});
 
 			newEntry.save()
 				.then(function (createdEntry) {
-					incrementEmotionCount(username, dominantEmotion)
-					notifyFollowers(username, createdEntry._id)
-					return res.status(200).json({ success: true, message: 'Created new journal entry'})
+					incrementEmotionCount(username, dominantEmotion);
+					notifyFollowers(username, createdEntry._id);
+					return res.status(200).json({ success: true, message: 'Created new journal entry'});
 			  })
 			  .catch(function(err) {
-					console.log(err)
-					return res.status(400).json({ success: false })
-			  })
+					console.log(err);
+					return res.status(400).json({ success: false });
+			  });
 		}
-  })
-}
+  });
+};
 
 function notifyFollowers(username, entryId) {
 	User.findOne({
 		username: username
 	}, 'followers', function(err, userInfo) {
 		if (err || !userInfo) {
-			console.log("error notifying followers")
-			return
+			console.log("error notifying followers");
+			return;
 		}
 
 		User.updateMany({
@@ -287,118 +287,117 @@ function notifyFollowers(username, entryId) {
 				}
 			}
 		}, function(err, stats){
-			console.log("Notified " + stats.nModified + " people")
-		})
-	})
-}
+			console.log("Notified " + stats.nModified + " people");
+		});
+	});
+};
 
 function incrementEmotionCount(username, emotion, amount=1) {
 
 	if (!_.includes(EMOTIONLIST, emotion)) {
-		return
+		return;
 	}
 
-	let incrementable = {}
-	let key = 'emotionCount.' + emotion
-	incrementable[key] = amount
+	let incrementable = {};
+	let key = 'emotionCount.' + emotion;
+	incrementable[key] = amount;
 
 	User.findOneAndUpdate({
 		username: username
 	}, {$inc: incrementable }, function(err, data) {
 		if (err) {
-			console.log(err)
+			console.log(err);
 		}
-	})
-}
+	});
+};
 
 router.get('/users/self/entries', function(req, res) {
-	let username = req.username
-	res.redirect('/users/' + username + '/entries')
-})
+	let username = req.username;
+	res.redirect('/users/' + username + '/entries');
+});
 
 router.delete('/users/self/entries/:entryId', function(req, res) {
-	let username = req.username
-	let entryId = req.params.entryId
+	let username = req.username;
+	let entryId = req.params.entryId;
 
 	JournalEntry.findById(entryId, function(err, entry) {
-		if (err) throw err
-		if (!entry) {
+		if (err || !entry) {
       return res.status(400).json({ success: false, message: 'Entry not found'})
     }
 
     entry.remove()
       .then(function () {
-			_.forEach(entry.captures, function(capture) {
-				incrementEmotionCount(username, capture.emotion, -1)
-			})
-        return res.status(200).json({ success: true})
+				_.forEach(entry.captures, function(capture) {
+					incrementEmotionCount(username, capture.emotion, -1);
+				});
+        return res.status(200).json({ success: true});
       })
       .catch(function(err) {
-        return res.status(400).json({ success: false })
-      })
-    })
-})
+        return res.status(400).json({ success: false });
+      });
+    });
+});
 
 router.delete('/users/self/captures/:captureId', function(req, res) {
-	let username = req.username
-	let captureId = req.params.captureId
+	let username = req.username;
+	let captureId = req.params.captureId;
 
 	JournalEntry.findOne({
 		"captures._id": mongoose.Types.ObjectId(captureId)
 	}, function(err, entry) {
 		if (err || !entry) {
-			return res.status(400).json({ success: false })
+			return res.status(400).json({ success: false });
 		}
 
 		if (entry.captures.length === 1) {
 			entry.remove()
 				.then(function () {
-					findCaptureByIdAndDecrementEmotion(username, entry, captureId)
-					return res.status(200).json({ success: true, message: "Deleted entire entry"})
+					findCaptureByIdAndDecrementEmotion(username, entry, captureId);
+					return res.status(200).json({ success: true, message: "Deleted entire entry"});
 				})
 				.catch(function(err) {
-					return res.status(400).json({ success: false })
-				})
+					return res.status(400).json({ success: false });
+				});
 		} else {
 			entry.update({'$pull': {'captures': {'_id': mongoose.Types.ObjectId(captureId)}}})
 				.then(function() {
-					findCaptureByIdAndDecrementEmotion(username, entry, captureId)
-					return res.status(200).json({ success: true })
+					findCaptureByIdAndDecrementEmotion(username, entry, captureId);
+					return res.status(200).json({ success: true });
 				})
 				.catch(function(err) {
-					return res.status(400).json({ success: false })
-				})
+					return res.status(400).json({ success: false });
+				});
 			}
-	})
-})
+	});
+});
 
 function findCaptureByIdAndDecrementEmotion(username, entry, captureId) {
 	_.forEach(entry.captures, function(capture) {
 		if (capture._id == captureId) {
-			incrementEmotionCount(username, capture.emotion, -1)
+			incrementEmotionCount(username, capture.emotion, -1);
 		}
-	})
-}
+	});
+};
 
 router.put('/users/self/entries/:entryId', function(req, res) {
-	let entryId = req.params.entryId
-	let title = req.body.title
+	let entryId = req.params.entryId;
+	let title = req.body.title;
 
 	JournalEntry.findByIdAndUpdate(entryId, {
 		$set: { title: title }
 	}, function (err, entry) {
 		if (err) {
-			return res.status(400).json({ success: false })
+			return res.status(400).json({ success: false });
 		}
 
-		return res.status(200).json({ success: true })
-	})
-})
+		return res.status(200).json({ success: true });
+	});
+});
 
 router.put('/users/self/captures/:captureId', function(req, res) {
-	let captureId = req.params.captureId
-	let text = req.body.text
-	let username = req.username
+	let captureId = req.params.captureId;
+	let text = req.body.text;
+	let username = req.username;
 
 	JournalEntry.findOneAndUpdate({
 		"username": username,
@@ -407,12 +406,12 @@ router.put('/users/self/captures/:captureId', function(req, res) {
 		"captures.$.text": text
 	}, function(err, entry) {
 		if (err || !entry) {
-			return res.status(400).json({ success: false })
+			return res.status(400).json({ success: false });
 		}
 
-		return res.status(200).json({ success: true })
-	})
-})
+		return res.status(200).json({ success: true });
+	});
+});
 
 /*
 ---------------------------------------------------------
@@ -421,54 +420,50 @@ Comments
 */
 
 router.post('/entries/:entryId/comments', function(req, res) {
-	let commenter = req.username
-	let text = req.body.text
-	let entryId = req.params.entryId
+	let commenter = req.username;
+	let text = req.body.text;
+	let entryId = req.params.entryId;
 
-	let newComment = {commenter: commenter, text: text}
-
-	console.log(newComment)
+	let newComment = {commenter: commenter, text: text};
 
   JournalEntry.findById(entryId, function(err, entry) {
 		if (err || !entry) {
-			return res.status(400).json({ success: false })
+			return res.status(400).json({ success: false });
 		}
 
-		entry.comments.push(newComment)
+		entry.comments.push(newComment);
 
 		entry.save()
 		  .then(function (doc) {
-		    return res.status(200).json({ success: true, message: 'Comment created'})
+		    return res.status(200).json({ success: true, message: 'Comment created'});
 		  })
 		  .catch(function(err) {
-		    return res.status(400).json({ success: false })
-		  })
-	})
-})
+		    return res.status(400).json({ success: false });
+		  });
+	});
+});
 
 router.delete('/comments/:commentId', function(req, res) {
-	let commenter = req.username
-	let commentId = req.params.commentId
-
-	console.log(commenter)
+	let commenter = req.username;
+	let commentId = req.params.commentId;
 
   JournalEntry.findOne({
 		"comments._id": mongoose.Types.ObjectId(commentId),
 		"comments.commenter": commenter
   }, function(err, entry) {
 		if (err || !entry) {
-			return res.status(400).json({ success: false })
+			return res.status(400).json({ success: false });
 		}
 
 		entry.update({'$pull': {'comments': {'_id': mongoose.Types.ObjectId(commentId)}}})
 			.then(function() {
-				return res.status(200).json({ success: true })
+				return res.status(200).json({ success: true });
 			})
 			.catch(function(err) {
-				return res.status(400).json({ success: false })
-			})
-	})
-})
+				return res.status(400).json({ success: false });
+			});
+	});
+});
 
 /*
 ---------------------------------------------------------
@@ -477,64 +472,62 @@ Following
 */
 
 router.post('/users/:username/follow', function(req, res) {
-	let toFollowUsername = req.params.username
-	let currentUsername = req.username
+	let toFollowUsername = req.params.username;
+	let currentUsername = req.username;
 
 	User.findOne({
 	  username: currentUsername
 	}, function(err, currentUser) {
-
 		if (err || !currentUser) {
-			return res.status(400).json({success: false})
+			return res.status(400).json({success: false});
 		}
 
 		User.findOne({
 		  username: toFollowUsername
 		}, function(err, userToFollow) {
-
 			if (err || !userToFollow) {
-				return res.status(400).json({success: false, message: 'User not found'})
+				return res.status(400).json({success: false, message: 'User not found'});
 			}
 
-			currentUser.following.push(toFollowUsername)
-			userToFollow.followers.push(currentUsername)
+			currentUser.following.push(toFollowUsername);
+			userToFollow.followers.push(currentUsername);
 
 			currentUser.save()
 				.then(function(doc) {
-					userToFollow.save()
+					userToFollow.save();
 				})
 				.then(function (doc) {
-					return res.status(200).json({ success: true })
+					return res.status(200).json({ success: true });
 			  })
 			  .catch(function(err) {
-					return res.status(400).json({ success: false })
-			  })
-		})
-	})
-})
+					return res.status(400).json({ success: false });
+			  });
+		});
+	});
+});
 
 router.post('/users/:username/unfollow', function(req, res) {
-	let toUnfollowUsername = req.params.username
-	let currentUsername = req.username
+	let toUnfollowUsername = req.params.username;
+	let currentUsername = req.username;
 
 	User.findOneAndUpdate({
 		username: currentUsername
 	}, {$pull: {following: toUnfollowUsername}}, function(err, data){
     if (err) {
-      return res.status(400).json({success: false})
+      return res.status(400).json({success: false});
     }
 
     User.findOneAndUpdate({
 			username: toUnfollowUsername
 		}, {$pull: {followers: currentUsername}}, function(err, data){
 	    if (err) {
-	      return res.status(400).json({success: false})
+	      return res.status(400).json({success: false});
 	    }
 
-	    return res.status(200).json({ success: true })
-	  })
-  })
-})
+	    return res.status(200).json({ success: true });
+	  });
+  });
+});
 
 /*
 ---------------------------------------------------------
@@ -543,14 +536,14 @@ router.post('/users/:username/unfollow', function(req, res) {
 */
 
 router.get('/users/self/notifications', function(req, res) {
-	let username = req.username
+	let username = req.username;
 
 	User.findOne({
 	  username: username
 	}, 'notifications', function(err, userInfo) {
 
 		if (err || !userInfo) {
-			return res.status(400).json({success: false, message: 'Notifications not found'})
+			return res.status(400).json({success: false, message: 'Notifications not found'});
 		}
 
 		JournalEntry.find({
@@ -559,15 +552,14 @@ router.get('/users/self/notifications', function(req, res) {
 			'captures.image': 0,
 			'captures.thumbnail': 0
 		}, function(err, docs){
-
 			if (err || !docs) {
-				return res.status(400).json({success: false, message: 'Server error'})
+				return res.status(400).json({success: false, message: 'Server error'});
 			}
 
-			return res.status(200).json(docs.reverse())
-		})
-	})
-})
+			return res.status(200).json(docs.reverse());
+		});
+	});
+});
 
 /*
 ---------------------------------------------------------
@@ -575,4 +567,4 @@ router.get('/users/self/notifications', function(req, res) {
 ---------------------------------------------------------
 */
 
-module.exports = router
+module.exports = router;
