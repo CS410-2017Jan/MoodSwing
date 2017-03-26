@@ -130,10 +130,13 @@ public class CaptureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         holder.text.setText(capture.getText());
         holder.text.setTag(position);
         if (capture.getHasImage()){
-            holder.entryPic.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            holder.entryPic.setVisibility(View.VISIBLE);
             holder.entryPic.setImageURI(capture.getImage());
         }else{
-            holder.entryPic.setBackgroundResource(R.drawable.empty_profile_pic);
+            holder.entryPic.setVisibility(View.GONE);
+            ViewGroup.LayoutParams params = holder.text.getLayoutParams();
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            holder.text.setLayoutParams(params);
         }
         holder.itemView.setTag(position);
     }
