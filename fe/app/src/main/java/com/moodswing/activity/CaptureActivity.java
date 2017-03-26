@@ -214,7 +214,7 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView {
     @Override
     public void showEntryPic(ResponseBody picture){
         if (picture.contentLength() == 0) {
-            _capImage.setBackgroundResource(R.drawable.empty_profile_pic);
+            _capImage.setVisibility(View.GONE);
         } else {
             Bitmap bitmap = BitmapFactory.decodeStream(picture.byteStream());
             captureBitmap = bitmap.copy(bitmap.getConfig(), true);
