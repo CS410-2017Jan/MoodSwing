@@ -229,7 +229,7 @@ function makeEntry(req, res, newCapture) {
 	let username = req.username
 	let text = req.body.text
 	let captureDate = req.body.captureDate
-	let dominantEmotion = req.body.emotion || 'UNKNOWN'
+	let dominantEmotion = req.body.emotion || ''
 
   JournalEntry.findOne({
 		username: username,
@@ -294,14 +294,13 @@ function notifyFollowers(username, entryId) {
 
 function incrementEmotionCount(username, emotion, amount=1) {
 
-	let incrementable = {}
-
 	if (!_.includes(EMOTIONLIST, emotion)) {
-		incrementable['emotionCount.UNKNOWN'] = amount
-	} else {
-		let key = 'emotionCount.' + emotion
-		incrementable[key] = amount
+		return
 	}
+
+	let incrementable = {}
+	let key = 'emotionCount.' + emotion
+	incrementable[key] = amount
 
 	User.findOneAndUpdate({
 		username: username

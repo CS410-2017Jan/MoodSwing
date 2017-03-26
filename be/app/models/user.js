@@ -15,8 +15,7 @@ let emotionCount = {
 	'DISAPPOINTED': 0,
 	'RAGE': 0,
 	'SCREAM': 0,
-	'FLUSHED': 0,
-	'UNKNOWN': 0
+	'FLUSHED': 0
 }
 
 module.exports = mongoose.model('User', new Schema({
