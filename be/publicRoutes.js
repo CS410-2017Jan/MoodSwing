@@ -114,6 +114,9 @@ router.get('/users/:username', function(req, res) {
       return b[1] - a[1];
     }).slice(0,2)
 
+    userInfo.sortedEmotions[0][1] = '' + userInfo.sortedEmotions[0][1]
+    userInfo.sortedEmotions[1][1] = '' + userInfo.sortedEmotions[1][1]
+
     userInfo.emotionCount = undefined
 
     return res.status(200).json(userInfo)
