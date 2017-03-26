@@ -2,6 +2,8 @@ package com.moodswing.activity;
 
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -208,97 +210,31 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
 
     @Override
     public void getPicture(ResponseBody picture){
-        try {
-            String[] type = picture.contentType().toString().split("/");
-            File profilePictureFile = new File(getExternalFilesDir(null) + File.separator + "OurProfilePicture." + type[1]);
-            InputStream inputStream = null;
-            OutputStream outputStream = null;
-
-            try {
-                byte[] fileReader = new byte[4096];
-                long fileSize = picture.contentLength();
-                long fileSizeDownloaded = 0;
-
-                inputStream = picture.byteStream();
-                outputStream = new FileOutputStream(profilePictureFile);
-
-                while (true) {
-                    int read = inputStream.read(fileReader);
-                    if (read == -1) {
-                        break;
-                    }
-                    outputStream.write(fileReader, 0, read);
-                    fileSizeDownloaded += read;
-                }
-                //SET PICTURE TO IMAGEVIEW
-                _profilePic.setImageURI(Uri.fromFile(profilePictureFile));
-                outputStream.flush();
-            } catch (IOException e) {
-
-            } finally {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-                if (outputStream != null) {
-                    outputStream.close();
-                }
-            }
-        } catch (IOException e) {
-
+        if (picture.contentLength() == 0) {
+            _profilePic.setVisibility(View.GONE);
+        } else {
+            Bitmap bitmap = BitmapFactory.decodeStream(picture.byteStream());
+            _profilePic.setBackgroundResource(android.R.color.transparent);
+            _profilePic.setImageBitmap(bitmap);
         }
     }
 
     @Override
     public void showEntryPic(ResponseBody picture, String captureId){
         Boolean hasImage = true;
-        try {
-            if (picture.contentLength() == 0){
-                hasImage = false;
-            }
-            String[] type = picture.contentType().toString().split("/");
-            File entryPictureFile = new File(getExternalFilesDir(null) + File.separator + captureId + "." + type[1]);
-            InputStream inputStream = null;
-            OutputStream outputStream = null;
-
-            try {
-                byte[] fileReader = new byte[4096];
-                long fileSize = picture.contentLength();
-                long fileSizeDownloaded = 0;
-
-                inputStream = picture.byteStream();
-                outputStream = new FileOutputStream(entryPictureFile);
-
-                while (true) {
-                    int read = inputStream.read(fileReader);
-                    if (read == -1) {
-                        break;
-                    }
-                    outputStream.write(fileReader, 0, read);
-                    fileSizeDownloaded += read;
-                }
-                //SET PICTURE TO IMAGEVIEW
-                Uri uri = Uri.fromFile(entryPictureFile);
-                updatePicture(uri, captureId, hasImage);
-                outputStream.flush();
-            } catch (IOException e) {
-
-            } finally {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-                if (outputStream != null) {
-                    outputStream.close();
-                }
-            }
-        } catch (IOException e) {
-
+        Bitmap bitmap = null;
+        if (picture.contentLength() == 0) {
+            hasImage = false;
+        } else {
+            bitmap = BitmapFactory.decodeStream(picture.byteStream());
         }
+        updatePicture(bitmap, captureId, hasImage);
     }
 
-    private void updatePicture(Uri uri, String captureId, Boolean hasImage) {
+    private void updatePicture(Bitmap bitmap, String captureId, Boolean hasImage) {
         for(Capture c: captures){
             if (c.getId().equals(captureId)){
-                c.setImage(uri);
+                c.setImage(bitmap);
                 c.setHasImage(hasImage);
             }
         }

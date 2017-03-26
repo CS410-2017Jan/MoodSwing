@@ -12,7 +12,7 @@ public class Capture {
     private String text;
     private String captureDate;
     private String _id;
-    private Uri image;
+    private Bitmap image;
     private Boolean hasImage = false;
 
     public Capture(){}
@@ -40,7 +40,7 @@ public class Capture {
         return _id;
     }
 
-    public Uri getImage(){
+    public Bitmap getImage(){
         return image;
     }
 
@@ -60,7 +60,7 @@ public class Capture {
         _id = id;
     }
 
-    public void setImage(Uri image){
+    public void setImage(Bitmap image){
         this.image = image;
     }
 

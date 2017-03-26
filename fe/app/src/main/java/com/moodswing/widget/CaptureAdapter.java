@@ -131,7 +131,7 @@ public class CaptureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         holder.text.setTag(position);
         if (capture.getHasImage()){
             holder.entryPic.setVisibility(View.VISIBLE);
-            holder.entryPic.setImageURI(capture.getImage());
+            holder.entryPic.setImageBitmap(capture.getImage());
             holder.text.setPadding(0,0,0,0);
         }else{
             holder.entryPic.setVisibility(View.GONE);
