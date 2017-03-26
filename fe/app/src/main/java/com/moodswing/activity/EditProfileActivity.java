@@ -114,6 +114,12 @@ public class EditProfileActivity extends MoodSwingActivity implements EditProfil
         initializeBottomNavigationView();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        _editProfilePictureButton.setImageBitmap(null);
+    }
+
     private void initializeButtonsAndText() {
         // Toolbar
         setSupportActionBar(_toolbar);

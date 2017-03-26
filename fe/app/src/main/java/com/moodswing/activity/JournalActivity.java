@@ -170,6 +170,7 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
     @Override
     protected void onStop() {
         super.onStop();
+        _profilePic.setImageBitmap(null);
     }
 
     @Override
