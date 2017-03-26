@@ -108,14 +108,15 @@ router.get('/users/:username', function(req, res) {
     }
 
     userInfo = userInfo.toObject()
-    dominantEmotions = []
 
-    userInfo.sortedEmotions = _.toPairs(userInfo.emotionCount).sort(function(a, b) {
-      return b[1] - a[1];
-    }).slice(0,2)
+    if (userInfo.emotionCount && _.keys(userInfo.emotionCount).length > 1) {
+      userInfo.sortedEmotions = _.toPairs(userInfo.emotionCount).sort(function(a, b) {
+        return b[1] - a[1];
+      }).slice(0,2)
 
-    userInfo.sortedEmotions[0][1] = '' + userInfo.sortedEmotions[0][1]
-    userInfo.sortedEmotions[1][1] = '' + userInfo.sortedEmotions[1][1]
+      userInfo.sortedEmotions[0][1] = '' + userInfo.sortedEmotions[0][1]
+      userInfo.sortedEmotions[1][1] = '' + userInfo.sortedEmotions[1][1]
+    }
 
     userInfo.emotionCount = undefined
 
