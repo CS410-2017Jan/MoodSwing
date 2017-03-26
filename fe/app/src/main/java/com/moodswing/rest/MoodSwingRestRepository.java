@@ -68,8 +68,8 @@ public class MoodSwingRestRepository implements Repository {
     }
 
     @Override
-    public Observable<NewEntryResponse> postNewEntry(String accessToken, MultipartBody.Part data, RequestBody entryText, RequestBody entryDate) {
-        return apiService.postNewEntry(accessToken, data, entryText, entryDate);
+    public Observable<NewEntryResponse> postNewEntry(String accessToken, MultipartBody.Part data, RequestBody entryText, RequestBody entryDate, RequestBody emotion) {
+        return apiService.postNewEntry(accessToken, data, entryText, entryDate, emotion);
     }
 
     @Override

@@ -67,10 +67,11 @@ public class NewEntryPresenter implements Presenter<NewEntryView> {
     }
 
 
-    public void uploadCapture(MultipartBody.Part data, RequestBody entryText, RequestBody entryDate) {
+    public void uploadCapture(MultipartBody.Part data, RequestBody entryText, RequestBody entryDate, RequestBody entryEmotion) {
         newEntryUsecase.setData(data);
         newEntryUsecase.setText(entryText);
         newEntryUsecase.setDate(entryDate);
+        newEntryUsecase.setEmotion(entryEmotion);
         newEntryUsecase.setToken(sharedPreferencesManager.getToken());
 
         newEntrySubscription = newEntryUsecase.execute()

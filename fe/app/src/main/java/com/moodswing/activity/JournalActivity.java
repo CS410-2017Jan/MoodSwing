@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.media.Image;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
@@ -157,7 +156,7 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
             captures.clear();
             dBlocks.clear();
             isResuming = true;
-            _journalPresenter.getUsers();
+            _journalPresenter.getUser();
             _journalPresenter.getProfilePic();
             _journalPresenter.getEntries();
         }
@@ -323,27 +322,37 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
     }
 
     @Override
-    public void onGetUserInfoSuccess(List<User> users){
+    public void onGetUserInfoSuccess(User user){
         Intent captureIntent = DateAdapter.getCaptureIntent();
         String username = DateAdapter.getCapUsername();
-        int e1Count = 0;
-        int e2Count = 0;
+        String e1Count = "";
+        String e1 = "";
+        String e2Count = "";
+        String e2 = "";
         if (isResuming){
             username = _sharedPreferencesManager.getCurrentUser();
         }
-        for (User user: users){
-            if (user.getUsername().equals(username)){
-                displayName = user.getDisplayName();
-                e1Count = 36;
-                e2Count = 11;
-                break;
+        if (user.getUsername().equals(username)){
+            displayName = user.getDisplayName();
+            List<List<String>> sortedEmotions = user.getSortedEmotions();
+            int i = 0;
+            for (List<String> ec: sortedEmotions){
+                if (i == 0){
+                    e1 = ec.get(0);
+                    e1Count = ec.get(1);
+                }
+                if (i == 1){
+                    e2 = ec.get(0);
+                    e2Count = ec.get(1);
+                }
+                i++;
             }
         }
         if (isResuming){
             _userDisplayName.setText(displayName);
-            _e1Count.setText(Integer.toString(e1Count));
-            _e2Count.setText(Integer.toString(e2Count));
-            setEmojiDetails("RELAXED", "DISAPPOINTED");
+            _e1Count.setText(e1Count);
+            _e2Count.setText(e2Count);
+            setEmojiDetails(e1, e2);
             isResuming = false;
         }else{
             captureIntent.putExtra("EXTRA_DISPLAYNAME", displayName);

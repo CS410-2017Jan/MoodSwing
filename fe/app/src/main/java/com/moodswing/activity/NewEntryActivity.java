@@ -134,7 +134,7 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
     }
 
     private void checkIntent() {
-        currentEmoji = "NONE";
+        currentEmoji = "UNKNOWN";
         String activityIntent = getIntent().getStringExtra("NEW_ENTRY_INTENT");
         if (activityIntent.equals("FULL_SCREEN_IMAGE_ACTIVITY")) {
             String uri = getIntent().getStringExtra("CAPTURE_URI");
@@ -318,8 +318,9 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
             RequestBody entryPic = RequestBody.create(mediaType, byteArray);
             RequestBody entryText = RequestBody.create(MediaType.parse("text/plain"), description);
             RequestBody entryDate = RequestBody.create(MediaType.parse("text/plain"), date);
+            RequestBody entryEmotion = RequestBody.create(MediaType.parse("text/plain"), currentEmoji);
             MultipartBody.Part body = MultipartBody.Part.createFormData("image", "image", entryPic);
-            _newEntryPresenter.uploadCapture(body, entryText, entryDate);
+            _newEntryPresenter.uploadCapture(body, entryText, entryDate, entryEmotion);
         } else {
             _newEntryPresenter.uploadCapture(description, date);
         }

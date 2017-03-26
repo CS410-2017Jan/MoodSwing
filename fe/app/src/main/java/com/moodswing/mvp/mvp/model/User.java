@@ -13,6 +13,7 @@ public class User {
     private String _id;
     private List<String> followers;
     private List<String> following;
+    private List<List<String>> sortedEmotions;
 
     public User(String username) {
         this.username = username;
@@ -29,6 +30,15 @@ public class User {
         this._id = _id;
         this.followers = followers;
         this.following = following;
+    }
+
+    public User(String displayName, String username, String _id, List<String> followers, List<String> following, List<List<String>> sortedEmotions) {
+        this.displayName = displayName;
+        this.username = username;
+        this._id = _id;
+        this.followers = followers;
+        this.following = following;
+        this.sortedEmotions = sortedEmotions;
     }
 
     public String get_id() {
@@ -49,5 +59,9 @@ public class User {
 
     public String getUsername() {
         return username;
+    }
+
+    public List<List<String>> getSortedEmotions() {
+        return sortedEmotions;
     }
 }
