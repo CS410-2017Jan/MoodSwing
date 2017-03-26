@@ -10,6 +10,7 @@ import com.moodswing.mvp.mvp.model.response.ChangeProfileResponse;
 import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.response.EditEntryResponse;
+import com.moodswing.mvp.mvp.model.response.FollowResponse;
 import com.moodswing.mvp.mvp.model.response.LoginResponse;
 import com.moodswing.mvp.mvp.model.response.NewEntryResponse;
 import com.moodswing.mvp.mvp.model.response.PostCommentResponse;
@@ -125,6 +126,16 @@ public class MoodSwingRestRepository implements Repository {
     @Override
     public Observable<Response<User>> getUser(String username) {
         return apiService.getUser(username);
+    }
+
+    @Override
+    public Observable<Response<FollowResponse>> follow(String accessToken, String username) {
+        return apiService.follow(accessToken, username);
+    }
+
+    @Override
+    public Observable<Response<FollowResponse>> unfollow(String accessToken, String username) {
+        return apiService.unfollow(accessToken, username);
     }
 
     @Override

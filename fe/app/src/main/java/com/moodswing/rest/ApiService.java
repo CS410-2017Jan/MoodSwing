@@ -10,6 +10,7 @@ import com.moodswing.mvp.mvp.model.response.ChangeProfileResponse;
 import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.response.EditEntryResponse;
+import com.moodswing.mvp.mvp.model.response.FollowResponse;
 import com.moodswing.mvp.mvp.model.response.LoginResponse;
 import com.moodswing.mvp.mvp.model.response.NewEntryResponse;
 import com.moodswing.mvp.mvp.model.response.PostCommentResponse;
@@ -126,4 +127,10 @@ public interface ApiService {
 
     @GET("users/{username}")
     Observable<Response<User>> getUser(@Path("username") String username);
+
+    @POST("users/{username}/follow")
+    Observable<Response<FollowResponse>> follow(@Header("x-access-token") String token, @Path("username") String username);
+
+    @POST("users/{username}/unfollow")
+    Observable<Response<FollowResponse>> unfollow(@Header("x-access-token") String token, @Path("username") String username);
 }

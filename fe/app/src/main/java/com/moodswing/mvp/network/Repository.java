@@ -10,6 +10,7 @@ import com.moodswing.mvp.mvp.model.response.ChangeProfileResponse;
 import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.response.EditEntryResponse;
+import com.moodswing.mvp.mvp.model.response.FollowResponse;
 import com.moodswing.mvp.mvp.model.response.LoginResponse;
 import com.moodswing.mvp.mvp.model.response.NewEntryResponse;
 import com.moodswing.mvp.mvp.model.response.PostCommentResponse;
@@ -53,7 +54,7 @@ public interface Repository {
     Observable<PostCommentResponse> postComment(String accessToken, String entryId, Comment comment);
     Observable<Response<ChangeProfileResponse>> changeUser(String accessToken, ChangeProfileRequest changeProfileRequest);
     Observable<List<JournalEntries>> getNotifications(String accessToken);
-
     Observable<Response<User>> getUser(String username);
-
+    Observable<Response<FollowResponse>> follow(String accessToken, String username);
+    Observable<Response<FollowResponse>> unfollow(String accessToken, String username);
 }
