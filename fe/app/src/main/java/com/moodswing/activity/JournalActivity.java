@@ -124,7 +124,6 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
         _journalComponent.inject(this);
 
         initializePresenter();
-
         initializeBottomNavigationView();
         initializeNewEntryFab();
         setSupportActionBar(toolbar);

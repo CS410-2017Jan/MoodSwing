@@ -127,6 +127,11 @@ public class MoodSwingRestRepository implements Repository {
         return apiService.getUser(username);
     }
 
+    @Override
+    public Observable<List<JournalEntries>> getNotifications(String accessToken) {
+        return apiService.getNotifications(accessToken);
+    }
+
 //    @Override
 //    public Observable<PostCommentResponse> getCaptureData(Capture capture, String accessToken) {
 //        return apiService.getCaptureData(capture, accessToken);

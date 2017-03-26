@@ -52,8 +52,7 @@ public interface Repository {
     Observable<Response<List<User>>> getUsers();
     Observable<PostCommentResponse> postComment(String accessToken, String entryId, Comment comment);
     Observable<Response<ChangeProfileResponse>> changeUser(String accessToken, ChangeProfileRequest changeProfileRequest);
-
-    //Observable<List<JournalEntries>>
+    Observable<List<JournalEntries>> getNotifications(String accessToken);
 
     Observable<Response<User>> getUser(String username);
 
