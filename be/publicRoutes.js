@@ -6,6 +6,7 @@ const JournalEntry   = require('./app/models/journalentry');
 const config = require('./config');
 const mongoose = require('mongoose');
 const _ = require('lodash');
+const HttpStatus = require('http-status-codes');
 
 /*
 ---------------------------------------------------------
@@ -14,7 +15,7 @@ const _ = require('lodash');
 */
 
 router.get('/hello', (req, res) => {
-  res.status(200).send('Hello World');
+  res.status(HttpStatus.OK).send('Hello World');
 });
 
 /*
@@ -29,14 +30,14 @@ router.post('/users', function(req, res) {
   let displayName = req.body.displayName || '';
 
   if (!username || !password) {
-    return res.status(400).json({ success: false, message: 'Malformed http body'});
+    return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: 'Malformed http body'});
   }
 
   User.findOne({
     username: req.body.username
   }, function(err, user) {
     if (err || user) {
-      return res.status(409).json({ success: false, message: 'Username already exists'});
+      return res.status(HttpStatus.CONFLICT).json({ success: false, message: 'Username already exists'});
     }
 
     let newUser = new User({
@@ -48,10 +49,10 @@ router.post('/users', function(req, res) {
     newUser.save()
       .then(function (doc) {
         let token = createToken(doc);
-        return res.status(201).json({ success: true, token: token});
+        return res.status(HttpStatus.CREATED).json({ success: true, token: token});
       })
       .catch(function(err) {
-        return res.status(400).json({ success: false });
+        return res.status(HttpStatus.BAD_REQUEST).json({ success: false });
       });
   });
 });
@@ -62,16 +63,16 @@ router.post('/users/login', function(req, res) {
     username: req.body.username
   }, function(err, user) {
     if (err || !user) {
-      return res.status(400).json({ success: false, message: 'Error: User not found.' });
+      return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: 'Error: User not found.' });
     }
 
     if (user.password != req.body.password) {
-      return res.status(400).json({ success: false, message: 'Error: Wrong password.' });
+      return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: 'Error: Wrong password.' });
     }
 
     let token = createToken(user);
 
-    return res.status(200).json({
+    return res.status(HttpStatus.OK).json({
       success: true,
       message: 'Enjoy your token!',
       token: token
@@ -94,11 +95,11 @@ router.get('/users/:username/picture', (req, res) => {
   }, 'profilePicture', function(err, user) {
 
     if (err || !user) {
-      return res.status(404).send({ success: false });
+      return res.status(HttpStatus.NOT_FOUND).send({ success: false });
     }
 
     if (!user.profilePicture.data) {
-      res.writeHead(200, {
+      res.writeHead(HttpStatus.OK, {
         'Content-Type': "image/jpeg",
         'Content-Length': 0
       });
@@ -109,11 +110,11 @@ router.get('/users/:username/picture', (req, res) => {
     let imageType = user.profilePicture.contentType;
 
     let img = new Buffer(imageBuffer, 'base64');
-    res.writeHead(200, {
+    res.writeHead(HttpStatus.OK, {
       'Content-Type': imageType,
       'Content-Length': img.length
     });
-    res.status(200).end(img);
+    res.status(HttpStatus.OK).end(img);
   });
 });
 
@@ -126,11 +127,11 @@ router.get('/users/:username/thumbnail', (req, res) => {
   }, 'thumbnail' ,function(err, user) {
 
     if (err || !user) {
-      return res.status(404).send({ success: false });
+      return res.status(HttpStatus.NOT_FOUND).send({ success: false });
     }
 
     if (!user.thumbnail.data) {
-      res.writeHead(200, {
+      res.writeHead(HttpStatus.OK, {
         'Content-Type': "image/jpeg",
         'Content-Length': 0
       });
@@ -141,11 +142,11 @@ router.get('/users/:username/thumbnail', (req, res) => {
     let imageType = user.thumbnail.contentType;
 
     let img = new Buffer(imageBuffer, 'base64');
-    res.writeHead(200, {
+    res.writeHead(HttpStatus.OK, {
       'Content-Type': imageType,
       'Content-Length': img.length
     });
-    res.status(200).end(img);
+    res.status(HttpStatus.OK).end(img);
   });
 });
 
@@ -163,7 +164,7 @@ router.get('/users/:username', function(req, res) {
   }, '_id username displayName followers following emotionCount',
   function(err, userInfo) {
     if (!userInfo || err) {
-      return res.status(400).json({success: false, message: 'User not found'});
+      return res.status(HttpStatus.BAD_REQUEST).json({success: false, message: 'User not found'});
     }
 
     userInfo = userInfo.toObject();
@@ -179,7 +180,7 @@ router.get('/users/:username', function(req, res) {
 
     userInfo.emotionCount = undefined;
 
-    return res.status(200).json(userInfo);
+    return res.status(HttpStatus.OK).json(userInfo);
   });
 });
 
@@ -200,7 +201,7 @@ router.get('/users/:username/entries', function(req, res) {
     'captures.thumbnail': 0
   }, function(err, journalEntries) {
     if (err || !journalEntries) {
-      return res.status(400).json({ success: false, message: 'No entries found'});
+      return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: 'No entries found'});
     }
 
     let sortedEntries = journalEntries.sort(function(a, b){
@@ -209,7 +210,7 @@ router.get('/users/:username/entries', function(req, res) {
       return a[2] - b[2] || a[1] - b[1] || a[0] - b[0];
     }).reverse();
 
-    return res.status(200).json(sortedEntries);
+    return res.status(HttpStatus.OK).json(sortedEntries);
   });
 });
 
@@ -223,11 +224,11 @@ router.get('/captures/:captureId/image', (req, res) => {
     'captures.$': 1
   }, function(err, entry) {
     if (err || !entry) {
-      return res.status(400).json({ success: false });
+      return res.status(HttpStatus.BAD_REQUEST).json({ success: false });
     }
 
     if (!entry.captures[0] || !entry.captures[0].image || !entry.captures[0].image.data) {
-      res.writeHead(200, {
+      res.writeHead(HttpStatus.OK, {
         'Content-Type': "image/jpeg",
         'Content-Length': 0
       });
@@ -239,11 +240,11 @@ router.get('/captures/:captureId/image', (req, res) => {
     let imageType = capture.image.contentType;
 
     let img = new Buffer(imageBuffer, 'base64');
-    res.writeHead(200, {
+    res.writeHead(HttpStatus.OK, {
       'Content-Type': imageType,
       'Content-Length': img.length
     });
-    res.status(200).end(img);
+    res.status(HttpStatus.OK).end(img);
   });
 });
 
@@ -257,11 +258,11 @@ router.get('/captures/:captureId/thumbnail', (req, res) => {
     'captures.$': 1
   }, function(err, entry) {
     if (err || !entry) {
-      return res.status(400).json({ success: false });
+      return res.status(HttpStatus.BAD_REQUEST).json({ success: false });
     }
 
     if (!entry.captures[0] || !entry.captures[0].thumbnail || !entry.captures[0].thumbnail.data) {
-      res.writeHead(200, {
+      res.writeHead(HttpStatus.OK, {
         'Content-Type': "image/jpeg",
         'Content-Length': 0
       });
@@ -273,11 +274,11 @@ router.get('/captures/:captureId/thumbnail', (req, res) => {
     let imageType = capture.thumbnail.contentType;
 
     let img = new Buffer(imageBuffer, 'base64');
-    res.writeHead(200, {
+    res.writeHead(HttpStatus.OK, {
       'Content-Type': imageType,
       'Content-Length': img.length
     });
-    res.status(200).end(img);
+    res.status(HttpStatus.OK).end(img);
   });
 });
 
@@ -290,7 +291,7 @@ router.get('/users', function(req, res) {
         return 1;
       return 0;
     });
-    return res.status(200).json(userList);
+    return res.status(HttpStatus.OK).json(userList);
   });
 });
 
@@ -300,7 +301,7 @@ router.get('/entries/:entryId', function(req, res) {
     entry = entry.toObject();
 
     if (err || !entry) {
-      return res.status(400).json({ success: false, message: "No entry found"});
+      return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: "No entry found"});
     }
 
     let commenters = _.map(entry.comments, 'commenter');
@@ -309,7 +310,7 @@ router.get('/entries/:entryId', function(req, res) {
       username: { $in: commenters }
       }, 'username displayName', function(err, commentersUserInfo) {
         if (err || !commentersUserInfo) {
-          return res.status(400).json({ success: false, message: "Commenter error"});
+          return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: "Commenter error"});
         }
 
         let usernameDisplayNameHash = {};
@@ -321,7 +322,7 @@ router.get('/entries/:entryId', function(req, res) {
           comment.displayName = usernameDisplayNameHash[comment.commenter];
         });
 
-        return res.status(200).json(entry);
+        return res.status(HttpStatus.OK).json(entry);
       }
     );
   });

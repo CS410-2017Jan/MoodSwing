@@ -8,6 +8,7 @@ const multer = require('multer');
 const mongoose = require('mongoose');
 const gm = require('gm');
 const _ = require('lodash');
+const HttpStatus = require('http-status-codes');
 
 const KB = 1024;
 const MB = KB*KB;
@@ -34,7 +35,7 @@ router.use(/.*\/self\/.*|^\/users\/self$|^\/entries\/\w*\/comments$|^\/entries\/
 			});
 
 		} else {
-			return res.status(403).send({
+			return res.status(HttpStatus.FORBIDDEN).send({
 				success: false,
 				message: 'No token provided.'
 			});
@@ -60,7 +61,7 @@ router.post('/users/self/picture', upload.single('profilePicture'), (req, res) =
   let username = req.username;
 
 	if (req.file.size > 16*MB) {
-		return res.status(400).json({ success: false, message: 'File too large' });
+		return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: 'File too large' });
 	}
 
 	switch (req.file.mimetype) {
@@ -71,7 +72,7 @@ router.post('/users/self/picture', upload.single('profilePicture'), (req, res) =
 		case 'image/tiff':
 			break;
 		default:
-			return res.status(415).json({ success: false, message: 'File type not supported' });
+			return res.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).json({ success: false, message: 'File type not supported' });
 	}
 
 	gm(req.file.buffer, 'thumbnail.jpg')
@@ -80,14 +81,14 @@ router.post('/users/self/picture', upload.single('profilePicture'), (req, res) =
 		.toBuffer('JPEG',function (err, thumbnailBuffer) {
 
 		  if (err || !thumbnailBuffer) {
-				return res.status(400).json({ success: false, message: 'Cannot create thumbnail'});
+				return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: 'Cannot create thumbnail'});
 		  }
 
 			User.findOne({
 			  username: username
 			}, function(err, user) {
 				if (err || !user) {
-					return res.status(400).json({success: false, message: 'User not found'});
+					return res.status(HttpStatus.BAD_REQUEST).json({success: false, message: 'User not found'});
 				}
 
 				user.profilePicture = {data: req.file.buffer, contentType: req.file.mimetype};
@@ -95,43 +96,14 @@ router.post('/users/self/picture', upload.single('profilePicture'), (req, res) =
 
 				user.save()
 			    .then(function (doc) {
-			      return res.status(200).json({ success: true });
+			      return res.status(HttpStatus.OK).json({ success: true });
 			    })
 			    .catch(function(err) {
-			      return res.status(400).json({ success: false });
+			      return res.status(HttpStatus.BAD_REQUEST).json({ success: false });
 			    });
 			});
 		});
 });
-
-router.get('/users/self/thumbnail', (req, res) => {
-
-	let username = req.username;
-
-  User.findOne({
-    username: username
-  }, 'thumbnail' ,function(err, user) {
-
-		if (err || !user) {
-			return res.status(404).send({ success: false });
-		}
-
-		if (!user.thumbnail.data) {
-			return res.status(404).send({ success: false, message: 'User does not have a profile picture'});
-		}
-
-    let imageBuffer = user.thumbnail.data;
-    let imageType = user.thumbnail.contentType;
-
-    let img = new Buffer(imageBuffer, 'base64');
-    res.writeHead(200, {
-      'Content-Type': imageType,
-      'Content-Length': img.length
-    });
-    res.status(200).end(img);
-  });
-});
-
 
 router.put('/users/self', (req, res) => {
 	let username = req.username;
@@ -140,7 +112,7 @@ router.put('/users/self', (req, res) => {
 	let newDisplayName = req.body.newDisplayName;
 
 	if (!newPassword && !newDisplayName) {
-		return res.status(400).send({ success: false , message: 'Malformed request'});
+		return res.status(HttpStatus.BAD_REQUEST).send({ success: false , message: 'Malformed request'});
 	}
 
   User.findOne({
@@ -148,7 +120,7 @@ router.put('/users/self', (req, res) => {
     password: oldPassword
   }, function(err, user) {
 		if (err || !user) {
-			return res.status(404).send({ success: false , message: 'Error: Incorrect password'});
+			return res.status(HttpStatus.NOT_FOUND).send({ success: false , message: 'Error: Incorrect password'});
 		}
 
 		let changedParameters = '';
@@ -165,10 +137,10 @@ router.put('/users/self', (req, res) => {
 
 		user.save()
 	    .then(function (doc) {
-	      return res.status(200).json({ success: true, message: "Changed user information: " + changedParameters});
+	      return res.status(HttpStatus.OK).json({ success: true, message: "Changed user information: " + changedParameters});
 	    })
 	    .catch(function(err) {
-	      return res.status(400).json({ success: false, message: "Error saving changes"});
+	      return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: "Error saving changes"});
 	    });
 	});
 });
@@ -191,7 +163,7 @@ router.post('/users/self/captures', upload.single('image'), function(req, res) {
 
 	if (file) {
 		if (file.size > 16*MB) {
-			return res.status(400).json({ success: false, message: 'File too large' });
+			return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: 'File too large' });
 		}
 
 		switch (file.mimetype) {
@@ -202,7 +174,7 @@ router.post('/users/self/captures', upload.single('image'), function(req, res) {
 			case 'image/tiff':
 				break;
 			default:
-				return res.status(415).json({ success: false, message: 'File type not supported' });
+				return res.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).json({ success: false, message: 'File type not supported' });
 		}
 
 		newCapture.image = {data: req.file.buffer, contentType: req.file.mimetype};
@@ -212,7 +184,7 @@ router.post('/users/self/captures', upload.single('image'), function(req, res) {
 			.extent(200, 200)
 			.toBuffer('JPEG',function (err, thumbnailBuffer) {
 				if (err || !thumbnailBuffer) {
-					return status(400).json({success: false, message: 'Could not make thumbnail'});
+					return status(HttpStatus.BAD_REQUEST).json({success: false, message: 'Could not make thumbnail'});
 				}
 				newCapture.thumbnail = {data: thumbnailBuffer, contentType: 'image/jpeg'};
 				makeEntry(req, res, newCapture);
@@ -239,11 +211,11 @@ function makeEntry(req, res, newCapture) {
 				.then(function(doc) {
 					incrementEmotionCount(username, dominantEmotion);
 					notifyFollowers(username, entry._id);
-					return res.status(200).json({ success: true, message: 'Added to existing date'});
+					return res.status(HttpStatus.OK).json({ success: true, message: 'Added to existing date'});
 				})
 				.catch(function(err) {
 					console.log(err);
-					return res.status(400).json({ success: false });
+					return res.status(HttpStatus.BAD_REQUEST).json({ success: false });
 			  });
 		} else {
 
@@ -257,11 +229,11 @@ function makeEntry(req, res, newCapture) {
 				.then(function (createdEntry) {
 					incrementEmotionCount(username, dominantEmotion);
 					notifyFollowers(username, createdEntry._id);
-					return res.status(200).json({ success: true, message: 'Created new journal entry'});
+					return res.status(HttpStatus.OK).json({ success: true, message: 'Created new journal entry'});
 			  })
 			  .catch(function(err) {
 					console.log(err);
-					return res.status(400).json({ success: false });
+					return res.status(HttpStatus.BAD_REQUEST).json({ success: false });
 			  });
 		}
   });
@@ -322,7 +294,7 @@ router.delete('/users/self/entries/:entryId', function(req, res) {
 
 	JournalEntry.findById(entryId, function(err, entry) {
 		if (err || !entry) {
-      return res.status(400).json({ success: false, message: 'Entry not found'});
+      return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: 'Entry not found'});
     }
 
     entry.remove()
@@ -330,10 +302,10 @@ router.delete('/users/self/entries/:entryId', function(req, res) {
 				_.forEach(entry.captures, function(capture) {
 					incrementEmotionCount(username, capture.emotion, -1);
 				});
-        return res.status(200).json({ success: true});
+        return res.status(HttpStatus.OK).json({ success: true});
       })
       .catch(function(err) {
-        return res.status(400).json({ success: false });
+        return res.status(HttpStatus.BAD_REQUEST).json({ success: false });
       });
     });
 });
@@ -346,26 +318,26 @@ router.delete('/users/self/captures/:captureId', function(req, res) {
 		"captures._id": mongoose.Types.ObjectId(captureId)
 	}, function(err, entry) {
 		if (err || !entry) {
-			return res.status(400).json({ success: false });
+			return res.status(HttpStatus.BAD_REQUEST).json({ success: false });
 		}
 
 		if (entry.captures.length === 1) {
 			entry.remove()
 				.then(function () {
 					findCaptureByIdAndDecrementEmotion(username, entry, captureId);
-					return res.status(200).json({ success: true, message: "Deleted entire entry"});
+					return res.status(HttpStatus.OK).json({ success: true, message: "Deleted entire entry"});
 				})
 				.catch(function(err) {
-					return res.status(400).json({ success: false });
+					return res.status(HttpStatus.BAD_REQUEST).json({ success: false });
 				});
 		} else {
 			entry.update({'$pull': {'captures': {'_id': mongoose.Types.ObjectId(captureId)}}})
 				.then(function() {
 					findCaptureByIdAndDecrementEmotion(username, entry, captureId);
-					return res.status(200).json({ success: true });
+					return res.status(HttpStatus.OK).json({ success: true });
 				})
 				.catch(function(err) {
-					return res.status(400).json({ success: false });
+					return res.status(HttpStatus.BAD_REQUEST).json({ success: false });
 				});
 			}
 	});
@@ -387,10 +359,10 @@ router.put('/users/self/entries/:entryId', function(req, res) {
 		$set: { title: title }
 	}, function (err, entry) {
 		if (err) {
-			return res.status(400).json({ success: false });
+			return res.status(HttpStatus.BAD_REQUEST).json({ success: false });
 		}
 
-		return res.status(200).json({ success: true });
+		return res.status(HttpStatus.OK).json({ success: true });
 	});
 });
 
@@ -406,10 +378,10 @@ router.put('/users/self/captures/:captureId', function(req, res) {
 		"captures.$.text": text
 	}, function(err, entry) {
 		if (err || !entry) {
-			return res.status(400).json({ success: false });
+			return res.status(HttpStatus.BAD_REQUEST).json({ success: false });
 		}
 
-		return res.status(200).json({ success: true });
+		return res.status(HttpStatus.OK).json({ success: true });
 	});
 });
 
@@ -428,17 +400,17 @@ router.post('/entries/:entryId/comments', function(req, res) {
 
   JournalEntry.findById(entryId, function(err, entry) {
 		if (err || !entry) {
-			return res.status(400).json({ success: false });
+			return res.status(HttpStatus.BAD_REQUEST).json({ success: false });
 		}
 
 		entry.comments.push(newComment);
 
 		entry.save()
 		  .then(function (doc) {
-		    return res.status(200).json({ success: true, message: 'Comment created'});
+		    return res.status(HttpStatus.OK).json({ success: true, message: 'Comment created'});
 		  })
 		  .catch(function(err) {
-		    return res.status(400).json({ success: false });
+		    return res.status(HttpStatus.BAD_REQUEST).json({ success: false });
 		  });
 	});
 });
@@ -452,15 +424,15 @@ router.delete('/comments/:commentId', function(req, res) {
 		"comments.commenter": commenter
   }, function(err, entry) {
 		if (err || !entry) {
-			return res.status(400).json({ success: false });
+			return res.status(HttpStatus.BAD_REQUEST).json({ success: false });
 		}
 
 		entry.update({'$pull': {'comments': {'_id': mongoose.Types.ObjectId(commentId)}}})
 			.then(function() {
-				return res.status(200).json({ success: true });
+				return res.status(HttpStatus.OK).json({ success: true });
 			})
 			.catch(function(err) {
-				return res.status(400).json({ success: false });
+				return res.status(HttpStatus.BAD_REQUEST).json({ success: false });
 			});
 	});
 });
@@ -479,14 +451,14 @@ router.post('/users/:username/follow', function(req, res) {
 	  username: currentUsername
 	}, function(err, currentUser) {
 		if (err || !currentUser) {
-			return res.status(400).json({success: false});
+			return res.status(HttpStatus.BAD_REQUEST).json({success: false});
 		}
 
 		User.findOne({
 		  username: toFollowUsername
 		}, function(err, userToFollow) {
 			if (err || !userToFollow) {
-				return res.status(400).json({success: false, message: 'User not found'});
+				return res.status(HttpStatus.BAD_REQUEST).json({success: false, message: 'User not found'});
 			}
 
 			currentUser.following.push(toFollowUsername);
@@ -497,10 +469,10 @@ router.post('/users/:username/follow', function(req, res) {
 					userToFollow.save();
 				})
 				.then(function (doc) {
-					return res.status(200).json({ success: true });
+					return res.status(HttpStatus.OK).json({ success: true });
 			  })
 			  .catch(function(err) {
-					return res.status(400).json({ success: false });
+					return res.status(HttpStatus.BAD_REQUEST).json({ success: false });
 			  });
 		});
 	});
@@ -514,17 +486,17 @@ router.post('/users/:username/unfollow', function(req, res) {
 		username: currentUsername
 	}, {$pull: {following: toUnfollowUsername}}, function(err, data){
     if (err) {
-      return res.status(400).json({success: false});
+      return res.status(HttpStatus.BAD_REQUEST).json({success: false});
     }
 
     User.findOneAndUpdate({
 			username: toUnfollowUsername
 		}, {$pull: {followers: currentUsername}}, function(err, data){
 	    if (err) {
-	      return res.status(400).json({success: false});
+	      return res.status(HttpStatus.BAD_REQUEST).json({success: false});
 	    }
 
-	    return res.status(200).json({ success: true });
+	    return res.status(HttpStatus.OK).json({ success: true });
 	  });
   });
 });
@@ -543,7 +515,7 @@ router.get('/users/self/notifications', function(req, res) {
 	}, 'notifications', function(err, userInfo) {
 
 		if (err || !userInfo) {
-			return res.status(400).json({success: false, message: 'Notifications not found'});
+			return res.status(HttpStatus.BAD_REQUEST).json({success: false, message: 'Notifications not found'});
 		}
 
 		JournalEntry.find({
@@ -553,10 +525,10 @@ router.get('/users/self/notifications', function(req, res) {
 			'captures.thumbnail': 0
 		}, function(err, docs){
 			if (err || !docs) {
-				return res.status(400).json({success: false, message: 'Server error'});
+				return res.status(HttpStatus.BAD_REQUEST).json({success: false, message: 'Server error'});
 			}
 
-			return res.status(200).json(docs.reverse());
+			return res.status(HttpStatus.OK).json(docs.reverse());
 		});
 	});
 });
