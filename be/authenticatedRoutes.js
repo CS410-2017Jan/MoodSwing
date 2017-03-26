@@ -106,34 +106,6 @@ router.post('/users/self/picture', upload.single('profilePicture'), (req, res) =
 		})
 })
 
-router.get('/users/self/picture', (req, res) => {
-
-	let username = req.username
-
-  User.findOne({
-    username: username
-  }, 'profilePicture', function(err, user) {
-
-		if (err || !user) {
-			return res.status(404).send({ success: false })
-		}
-
-		if (!user.profilePicture.data) {
-			return res.status(404).send({ success: false, message: 'User does not have a profile picture'})
-		}
-
-    let imageBuffer = user.profilePicture.data
-    let imageType = user.profilePicture.contentType
-
-    let img = new Buffer(imageBuffer, 'base64')
-    res.writeHead(200, {
-      'Content-Type': imageType,
-      'Content-Length': img.length
-    })
-    res.status(200).end(img)
-  })
-})
-
 router.get('/users/self/thumbnail', (req, res) => {
 
 	let username = req.username

@@ -90,6 +90,70 @@ function createToken(user) {
   })
 }
 
+router.get('/users/:username/picture', (req, res) => {
+
+  let username = req.params.username
+
+  User.findOne({
+    username: username
+  }, 'profilePicture', function(err, user) {
+
+    if (err || !user) {
+      return res.status(404).send({ success: false })
+    }
+
+    if (!user.profilePicture.data) {
+      res.writeHead(200, {
+        'Content-Type': "image/jpeg",
+        'Content-Length': 0
+      })
+      return res.end()
+    }
+
+    let imageBuffer = user.profilePicture.data
+    let imageType = user.profilePicture.contentType
+
+    let img = new Buffer(imageBuffer, 'base64')
+    res.writeHead(200, {
+      'Content-Type': imageType,
+      'Content-Length': img.length
+    })
+    res.status(200).end(img)
+  })
+})
+
+router.get('/users/:username/thumbnail', (req, res) => {
+
+  let username = req.params.username
+
+  User.findOne({
+    username: username
+  }, 'thumbnail' ,function(err, user) {
+
+    if (err || !user) {
+      return res.status(404).send({ success: false })
+    }
+
+    if (!user.thumbnail.data) {
+      res.writeHead(200, {
+        'Content-Type': "image/jpeg",
+        'Content-Length': 0
+      })
+      return res.end()
+    }
+
+    let imageBuffer = user.thumbnail.data
+    let imageType = user.thumbnail.contentType
+
+    let img = new Buffer(imageBuffer, 'base64')
+    res.writeHead(200, {
+      'Content-Type': imageType,
+      'Content-Length': img.length
+    })
+    res.status(200).end(img)
+  })
+})
+
 /*
 ---------------------------------------------------------
 User information
