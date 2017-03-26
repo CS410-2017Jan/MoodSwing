@@ -29,3 +29,5 @@ mongoose.connect(config.database, function(err, db) {
     console.log('listening on ' + port)
   })
 })
+
+module.exports = app
