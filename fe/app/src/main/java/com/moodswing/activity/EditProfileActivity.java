@@ -39,10 +39,6 @@ import com.moodswing.injector.component.DaggerEditProfileComponent;
 import com.moodswing.mvp.mvp.view.EditProfileView;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 import javax.inject.Inject2;
 import butterknife.BindView;

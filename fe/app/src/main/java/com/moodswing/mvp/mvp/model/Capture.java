@@ -1,7 +1,6 @@
 package com.moodswing.mvp.mvp.model;
 
 import android.graphics.Bitmap;
-import android.net.Uri;
 
 /**
  * Created by Matthew on 2017-03-07.
