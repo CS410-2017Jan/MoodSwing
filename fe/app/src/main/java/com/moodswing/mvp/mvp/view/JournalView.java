@@ -20,7 +20,7 @@ public interface JournalView extends View {
     void onDeletionFailure();
     void onSetTitleSuccess();
     void onSetTitleFailure();
-    void onGetUserInfoSuccess(List<User> users);
+    void onGetUserInfoSuccess(User users);
     void onGetUserInfoFailure();
     void getPicture(ResponseBody picture);
     void showError();

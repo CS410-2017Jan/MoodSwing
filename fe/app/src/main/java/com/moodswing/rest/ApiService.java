@@ -61,7 +61,8 @@ public interface ApiService {
     Observable<NewEntryResponse> postNewEntry(@Header("x-access-token") String accessToken,
                                               @Part MultipartBody.Part image,
                                               @Part("text")RequestBody entryText,
-                                              @Part("captureDate")RequestBody captureDate);
+                                              @Part("captureDate")RequestBody captureDate,
+                                              @Part("emotion")RequestBody emotion);
 
     @Headers("Content-Type: application/json")
     @PUT("users/self/entries/{entryId}")

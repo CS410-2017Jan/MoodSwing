@@ -1,5 +1,9 @@
 package com.moodswing.mvp.mvp.presenter;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+
+import com.moodswing.R;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.GetJournalsUsecase;
 import com.moodswing.mvp.domain.NewEntryNoPicUsecase;
@@ -67,11 +71,17 @@ public class NewEntryPresenter implements Presenter<NewEntryView> {
     }
 
 
-    public void uploadCapture(MultipartBody.Part data, RequestBody entryText, RequestBody entryDate) {
+    public void uploadCapture(MultipartBody.Part data, RequestBody entryText, RequestBody entryDate, RequestBody entryEmotion) {
         newEntryUsecase.setData(data);
         newEntryUsecase.setText(entryText);
         newEntryUsecase.setDate(entryDate);
+        newEntryUsecase.setEmotion(entryEmotion);
         newEntryUsecase.setToken(sharedPreferencesManager.getToken());
+
+        final ProgressDialog progressDialog = new ProgressDialog((Context) newEntryView, R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Sharing...");
+        progressDialog.show();
 
         newEntrySubscription = newEntryUsecase.execute()
                 .subscribeOn(Schedulers.io())
@@ -79,6 +89,7 @@ public class NewEntryPresenter implements Presenter<NewEntryView> {
                 .subscribe(new Consumer<NewEntryResponse>() {
                     @Override
                     public void accept(NewEntryResponse newEntryResponse) throws Exception {
+                        progressDialog.dismiss();
                         if (newEntryResponse.isSuccessful()) {
                             newEntryView.onNewEntrySuccess();
                         } else {
@@ -88,6 +99,7 @@ public class NewEntryPresenter implements Presenter<NewEntryView> {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                        progressDialog.dismiss();
                         newEntryView.showError();
                     }
                 });
@@ -97,12 +109,18 @@ public class NewEntryPresenter implements Presenter<NewEntryView> {
         newEntryNoPicUsecase.setCapture(new Capture(description, date));
         newEntryNoPicUsecase.setToken(sharedPreferencesManager.getToken());
 
+        final ProgressDialog progressDialog = new ProgressDialog((Context) newEntryView, R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Sharing...");
+        progressDialog.show();
+
         newEntrySubscription = newEntryNoPicUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<NewEntryResponse>() {
                     @Override
                     public void accept(NewEntryResponse newEntryResponse) throws Exception {
+                        progressDialog.dismiss();
                         if (newEntryResponse.isSuccessful()) {
                             newEntryView.onNewEntrySuccess();
                         } else {
@@ -112,6 +130,7 @@ public class NewEntryPresenter implements Presenter<NewEntryView> {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                        progressDialog.dismiss();
                         newEntryView.showError();
                     }
                 });

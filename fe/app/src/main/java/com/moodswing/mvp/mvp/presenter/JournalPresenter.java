@@ -8,6 +8,7 @@ import com.moodswing.mvp.domain.DeleteCaptureUsecase;
 import com.moodswing.mvp.domain.GetEntryPicUsecase;
 import com.moodswing.mvp.domain.GetJournalsUsecase;
 import com.moodswing.mvp.domain.GetProfilePictureUsecase;
+import com.moodswing.mvp.domain.GetUserUsecase;
 import com.moodswing.mvp.domain.SearchUsecase;
 import com.moodswing.mvp.domain.SetTitleUsecase;
 import com.moodswing.mvp.mvp.model.Capture;
@@ -39,16 +40,18 @@ public class JournalPresenter implements Presenter<JournalView> {
     private SearchUsecase searchUsecase;
     private GetProfilePictureUsecase getProfilePictureUsecase;
     private GetEntryPicUsecase getEntryPicUsecase;
+    private GetUserUsecase getUserUsecase;
     private Disposable getJournalsSubscription;
     private SharedPreferencesManager sharedPreferencesManager;
 
-    public JournalPresenter(GetJournalsUsecase getJournalsUsecase, DeleteCaptureUsecase deleteCaptureUsecase, SetTitleUsecase setTitleUsecase, SearchUsecase searchUsecase, GetProfilePictureUsecase getProfilePictureUsecase, GetEntryPicUsecase getEntryPicUsecase) {
+    public JournalPresenter(GetJournalsUsecase getJournalsUsecase, DeleteCaptureUsecase deleteCaptureUsecase, SetTitleUsecase setTitleUsecase, SearchUsecase searchUsecase, GetProfilePictureUsecase getProfilePictureUsecase, GetEntryPicUsecase getEntryPicUsecase, GetUserUsecase getUserUsecase) {
         this.getJournalsUsecase = getJournalsUsecase;
         this.deleteCaptureUsecase = deleteCaptureUsecase;
         this.setTitleUsecase = setTitleUsecase;
         this.searchUsecase = searchUsecase;
         this.getProfilePictureUsecase = getProfilePictureUsecase;
         this.getEntryPicUsecase = getEntryPicUsecase;
+        this.getUserUsecase = getUserUsecase;
     }
 
     @Override
@@ -99,15 +102,17 @@ public class JournalPresenter implements Presenter<JournalView> {
                 });
     }
 
-    public void getUsers() {
-        getJournalsSubscription = searchUsecase.execute()
+    public void getUser() {
+        getUserUsecase.setUsername(sharedPreferencesManager.getCurrentUser());
+        getJournalsSubscription = getUserUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Response<List<User>>>() {
+                .subscribe(new Consumer<Response<User>>() {
                     @Override
-                    public void accept(Response<List<User>> listResponse) throws Exception {
-                        if (listResponse.code() == 200) {
-                            journalView.onGetUserInfoSuccess(listResponse.body());
+                    public void accept(Response<User> response) throws Exception {
+                        if (response.code() == 200) {
+                            User user = response.body();
+                            journalView.onGetUserInfoSuccess(user);
                         } else {
                             journalView.onGetUserInfoFailure();
                         }

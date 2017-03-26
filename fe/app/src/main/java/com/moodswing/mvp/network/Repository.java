@@ -35,7 +35,7 @@ import retrofit2.http.Part;
  */
 
 public interface Repository {
-    Observable<NewEntryResponse> postNewEntry(String accessToken, @Part MultipartBody.Part data, RequestBody entryText, RequestBody entryDate);
+    Observable<NewEntryResponse> postNewEntry(String accessToken, @Part MultipartBody.Part data, RequestBody entryText, RequestBody entryDate, RequestBody entryEmotion);
     Observable<NewEntryResponse> postNewEntryNoPic(Capture capture, String accessToken);
     Observable<SetTitleResponse> setTitle(String accessToken, String entryId, Title title);
     Observable<EditEntryResponse> editEntryText(String accessToken, String id, Text text);

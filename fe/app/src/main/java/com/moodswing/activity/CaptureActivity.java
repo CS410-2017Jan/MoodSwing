@@ -99,6 +99,7 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView {
     // Facebook
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
+    private Bitmap captureBitmap;
 
     String title;
     String date;
@@ -109,7 +110,6 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView {
     private List<Comment> commentList = new ArrayList<>();
     private RecyclerView commentRecyclerView;
     private CommentAdapter commentAdapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -213,54 +213,13 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView {
 
     @Override
     public void showEntryPic(ResponseBody picture){
-        Boolean hasImage = true;
-        try {
-            if (picture.contentLength() == 0){
-                hasImage = false;
-            }
-            String cId = capID; //TODO: fix this
-            String[] type = picture.contentType().toString().split("/");
-            File entryPictureFile = new File(getExternalFilesDir(null) + File.separator + cId + "captureactivity." + type[1]);
-            InputStream inputStream = null;
-            OutputStream outputStream = null;
-
-            try {
-                byte[] fileReader = new byte[4096];
-                long fileSize = picture.contentLength();
-                long fileSizeDownloaded = 0;
-
-                inputStream = picture.byteStream();
-                outputStream = new FileOutputStream(entryPictureFile);
-
-                while (true) {
-                    int read = inputStream.read(fileReader);
-                    if (read == -1) {
-                        break;
-                    }
-                    outputStream.write(fileReader, 0, read);
-                    fileSizeDownloaded += read;
-                }
-                //SET PICTURE TO IMAGEVIEW
-                Uri uri = Uri.fromFile(entryPictureFile);
-                if (hasImage){
-                    _capImage.setBackgroundResource(android.R.color.transparent);
-                    _capImage.setImageURI(uri);
-                }else{
-                    _capImage.setBackgroundResource(R.drawable.empty_profile_pic);
-                }
-                outputStream.flush();
-            } catch (IOException e) {
-
-            } finally {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-                if (outputStream != null) {
-                    outputStream.close();
-                }
-            }
-        } catch (IOException e) {
-
+        if (picture.contentLength() == 0) {
+            _capImage.setBackgroundResource(R.drawable.empty_profile_pic);
+        } else {
+            Bitmap bitmap = BitmapFactory.decodeStream(picture.byteStream());
+            captureBitmap = bitmap.copy(bitmap.getConfig(), true);
+            _capImage.setBackgroundResource(android.R.color.transparent);
+            _capImage.setImageBitmap(bitmap);
         }
     }
 
@@ -329,10 +288,8 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView {
                         switch (item.getItemId()) {
                             case R.id.share_facebook:
                                 if (ShareDialog.canShow(SharePhotoContent.class)) {
-                                    // TODO change to Bitmap in Capture
-                                    Bitmap image = BitmapFactory.decodeResource(getResources(), R.drawable.logo);
                                     SharePhoto photo = new SharePhoto.Builder()
-                                            .setBitmap(image)
+                                            .setBitmap(captureBitmap)
                                             .build();
 
                                     SharePhotoContent sharePhotoContent= new SharePhotoContent.Builder()
@@ -342,6 +299,7 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView {
                                                     .build())
                                             .build();
                                     shareDialog.show(sharePhotoContent);
+                                    captureBitmap.recycle();
                                 }
                                 break;
                         }

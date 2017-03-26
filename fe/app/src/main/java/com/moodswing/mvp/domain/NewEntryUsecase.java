@@ -20,6 +20,7 @@ public class NewEntryUsecase implements Usecase<NewEntryResponse> {
     private MultipartBody.Part data;
     private RequestBody entryText;
     private RequestBody entryDate;
+    private RequestBody entryEmotion;
 
     public NewEntryUsecase(Repository repository) {this.repository = repository;}
 
@@ -41,9 +42,12 @@ public class NewEntryUsecase implements Usecase<NewEntryResponse> {
         this.entryDate = entryDate;
     }
 
+    public void setEmotion(RequestBody entryEmotion){
+        this.entryEmotion = entryEmotion;
+    }
+
     @Override
     public Observable<NewEntryResponse> execute() {
-//        return repository.postNewEntry(capture, accessToken);
-        return repository.postNewEntry(accessToken, data, entryText, entryDate);
+        return repository.postNewEntry(accessToken, data, entryText, entryDate, entryEmotion);
     }
 }

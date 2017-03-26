@@ -5,6 +5,7 @@ import com.moodswing.mvp.domain.DeleteCaptureUsecase;
 import com.moodswing.mvp.domain.GetEntryPicUsecase;
 import com.moodswing.mvp.domain.GetJournalsUsecase;
 import com.moodswing.mvp.domain.GetProfilePictureUsecase;
+import com.moodswing.mvp.domain.GetUserUsecase;
 import com.moodswing.mvp.domain.SearchUsecase;
 import com.moodswing.mvp.domain.SetTitleUsecase;
 import com.moodswing.mvp.mvp.presenter.JournalPresenter;
@@ -55,8 +56,14 @@ public class JournalModule {
         return new GetEntryPicUsecase(repository);
     }
 
+    @PerActivity
+    @Provides2
+    public GetUserUsecase provideGetUserUsecase(Repository repository) {
+        return new GetUserUsecase(repository);
+    }
+
 
     @PerActivity
     @Provides2
-    public JournalPresenter provideJournalPresenter(GetJournalsUsecase getJournalsUsecase, DeleteCaptureUsecase deleteCaptureUsecase, SetTitleUsecase setTitleUsecase, SearchUsecase searchUsecase, GetProfilePictureUsecase getProfilePictureUsecase, GetEntryPicUsecase getEntryPicUsecase) {return new JournalPresenter(getJournalsUsecase, deleteCaptureUsecase, setTitleUsecase, searchUsecase, getProfilePictureUsecase, getEntryPicUsecase);}
+    public JournalPresenter provideJournalPresenter(GetJournalsUsecase getJournalsUsecase, DeleteCaptureUsecase deleteCaptureUsecase, SetTitleUsecase setTitleUsecase, SearchUsecase searchUsecase, GetProfilePictureUsecase getProfilePictureUsecase, GetEntryPicUsecase getEntryPicUsecase, GetUserUsecase getUserUsecase) {return new JournalPresenter(getJournalsUsecase, deleteCaptureUsecase, setTitleUsecase, searchUsecase, getProfilePictureUsecase, getEntryPicUsecase, getUserUsecase);}
 }

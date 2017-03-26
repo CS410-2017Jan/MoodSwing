@@ -239,7 +239,7 @@ public class DateAdapter extends RecyclerView.Adapter<DateAdapter.MyViewHolder>{
         captureIntent.putExtra("EXTRA_DATEID", dateId);
         captureIntent.putExtra("EXTRA_CAPID", capId);
 
-        _journalPresenter.getUsers();
+        _journalPresenter.getUser();
     }
 
     public static Intent getCaptureIntent(){

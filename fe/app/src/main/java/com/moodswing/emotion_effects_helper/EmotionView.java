@@ -163,7 +163,7 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
         private volatile boolean requestCaptureBitmap = false; //boolean to indicate a snapshot of the surface has been requested
         private EmotionThreadEventListener emotionThreadEventListener;
         private GifDrawable currentAnimation;
-        private String currentEmoji;
+        private String currentEmoji = "UNKNOWN";
         private int currentAnimationResource = -1;
 
         public EmotionViewThread(SurfaceHolder surfaceHolder, EmotionThreadEventListener emotionThreadEventListener) {
