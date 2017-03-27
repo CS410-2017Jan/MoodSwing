@@ -6,12 +6,12 @@ const server = require('../server');
 
 chai.use(chaiHttp);
 
-module.exports.createCapture = function(token, text, date) {
+module.exports.createCapture = function(token, text, date, emotion='') {
 	return new Promise((resolve, reject) => {
 		chai.request(server)
 			.post('/users/self/captures')
 			.set({'x-access-token': token})
-			.send({text: text, captureDate: date})
+			.send({text: text, captureDate: date, emotion: emotion})
 			.end((err, res) => {
 				expect(res).to.have.status(HttpStatus.CREATED);
 				resolve();
