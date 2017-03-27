@@ -21,6 +21,7 @@ import com.moodswing.injector.module.ActivityModule;
 import com.moodswing.injector.module.SearchModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.model.User;
+import com.moodswing.mvp.mvp.presenter.JournalPresenterOther;
 import com.moodswing.mvp.mvp.presenter.SearchPresenter;
 import com.moodswing.mvp.mvp.view.SearchView;
 import com.moodswing.widget.SearchViewAdapter;
@@ -84,7 +85,11 @@ public class SearchActivity extends MoodSwingActivity implements SearchView {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 User user = (User) listView.getAdapter().getItem(position);
-                // TODO: pass user info to activity to view this user's journal
+                Intent intent = new Intent(getApplicationContext(), JournalPresenterOther.class);
+                intent.putExtra("USER_DISPLAYNAME", user.getDisplayName());
+                intent.putExtra("USER_USERNAME", user.getUsername());
+                intent.putExtra("USER_FOLLOWING", user.getFollowing().toArray());
+                startActivity(intent);
             }
         });
     }

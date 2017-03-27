@@ -22,6 +22,7 @@ import com.moodswing.injector.module.FollowingModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.mvp.presenter.FollowingPresenter;
+import com.moodswing.mvp.mvp.presenter.JournalPresenterOther;
 import com.moodswing.mvp.mvp.view.FollowingView;
 import com.moodswing.widget.SearchAdapter;
 
@@ -88,7 +89,11 @@ public class FollowingActivity extends MoodSwingActivity implements FollowingVie
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 User user = (User) listView.getAdapter().getItem(position);
-                // TODO: pass user info to activity to view this user's journal
+                Intent intent = new Intent(getApplicationContext(), JournalActivityOther.class);
+                intent.putExtra("USER_DISPLAYNAME", user.getDisplayName());
+                intent.putExtra("USER_USERNAME", user.getUsername());
+                intent.putExtra("USER_FOLLOWING", user.getFollowing().toArray());
+                startActivity(intent);
             }
         });
     }

@@ -88,6 +88,10 @@
             android:name=".activity.NotificationsActivity"
             android:theme="@style/AppTheme"
             android:label="Notifications"/>
+        <activity
+            android:name=".activity.JournalActivityOther"
+            android:theme="@style/NoBarAppTheme"
+            android:label="JournalOther"/>
         // Faceboook
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <provider android:authorities="com.facebook.app.FacebookContentProvider100716993800806"
