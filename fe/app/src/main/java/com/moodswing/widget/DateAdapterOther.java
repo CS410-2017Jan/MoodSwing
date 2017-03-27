@@ -9,6 +9,7 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import com.moodswing.R;
 import com.moodswing.activity.CaptureActivity;
+import com.moodswing.activity.CaptureActivityOther;
 import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.CaptureDivider;
 import com.moodswing.mvp.mvp.model.Comment;
@@ -58,40 +60,6 @@ public class DateAdapterOther extends RecyclerView.Adapter<DateAdapterOther.MyVi
             title = (TextView) view.findViewById(R.id.titleother);
             date = (TextView) view.findViewById(R.id.dateother);
             numComments = (TextView) view.findViewById(R.id.num_commentsother);
-
-            title.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(jActivityOther);
-                    builder.setTitle("Edit Title");
-
-                    final EditText input = new EditText(jActivityOther);
-                    input.setText(title.getText());
-                    input.setSelection(input.getText().length());
-                    input.setFilters(new InputFilter[] { new InputFilter.LengthFilter(30)});
-                    input.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-                    builder.setView(input);
-
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            title.setText(input.getText().toString());
-                            DateBlock dateBlock = dBlocks.get(cAdapter.getRowIndex());
-                            _journalPresenter.setTitle(input.getText().toString(), dateBlock.getId());
-                        }
-                    });
-                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-
-                    builder.show();
-                    return true;
-                }
-            });
 
             cAdapter = new CaptureAdapterOther();
             _cRecyclerView = (RecyclerView) itemView.findViewById(R.id.capture_recycler_viewother);
@@ -230,7 +198,7 @@ public class DateAdapterOther extends RecyclerView.Adapter<DateAdapterOther.MyVi
         String dateId = dBlock.getId();
         String capId = capture.getId();
         capUsername = dBlock.getUsername();
-        captureIntent = new Intent(jActivityOther, CaptureActivity.class);
+        captureIntent = new Intent(jActivityOther, CaptureActivityOther.class);
         captureIntent.putExtra("EXTRA_TITLE", capTitle);
         captureIntent.putExtra("EXTRA_DATE", capDate);
         captureIntent.putExtra("EXTRA_TEXT", capText);

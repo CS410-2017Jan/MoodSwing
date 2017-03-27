@@ -247,17 +247,14 @@ public class JournalActivityOther extends MoodSwingActivity implements JournalVi
 
     @Override
     public void onGetUserInfoSuccess(User user){
-        Intent captureIntent = DateAdapter.getCaptureIntent();
-        String username1 = DateAdapter.getCapUsername();
-        Log.i("111", username1 + "*********************************");
+        Intent captureIntent = DateAdapterOther.getCaptureIntent();
+        String username1 = DateAdapterOther.getCapUsername();
         String e1Count = "";
         String e1 = "";
         String e2Count = "";
         String e2 = "";
         if (isResuming){
             username1 = username;
-            Log.i("222", username1 + "*********************************");
-            Log.i("222", user.get_id() + "*********************************");
         }
         if (user.getUsername().equals(username1)){
             displayName = user.getDisplayName();

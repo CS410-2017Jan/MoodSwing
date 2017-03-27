@@ -58,32 +58,6 @@ public class CaptureAdapterOther extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    private void StartEditActivity(String text, String id){
-        Intent intent = new Intent(jActivityOther, EditEntryActivity.class);
-        intent.putExtra("TEXT", text);
-        intent.putExtra("ID", id);
-        jActivityOther.startActivity(intent);
-    }
-
-    private void displayDeleteWarning(String s, final Capture capture) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(jActivityOther);
-        builder.setTitle("Warning");
-        builder.setMessage(s);
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                _journalPresenter.deleteCapture(capture);
-            }
-        });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.capture_list_rowother, parent, false);

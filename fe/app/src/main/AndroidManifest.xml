@@ -73,6 +73,10 @@
             android:theme="@style/NoBarAppTheme"
             android:label="Capture"/>
         <activity
+            android:name=".activity.CaptureActivityOther"
+            android:theme="@style/NoBarAppTheme"
+            android:label="Capture"/>
+        <activity
             android:name=".activity.SearchActivity"
             android:theme="@style/AppTheme"
             android:label="Search"/>
