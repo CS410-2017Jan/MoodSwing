@@ -78,8 +78,8 @@ public class JournalPresenterOther implements Presenter<JournalViewOther> {
         this.journalView = view;
     }
 
-    public void getEntries() {
-        getJournalsUsecase.setUsername(sharedPreferencesManager.getCurrentUser());
+    public void getEntries(String username) {
+        getJournalsUsecase.setUsername(username);
 
         getJournalsSubscription = getJournalsUsecase.execute()
                 .subscribeOn(Schedulers.io())
@@ -101,8 +101,8 @@ public class JournalPresenterOther implements Presenter<JournalViewOther> {
                 });
     }
 
-    public void getUser() {
-        getUserUsecase.setUsername(sharedPreferencesManager.getCurrentUser());
+    public void getUser(String username) {
+        getUserUsecase.setUsername(username);
         getJournalsSubscription = getUserUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -174,9 +174,9 @@ public class JournalPresenterOther implements Presenter<JournalViewOther> {
                 });
     }
 
-    public void getProfilePic() {
+    public void getProfilePic(String username) {
 
-        getProfilePictureUsecase.setToken(sharedPreferencesManager.getCurrentUser());
+        getProfilePictureUsecase.setToken(username);
         getJournalsSubscription = getProfilePictureUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

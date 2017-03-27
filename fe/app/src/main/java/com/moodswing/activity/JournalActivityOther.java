@@ -13,6 +13,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -98,6 +99,7 @@ public class JournalActivityOther extends MoodSwingActivity implements JournalVi
     private JournalComponentOther _journalComponentOther;
     private boolean isResuming = false;
     private String displayName;
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,12 +119,6 @@ public class JournalActivityOther extends MoodSwingActivity implements JournalVi
         initializePresenter();
         initializeBottomNavigationView();
         setSupportActionBar(toolbar);
-        initializeProfilePic();
-
-        if (!_journalPresenterOther.isUserLoggedIn()) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-        }
 
         dAdapter = new DateAdapterOther(dBlocks, captures, this, _journalPresenterOther);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this){
@@ -137,16 +133,6 @@ public class JournalActivityOther extends MoodSwingActivity implements JournalVi
         _dRecyclerView.setAdapter(dAdapter);
     }
 
-    private void initializeProfilePic() {
-        _profilePic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
-                startActivity(intent);
-            }
-        });
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -157,9 +143,11 @@ public class JournalActivityOther extends MoodSwingActivity implements JournalVi
             captures.clear();
             dBlocks.clear();
             isResuming = true;
-            _journalPresenterOther.getUser();
-            _journalPresenterOther.getProfilePic();
-            _journalPresenterOther.getEntries();
+            displayName = getIntent().getStringExtra("USER_DISPLAYNAME");
+            username = getIntent().getStringExtra("USER_USERNAME");
+            _journalPresenterOther.getUser(username);
+            _journalPresenterOther.getProfilePic(username);
+            _journalPresenterOther.getEntries(username);
         }
     }
 
@@ -260,15 +248,18 @@ public class JournalActivityOther extends MoodSwingActivity implements JournalVi
     @Override
     public void onGetUserInfoSuccess(User user){
         Intent captureIntent = DateAdapter.getCaptureIntent();
-        String username = DateAdapter.getCapUsername();
+        String username1 = DateAdapter.getCapUsername();
+        Log.i("111", username1 + "*********************************");
         String e1Count = "";
         String e1 = "";
         String e2Count = "";
         String e2 = "";
         if (isResuming){
-            username = _sharedPreferencesManager.getCurrentUser();
+            username1 = username;
+            Log.i("222", username1 + "*********************************");
+            Log.i("222", user.get_id() + "*********************************");
         }
-        if (user.getUsername().equals(username)){
+        if (user.getUsername().equals(username1)){
             displayName = user.getDisplayName();
             List<List<String>> sortedEmotions = user.getSortedEmotions();
             int i = 0;
@@ -382,7 +373,8 @@ public class JournalActivityOther extends MoodSwingActivity implements JournalVi
 
     @Override
     public void onBackPressed() {
-        finishAffinity();
+        Intent intent = new Intent(getApplicationContext(), JournalActivity.class);
+        startActivity(intent);
     }
 
     private void initializePresenter() {

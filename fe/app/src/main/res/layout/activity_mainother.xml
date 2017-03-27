@@ -63,8 +63,8 @@
                     android:id="@+id/emoji2other"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_alignTop="@+id/imageView"
-                    android:layout_toRightOf="@+id/imageView"
+                    android:layout_alignTop="@+id/imageViewother"
+                    android:layout_toRightOf="@+id/imageViewother"
                     android:layout_marginLeft="43dp"
                     android:layout_marginTop="25dp" />
 
