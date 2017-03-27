@@ -174,7 +174,6 @@ public class JournalPresenter implements Presenter<JournalView> {
     }
 
     public void getProfilePic() {
-
         getProfilePictureUsecase.setToken(sharedPreferencesManager.getCurrentUser());
         getJournalsSubscription = getProfilePictureUsecase.execute()
                 .subscribeOn(Schedulers.io())

@@ -44,7 +44,6 @@ import okhttp3.ResponseBody;
 public class NotificationsActivity extends MoodSwingActivity implements NotificationsView {
     private List<DateBlock> dBlocks = new ArrayList<>();
     private List<Capture> captures = new ArrayList<>();
-    private DateAdapter dAdapter;
 
     @Inject2
     NotificationsPresenter _notificationsPresenter;
@@ -140,7 +139,6 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
                 c.setHasImage(hasImage);
             }
         }
-        dAdapter.notifyDataSetChanged();
     }
     public String setJournalViewDateFormat(String date){
         DateFormat firstdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -155,6 +153,7 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
         }
         return rDate;
     }
+
 
     @Override
     public void onGetUserInfoSuccess(User user) {
@@ -174,6 +173,12 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
     @Override
     public void showError() {
         String message = "Error fetching entries";
+        showToast(message);
+    }
+
+    @Override
+    public void onEntryFailure(){
+        String message = "Capture fetch Failure";
         showToast(message);
     }
 }

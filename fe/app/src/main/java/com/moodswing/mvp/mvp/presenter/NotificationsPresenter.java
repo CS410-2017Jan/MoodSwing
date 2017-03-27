@@ -73,7 +73,11 @@ public class NotificationsPresenter implements Presenter<NotificationsView> {
                 .subscribe(new Consumer<List<JournalEntries>>() {
                     @Override
                     public void accept(List<JournalEntries> journalEntries) throws Exception {
-
+                        if (true) {
+                            notificationsView.showEntries(journalEntries);
+                        } else {
+                            notificationsView.onEntryFailure();
+                        }
                     }
 
                 }, new Consumer<Throwable>() {

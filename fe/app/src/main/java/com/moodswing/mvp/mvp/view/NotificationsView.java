@@ -15,6 +15,7 @@ public interface NotificationsView extends View {
     void showEntries(List<JournalEntries> je);
     void showEntryPic(ResponseBody picture, String captureId);
     void showError();
+    void onEntryFailure();
     void onGetUserInfoSuccess(User users);
     void onGetUserInfoFailure();
 }
