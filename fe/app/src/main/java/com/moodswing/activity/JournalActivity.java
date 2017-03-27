@@ -205,7 +205,7 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
     @Override
     public void getPicture(ResponseBody picture){
         if (picture.contentLength() == 0) {
-            _profilePic.setVisibility(View.GONE);
+            _profilePic.setBackgroundResource(R.drawable.empty_profile_pic);
         } else {
             Bitmap bitmap = BitmapFactory.decodeStream(picture.byteStream());
             _profilePic.setBackgroundResource(android.R.color.transparent);

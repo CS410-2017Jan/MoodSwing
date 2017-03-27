@@ -7,9 +7,7 @@ import com.moodswing.injector.scope.PerActivity;
 
 import dagger.Component;
 
-/**
- * Created by daniel on 20/02/17.
- */
+
 
 @PerActivity
 @Component(dependencies = ApplicationComponent.class,

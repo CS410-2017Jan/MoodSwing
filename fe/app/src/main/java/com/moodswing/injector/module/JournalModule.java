@@ -14,9 +14,7 @@ import com.moodswing.mvp.network.Repository;
 import dagger.Module2;
 import dagger.Provides2;
 
-/**
- * Created by daniel on 20/02/17.
- */
+
 @Module2
 public class JournalModule {
 

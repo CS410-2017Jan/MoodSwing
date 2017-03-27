@@ -7,9 +7,7 @@ import java.util.List;
 
 import okhttp3.ResponseBody;
 
-/**
- * Created by daniel on 11/02/17.
- */
+
 
 public interface JournalView extends View {
 

@@ -28,9 +28,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
-/**
- * Created by daniel on 11/02/17.
- */
+
 
 public class JournalPresenter implements Presenter<JournalView> {
     private JournalView journalView;
