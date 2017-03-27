@@ -211,7 +211,7 @@ function makeEntry(req, res, newCapture) {
 				.then(function(doc) {
 					incrementEmotionCount(username, dominantEmotion);
 					notifyFollowers(username, entry._id);
-					return res.status(HttpStatus.OK).json({ success: true, message: 'Added to existing date'});
+					return res.status(HttpStatus.CREATED).json({ success: true, message: 'Added to existing date'});
 				})
 				.catch(function(err) {
 					console.log(err);
@@ -229,7 +229,7 @@ function makeEntry(req, res, newCapture) {
 				.then(function (createdEntry) {
 					incrementEmotionCount(username, dominantEmotion);
 					notifyFollowers(username, createdEntry._id);
-					return res.status(HttpStatus.OK).json({ success: true, message: 'Created new journal entry'});
+					return res.status(HttpStatus.CREATED).json({ success: true, message: 'Created new journal entry'});
 			  })
 			  .catch(function(err) {
 					console.log(err);
