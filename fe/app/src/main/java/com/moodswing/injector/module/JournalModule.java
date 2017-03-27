@@ -62,7 +62,6 @@ public class JournalModule {
         return new GetUserUsecase(repository);
     }
 
-
     @PerActivity
     @Provides2
     public JournalPresenter provideJournalPresenter(GetJournalsUsecase getJournalsUsecase, DeleteCaptureUsecase deleteCaptureUsecase, SetTitleUsecase setTitleUsecase, SearchUsecase searchUsecase, GetProfilePictureUsecase getProfilePictureUsecase, GetEntryPicUsecase getEntryPicUsecase, GetUserUsecase getUserUsecase) {return new JournalPresenter(getJournalsUsecase, deleteCaptureUsecase, setTitleUsecase, searchUsecase, getProfilePictureUsecase, getEntryPicUsecase, getUserUsecase);}

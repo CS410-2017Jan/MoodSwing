@@ -26,8 +26,8 @@ public class MoodSwingActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.action_search:
-                        Intent intent1 = new Intent(getApplicationContext(), SearchActivity.class);
+                    case R.id.action_notifications:
+                        Intent intent1 = new Intent(getApplicationContext(), NotificationsActivity.class);
                         startActivity(intent1);
                         break;
                     case R.id.action_camera:

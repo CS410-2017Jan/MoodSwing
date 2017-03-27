@@ -84,6 +84,10 @@
             android:name=".activity.FollowersActivity"
             android:theme="@style/AppTheme"
             android:label="Followers"/>
+        <activity
+            android:name=".activity.NotificationsActivity"
+            android:theme="@style/AppTheme"
+            android:label="Notifications"/>
         // Faceboook
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
         <provider android:authorities="com.facebook.app.FacebookContentProvider100716993800806"

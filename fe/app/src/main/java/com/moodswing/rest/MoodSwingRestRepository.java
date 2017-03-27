@@ -93,8 +93,8 @@ public class MoodSwingRestRepository implements Repository {
     }
 
     @Override
-    public Observable<ResponseBody> getProfilePicture(String token) {
-        return apiService.getProfilePicture(token);
+    public Observable<ResponseBody> getProfilePicture(String username) {
+        return apiService.getProfilePicture(username);
     }
 
     @Override

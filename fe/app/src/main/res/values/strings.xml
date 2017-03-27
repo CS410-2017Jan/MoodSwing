@@ -44,6 +44,7 @@
     <string name="text_search">Search</string>
     <string name="text_followers">Followers</string>
     <string name="text_follows">Following</string>
+    <string name="text_notifications">Notifications</string>
 
     <string name="settings">Settings</string>
 
