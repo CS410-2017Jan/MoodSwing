@@ -67,7 +67,7 @@ router.post('/users/login', function(req, res) {
     }
 
     if (user.password != req.body.password) {
-      return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: 'Error: Wrong password.' });
+      return res.status(HttpStatus.UNAUTHORIZED).json({ success: false, message: 'Error: Wrong password.' });
     }
 
     let token = createToken(user);
@@ -164,7 +164,7 @@ router.get('/users/:username', function(req, res) {
   }, '_id username displayName followers following emotionCount',
   function(err, userInfo) {
     if (!userInfo || err) {
-      return res.status(HttpStatus.BAD_REQUEST).json({success: false, message: 'User not found'});
+      return res.status(HttpStatus.NOT_FOUND).json({success: false, message: 'User not found'});
     }
 
     userInfo = userInfo.toObject();

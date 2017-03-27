@@ -120,7 +120,7 @@ router.put('/users/self', (req, res) => {
     password: oldPassword
   }, function(err, user) {
 		if (err || !user) {
-			return res.status(HttpStatus.NOT_FOUND).send({ success: false , message: 'Error: Incorrect password'});
+			return res.status(HttpStatus.UNAUTHORIZED).send({ success: false , message: 'Error: Incorrect password'});
 		}
 
 		let changedParameters = '';
