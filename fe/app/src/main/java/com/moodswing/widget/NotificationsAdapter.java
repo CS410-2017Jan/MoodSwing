@@ -1,6 +1,7 @@
 package com.moodswing.widget;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.moodswing.R;
+import com.moodswing.activity.CaptureActivity;
 import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.presenter.NotificationsPresenter;
@@ -52,6 +54,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
             _date = (TextView) view.findViewById(R.id.notification_date);
             _entryTitle = (TextView) view.findViewById(R.id.notification_title);
             _entryText = (TextView) view.findViewById(R.id.notification_text);
+
         }
     }
 
@@ -69,6 +72,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         holder._date.setText(capture.getDate());
         holder._entryTitle.setText(capture.getNotificationTitle());
         holder._entryText.setText(capture.getText());
+        this.setRowIndex(position);
 
     }
 
@@ -76,4 +80,5 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     public int getItemCount() {
         return captures.size();
     }
+
 }

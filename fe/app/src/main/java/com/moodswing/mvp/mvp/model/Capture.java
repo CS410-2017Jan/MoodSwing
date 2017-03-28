@@ -13,6 +13,7 @@ public class Capture {
     private String captureDate;
     private String _id;
     private String notificationTitle;
+    private String notificationUsername;
     private Bitmap image;
     private Boolean hasImage = false;
 
@@ -57,6 +58,10 @@ public class Capture {
         return notificationTitle;
     }
 
+    public String getNotificationUsername() {
+        return notificationUsername;
+    }
+
     public void setText(String t){
         text = t;
     }
@@ -83,6 +88,10 @@ public class Capture {
 
     public void setNotifyTitle(String title) {
         this.notificationTitle = title;
+    }
+
+    public void setNotificationUsername(String username) {
+        this.notificationUsername = username;
     }
 
 

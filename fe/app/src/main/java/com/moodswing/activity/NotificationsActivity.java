@@ -1,5 +1,7 @@
 package com.moodswing.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -8,6 +10,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.Toast;
 
 import com.moodswing.MoodSwingApplication;
@@ -19,12 +22,15 @@ import com.moodswing.injector.module.ActivityModule;
 import com.moodswing.injector.module.NotificationsModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.model.Capture;
+import com.moodswing.mvp.mvp.model.CaptureDivider;
 import com.moodswing.mvp.mvp.model.Comment;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.mvp.presenter.NotificationsPresenter;
 import com.moodswing.mvp.mvp.view.NotificationsView;
+import com.moodswing.widget.CaptureTouchListener;
 import com.moodswing.widget.DateBlock;
+import com.moodswing.widget.DateDivider;
 import com.moodswing.widget.NotificationsAdapter;
 
 import java.text.DateFormat;
@@ -47,7 +53,10 @@ import okhttp3.ResponseBody;
 public class NotificationsActivity extends MoodSwingActivity implements NotificationsView {
     private List<DateBlock> dBlocks = new ArrayList<>();
     private List<Capture> captures = new ArrayList<>();
+    private List<JournalEntries> journals = new ArrayList<>();
+    Context journalActivity;
     private NotificationsAdapter nAdapter;
+    public static Intent captureIntent;
 
     @Inject2
     NotificationsPresenter _notificationsPresenter;
@@ -68,7 +77,6 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
         ButterKnife.setDebug(true);
         ButterKnife.bind(this);
         ApplicationComponent applicationComponent = ((MoodSwingApplication) getApplication()).getApplicationComponent();
-
         _notificationsComponent = DaggerNotificationsComponent.builder()
                 .notificationsModule(new NotificationsModule())
                 .activityModule(new ActivityModule(this))
@@ -86,10 +94,40 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
                 return false;
             }
         };
+
         _nRecyclerView.setLayoutManager(layoutManager);
         _nRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        _nRecyclerView.addItemDecoration(new DateDivider(this, R.drawable.divider));
         _nRecyclerView.setAdapter(nAdapter);
 
+        _nRecyclerView.addOnItemTouchListener(new CaptureTouchListener(journalActivity, _nRecyclerView, new CaptureTouchListener.ClickListener() {
+
+            @Override
+            public void onClick(View view, int position) {
+                view.setBackgroundColor(Color.GRAY);
+            }
+            
+        }));
+
+    }
+
+    private void openCapture(Capture capture){
+        String capTitle = capture.getNotificationTitle();
+        String capDate = capture.getDate();
+        String capText = capture.getText();
+        String capId = capture.getId();
+        String dateId = null;
+        String capUsername = capture.getNotificationUsername();
+
+        captureIntent = new Intent(journalActivity, CaptureActivity.class);
+//        captureIntent.putExtra("EXTRA_TITLE", capTitle);
+//        captureIntent.putExtra("EXTRA_DATE", capDate);
+//        captureIntent.putExtra("EXTRA_TEXT", capText);
+//        captureIntent.putExtra("EXTRA_DATEID", dateId);
+//        captureIntent.putExtra("EXTRA_CAPID", capId);
+//        captureIntent.putExtra("EXTRA_DISPLAYNAME", "kenny2");
+
+        startActivity(captureIntent);
     }
 
     @Override
@@ -119,13 +157,12 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
 
             for(Capture e: capture){
                 e.setNotifyTitle(title);
+                e.setNotificationUsername(username);
                 e.setCaptureDate(date);
                 captures.add(e);
                 _notificationsPresenter.getUserDisplayName(username, e.getId());
-
 //                _notificationsPresenter.getEntryPic(e.getId());
             }
-            nAdapter.notifyDataSetChanged();
         }
     }
 
@@ -151,8 +188,8 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
     }
 
     @Override
-    public void onGetDisplayName(String displayName, String captureID) {
-        for (Capture c: captures) {
+    public void onGetDisplayName(String displayName, final String username, String captureID) {
+        for (final Capture c : captures) {
             if (c.getId().equals(captureID)) {
                 c.setDisplayName(displayName);
             }

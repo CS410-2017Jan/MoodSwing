@@ -121,7 +121,7 @@ public class NotificationsPresenter implements Presenter<NotificationsView> {
                     public void accept(Response<User> response) throws Exception {
                         if (response.code() == 200) {
                             User user = response.body();
-                            notificationsView.onGetDisplayName(user.getDisplayName(), captureID);
+                            notificationsView.onGetDisplayName(user.getDisplayName(), user.getUsername(), captureID);
                         } else {
                             notificationsView.onGetDisplayNameFailure();
                         }

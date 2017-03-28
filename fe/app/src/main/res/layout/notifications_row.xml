@@ -14,7 +14,7 @@
         android:id="@+id/notification_display_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="12dp"
+        android:textSize="16dp"
         android:textStyle="bold"
         android:text="displayName"
         android:layout_alignParentTop="true" />
@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="date"
-        android:textSize="12dp"
+        android:textSize="16dp"
         android:textStyle="bold"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true" />
@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:textSize="12dp"
+        android:textSize="14dp"
         android:text="Title"
         android:layout_below="@+id/notification_display_name"
         android:layout_alignParentLeft="true"

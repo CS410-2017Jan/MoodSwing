@@ -18,6 +18,6 @@ public interface NotificationsView extends View {
     void onEntryFailure();
     void onGetUserInfoSuccess(User users);
     void onGetUserInfoFailure();
-    void onGetDisplayName(String displayName, String captureID);
+    void onGetDisplayName(String displayName, String username, String captureID);
     void onGetDisplayNameFailure();
 }
