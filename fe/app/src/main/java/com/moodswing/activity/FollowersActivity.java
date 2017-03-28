@@ -1,5 +1,6 @@
 package com.moodswing.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.view.Menu;
@@ -86,7 +87,15 @@ public class FollowersActivity extends MoodSwingActivity implements FollowersVie
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 User user = (User) listView.getAdapter().getItem(position);
-                // TODO: pass user info to activity to view this user's journal
+                Intent intent = new Intent(getApplicationContext(), JournalActivityOther.class);
+                intent.putExtra("USER_DISPLAYNAME", user.getDisplayName());
+                intent.putExtra("USER_USERNAME", user.getUsername());
+                List<String> following = user.getFollowing();
+                if (following != null) {
+                    String[] followingArr = user.getFollowing().toArray(new String[user.getFollowing().size()]);
+                    intent.putExtra("USER_FOLLOWING", followingArr);
+                }
+                startActivity(intent);
             }
         });
     }

@@ -428,10 +428,11 @@ public class JournalActivity extends MoodSwingActivity implements JournalView {
                     _sharedPreferencesManager.logout(currentUser);
                     Intent intent2 = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(intent2);
-                } else {
-                    // TODO: ERROR... App should shutdown
                 }
                 break;
+            case R.id.action_search:
+                Intent intent3 = new Intent(getApplicationContext(), SearchActivity.class);
+                startActivity(intent3);
             default:
                 return true;
         }

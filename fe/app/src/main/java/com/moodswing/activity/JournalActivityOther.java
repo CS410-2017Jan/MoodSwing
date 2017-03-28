@@ -13,10 +13,8 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -37,7 +35,6 @@ import com.moodswing.mvp.mvp.presenter.JournalPresenterOther;
 import com.moodswing.mvp.mvp.view.JournalViewOther;
 import com.moodswing.widget.DateAdapterOther;
 import com.moodswing.widget.DateDivider;
-import com.moodswing.widget.DateAdapter;
 import com.moodswing.widget.DateBlock;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 
@@ -137,18 +134,16 @@ public class JournalActivityOther extends MoodSwingActivity implements JournalVi
     protected void onResume() {
         super.onResume();
         _dRecyclerView.setFocusable(false);
-        if (_journalPresenterOther.isUserLoggedIn()) {
-            toolbar.setTitleTextColor(Color.WHITE);
-            setTitle(_sharedPreferencesManager.getCurrentUser() + "'s " + "MoodSwings");
-            captures.clear();
-            dBlocks.clear();
-            isResuming = true;
-            displayName = getIntent().getStringExtra("USER_DISPLAYNAME");
-            username = getIntent().getStringExtra("USER_USERNAME");
-            _journalPresenterOther.getUser(username);
-            _journalPresenterOther.getProfilePic(username);
-            _journalPresenterOther.getEntries(username);
-        }
+        captures.clear();
+        dBlocks.clear();
+        isResuming = true;
+        displayName = getIntent().getStringExtra("USER_DISPLAYNAME");
+        username = getIntent().getStringExtra("USER_USERNAME");
+        toolbar.setTitleTextColor(Color.WHITE);
+        setTitle(username + "'s " + "MoodSwings");
+        _journalPresenterOther.getUser(username);
+        _journalPresenterOther.getProfilePic(username);
+        _journalPresenterOther.getEntries(username);
     }
 
     @Override
@@ -381,35 +376,6 @@ public class JournalActivityOther extends MoodSwingActivity implements JournalVi
 
     private void showToast(String s) {
         Toast.makeText(JournalActivityOther.this, s, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case R.id.settings:
-                Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.logout:
-                String currentUser = _sharedPreferencesManager.getCurrentUser();
-                if (currentUser != null) {
-                    _sharedPreferencesManager.logout(currentUser);
-                    Intent intent2 = new Intent(getApplicationContext(), LoginActivity.class);
-                    startActivity(intent2);
-                } else {
-                    // TODO: ERROR... App should shutdown
-                }
-                break;
-            default:
-                return true;
-        }
-        return true;
     }
 
     public String setJournalViewDateFormat(String date){

@@ -92,7 +92,11 @@ public class FollowingActivity extends MoodSwingActivity implements FollowingVie
                 Intent intent = new Intent(getApplicationContext(), JournalActivityOther.class);
                 intent.putExtra("USER_DISPLAYNAME", user.getDisplayName());
                 intent.putExtra("USER_USERNAME", user.getUsername());
-                intent.putExtra("USER_FOLLOWING", user.getFollowing().toArray());
+                List<String> following = user.getFollowing();
+                if (following != null) {
+                    String[] followingArr = user.getFollowing().toArray(new String[user.getFollowing().size()]);
+                    intent.putExtra("USER_FOLLOWING", followingArr);
+                }
                 startActivity(intent);
             }
         });
@@ -154,8 +158,8 @@ public class FollowingActivity extends MoodSwingActivity implements FollowingVie
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.action_search:
-                        Intent intent1 = new Intent(getApplicationContext(), SearchActivity.class);
+                    case R.id.action_notifications:
+                        Intent intent1 = new Intent(getApplicationContext(), NotificationsActivity.class);
                         startActivity(intent1);
                         break;
                     case R.id.action_camera:

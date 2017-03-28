@@ -85,10 +85,14 @@ public class SearchActivity extends MoodSwingActivity implements SearchView {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 User user = (User) listView.getAdapter().getItem(position);
-                Intent intent = new Intent(getApplicationContext(), JournalPresenterOther.class);
+                Intent intent = new Intent(getApplicationContext(), JournalActivityOther.class);
                 intent.putExtra("USER_DISPLAYNAME", user.getDisplayName());
                 intent.putExtra("USER_USERNAME", user.getUsername());
-                intent.putExtra("USER_FOLLOWING", user.getFollowing().toArray());
+                List<String> following = user.getFollowing();
+                if (following != null) {
+                    String[] followingArr = user.getFollowing().toArray(new String[user.getFollowing().size()]);
+                    intent.putExtra("USER_FOLLOWING", followingArr);
+                }
                 startActivity(intent);
             }
         });
@@ -146,31 +150,5 @@ public class SearchActivity extends MoodSwingActivity implements SearchView {
     @Override
     public void showError(String error) {
         Toast.makeText(getApplicationContext(), "Error encountered while searching: " + error ,Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void initializeBottomNavigationView() {
-        bottomNavigationView.setOnNavigationItemSelectedListener( new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_search:
-                        // Do nothing
-                        break;
-                    case R.id.action_camera:
-                        Intent intent2 = new Intent(getApplicationContext(), CameraActivity.class);
-                        startActivity(intent2);
-                        break;
-                    case R.id.action_follows:
-                        Intent intent3 = new Intent(getApplicationContext(), FollowingActivity.class);
-                        startActivity(intent3);
-                        break;
-                    default:
-                        return false;
-                }
-                return true;
-            }
-        });
     }
 }
