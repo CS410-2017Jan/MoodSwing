@@ -1,16 +1,16 @@
 package com.moodswing.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -23,8 +23,6 @@ import com.moodswing.injector.module.ActivityModule;
 import com.moodswing.injector.module.NotificationsModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.model.Capture;
-import com.moodswing.mvp.mvp.model.CaptureDivider;
-import com.moodswing.mvp.mvp.model.Comment;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.mvp.presenter.NotificationsPresenter;
@@ -34,11 +32,7 @@ import com.moodswing.widget.DateBlock;
 import com.moodswing.widget.DateDivider;
 import com.moodswing.widget.NotificationsAdapter;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject2;
@@ -129,7 +123,7 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
             }
         }
 
-        captureIntent = new Intent(this, CaptureActivity.class);
+        captureIntent = new Intent(this, CaptureActivityOther.class);
         captureIntent.putExtra("EXTRA_TITLE", capTitle);
         captureIntent.putExtra("EXTRA_DATE", capDate);
         captureIntent.putExtra("EXTRA_TEXT", capText);
@@ -236,5 +230,31 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
     public void onEntryFailure() {
         String message = "Capture fetch Failure";
         showToast(message);
+    }
+
+    @Override
+    public void initializeBottomNavigationView() {
+        bottomNavigationView.setOnNavigationItemSelectedListener( new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_notifications:
+                        // Do nothing
+                        break;
+                    case R.id.action_camera:
+                        Intent intent2 = new Intent(getApplicationContext(), CameraActivity.class);
+                        startActivity(intent2);
+                        break;
+                    case R.id.action_follows:
+                        Intent intent3 = new Intent(getApplicationContext(), FollowingActivity.class);
+                        startActivity(intent3);
+                        break;
+                    default:
+                        return false;
+                }
+                return true;
+            }
+        });
     }
 }
