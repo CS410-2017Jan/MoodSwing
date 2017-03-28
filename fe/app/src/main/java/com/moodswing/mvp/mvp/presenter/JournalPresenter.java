@@ -1,8 +1,11 @@
 package com.moodswing.mvp.mvp.presenter;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.moodswing.R;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.DeleteCaptureUsecase;
 import com.moodswing.mvp.domain.GetEntryPicUsecase;
@@ -128,12 +131,18 @@ public class JournalPresenter implements Presenter<JournalView> {
         deleteCaptureUsecase.setDeletionId(capture.getId());
         deleteCaptureUsecase.setToken(sharedPreferencesManager.getToken());
 
+        final ProgressDialog progressDialog = new ProgressDialog((Context) journalView, R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Deleting...");
+        progressDialog.show();
+
         getJournalsSubscription = deleteCaptureUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<DeleteCaptureResponse>() {
                     @Override
                     public void accept(DeleteCaptureResponse deleteCaptureResponse) throws Exception {
+                        progressDialog.dismiss();
                         if (deleteCaptureResponse.isSuccessful()) {
                             journalView.onDeletionSuccess();
                         } else {
@@ -143,6 +152,7 @@ public class JournalPresenter implements Presenter<JournalView> {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                        progressDialog.dismiss();
                         journalView.showError();
                     }
                 });
@@ -153,12 +163,18 @@ public class JournalPresenter implements Presenter<JournalView> {
         setTitleUsecase.setTitle(new Title(title));
         setTitleUsecase.setToken(sharedPreferencesManager.getToken());
 
+        final ProgressDialog progressDialog = new ProgressDialog((Context) journalView, R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Saving...");
+        progressDialog.show();
+
         getJournalsSubscription = setTitleUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<SetTitleResponse>() {
                     @Override
                     public void accept(SetTitleResponse setTitleResponse) throws Exception {
+                        progressDialog.dismiss();
                         if (setTitleResponse.isSuccessful()) {
                             journalView.onSetTitleSuccess();
                         } else {
@@ -168,6 +184,7 @@ public class JournalPresenter implements Presenter<JournalView> {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                        progressDialog.dismiss();
                         journalView.showError();
                     }
                 });

@@ -1,5 +1,9 @@
 package com.moodswing.mvp.mvp.presenter;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+
+import com.moodswing.R;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.EditEntryUsecase;
 import com.moodswing.mvp.mvp.model.Text;
@@ -56,12 +60,18 @@ public class EditEntryPresenter implements Presenter<EditEntryView> {
         editEntryUsecase.setId(id);
         editEntryUsecase.setToken(sharedPreferencesManager.getToken());
 
+        final ProgressDialog progressDialog = new ProgressDialog((Context) editEntryView, R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Saving...");
+        progressDialog.show();
+
         editEntrySubscription = editEntryUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<EditEntryResponse>() {
                     @Override
                     public void accept(EditEntryResponse editEntryResponse) throws Exception {
+                        progressDialog.dismiss();
                         if (editEntryResponse.isSuccessful()) {
                             editEntryView.onEditEntrySuccess();
                         } else {
@@ -71,6 +81,7 @@ public class EditEntryPresenter implements Presenter<EditEntryView> {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                        progressDialog.dismiss();
                         editEntryView.showError();
                     }
                 });

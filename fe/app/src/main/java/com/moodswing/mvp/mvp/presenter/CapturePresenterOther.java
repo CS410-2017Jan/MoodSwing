@@ -1,7 +1,10 @@
 package com.moodswing.mvp.mvp.presenter;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.util.Log;
 
+import com.moodswing.R;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 //import com.moodswing.mvp.domain.CaptureUsecase;
 import com.moodswing.mvp.domain.CaptureUsecase;
@@ -69,12 +72,18 @@ public class CapturePresenterOther implements Presenter<CaptureViewOther> {
         captureUsecase.setComment(new Comment(comment));
         captureUsecase.setToken(sharedPreferencesManager.getToken());
 
+        final ProgressDialog progressDialog = new ProgressDialog((Context) captureView, R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Posting...");
+        progressDialog.show();
+
         captureSubscription = captureUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<PostCommentResponse>() {
                     @Override
                     public void accept(PostCommentResponse postCommentResponse) throws Exception {
+                        progressDialog.dismiss();
                         if (postCommentResponse.isSuccessful()) {
                             captureView.onPostCommentSuccess();
                         } else {
@@ -84,6 +93,7 @@ public class CapturePresenterOther implements Presenter<CaptureViewOther> {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                        progressDialog.dismiss();
                         captureView.showError1();
                     }
                 });
