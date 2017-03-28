@@ -132,11 +132,6 @@ public class EditProfilePresenter implements Presenter<EditProfileView> {
                         if (response.code() == 200) {
                             editProfileView.displaySavedProfile();
                         } else {
-//                            Log.i("RESPONSE ERROR", "IMMMM IN THE ELSSSEEEE");
-//                            Log.i("RESPONSE ERROR", response.errorBody().string().toString());
-//                            String t[] = response.errorBody().string().toString().split(":");
-//                            String temp = t[1];
-//                            temp = temp.substring(0, temp.length() - 1);
                             editProfileView.displaySaveError("Your password is wrong");
                         }
                     }
@@ -160,14 +155,12 @@ public class EditProfilePresenter implements Presenter<EditProfileView> {
                     @Override
                     public void accept(ResponseBody picture) throws Exception {
                         editProfileView.getPicture(picture);
-                        Log.d("GET_PROFILE_PICTURE", "SUCCESS");
                     }
 
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         editProfileView.noPictureMessage();
-                        Log.d("GET_PROFILE_PICTURE", "FAILURE: " + throwable.getMessage());
                     }
                 });
 

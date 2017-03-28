@@ -201,7 +201,7 @@ public class EditProfileActivity extends MoodSwingActivity implements EditProfil
     @Override
     public void getPicture(ResponseBody picture) {
         if (picture.contentLength() == 0) {
-            _editProfilePictureButton.setVisibility(View.GONE);
+            noPictureMessage();
         } else {
             Bitmap bitmap = BitmapFactory.decodeStream(picture.byteStream());
             _editProfilePictureButton.setBackgroundResource(android.R.color.transparent);
