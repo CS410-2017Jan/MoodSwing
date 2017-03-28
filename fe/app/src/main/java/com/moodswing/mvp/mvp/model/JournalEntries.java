@@ -14,7 +14,7 @@ public class JournalEntries {
     String entryDate;
     String _id;
     List<Comment> comments;
-    String date_id;
+    String dateCreated;
 
     public JournalEntries(String username, List<Capture> captures, String title, String date, String _id, List<Comment> comments){
         this.username = username;
@@ -52,12 +52,12 @@ public class JournalEntries {
     public List<Comment> getComments(){ return comments; }
 
     //Notification dependencies
-    public String getDate_id() {
-        return date_id;
+    public String getDateCreated() {
+        return dateCreated;
     }
 
-    public void setDate_id(String date_id) {
-        this.date_id = date_id;
+    public void setDate_id(String dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
 }

@@ -5,8 +5,10 @@ import android.util.Log;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.EditProfilePictureUsecase;
 import com.moodswing.mvp.domain.GetProfilePictureUsecase;
+import com.moodswing.mvp.domain.GetUserUsecase;
 import com.moodswing.mvp.domain.PutProfileUsecase;
 import com.moodswing.mvp.mvp.model.ChangeProfileRequest;
+import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.mvp.model.response.ChangeProfileResponse;
 import com.moodswing.mvp.mvp.model.response.ProfilePictureResponse;
 import com.moodswing.mvp.mvp.view.EditProfileView;
@@ -27,18 +29,22 @@ public class EditProfilePresenter implements Presenter<EditProfileView> {
     private EditProfilePictureUsecase editProfilePictureUseCase;
     private GetProfilePictureUsecase getProfilePictureUsecase;
     private PutProfileUsecase putProfileUsecase;
+    private GetUserUsecase getUserUsecase;
     private EditProfileView editProfileView;
     private SharedPreferencesManager sharedPreferencesManager;
     private Disposable newProfilePictureSubscription;
     private Disposable getProfilePictureSubcscription;
     private Disposable putProfileSubscription;
+    private Disposable getUserSubscription;
 
     public EditProfilePresenter(EditProfilePictureUsecase editProfilePictureUsecase,
                                 GetProfilePictureUsecase getProfilePictureUsecase,
-                                PutProfileUsecase putProfileUsecase) {
+                                PutProfileUsecase putProfileUsecase,
+                                GetUserUsecase getUserUsecase) {
         this.editProfilePictureUseCase = editProfilePictureUsecase;
         this.getProfilePictureUsecase = getProfilePictureUsecase;
         this.putProfileUsecase = putProfileUsecase;
+        this.getUserUsecase = getUserUsecase;
     }
 
     @Override
@@ -89,6 +95,29 @@ public class EditProfilePresenter implements Presenter<EditProfileView> {
                 });
     }
 
+    public void getUser() {
+        getUserUsecase.setUsername(sharedPreferencesManager.getCurrentUser());
+        getUserSubscription = getUserUsecase.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Response<User>>() {
+                    @Override
+                    public void accept(Response<User> response) throws Exception {
+                        if (response.code() == 200) {
+                            User user = response.body();
+                            editProfileView.onGetUserInfoSuccess(user);
+                        } else {
+                            editProfileView.onGetUserInfoFailure();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        editProfileView.showError();
+                    }
+                });
+    }
+
     public void putProfile(String oldPassword, String newPassword, String newDisplayName) {
         String token = sharedPreferencesManager.getToken();
         putProfileUsecase.seToken(token);
@@ -122,8 +151,7 @@ public class EditProfilePresenter implements Presenter<EditProfileView> {
     }
 
     public void getPicture() {
-        String token = sharedPreferencesManager.getToken();
-        getProfilePictureUsecase.setToken(token);
+        getProfilePictureUsecase.setToken(sharedPreferencesManager.getCurrentUser());
 
         getProfilePictureSubcscription = getProfilePictureUsecase.execute()
                 .subscribeOn(Schedulers.io())

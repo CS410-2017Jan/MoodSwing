@@ -3,6 +3,7 @@ package com.moodswing.injector.module;
 import com.moodswing.injector.scope.PerActivity;
 import com.moodswing.mvp.domain.EditProfilePictureUsecase;
 import com.moodswing.mvp.domain.GetProfilePictureUsecase;
+import com.moodswing.mvp.domain.GetUserUsecase;
 import com.moodswing.mvp.domain.PutProfileUsecase;
 import com.moodswing.mvp.mvp.presenter.EditProfilePresenter;
 import com.moodswing.mvp.network.Repository;
@@ -35,10 +36,17 @@ public class EditProfileModule {
         return new PutProfileUsecase(repository);
     }
 
+    @PerActivity
+    @Provides2
+    public GetUserUsecase getUserUsecase(Repository repository) {
+        return new GetUserUsecase(repository);
+    }
+
     @Provides2
     @PerActivity
     public EditProfilePresenter provideEditProfilePresenter(EditProfilePictureUsecase editProfilePictureUsecase,
                                                             GetProfilePictureUsecase getProfilePictureUsecase,
-                                                            PutProfileUsecase putProfileUsecase)
-    {return new EditProfilePresenter(editProfilePictureUsecase, getProfilePictureUsecase, putProfileUsecase);}
+                                                            PutProfileUsecase putProfileUsecase,
+                                                            GetUserUsecase getUserUsecase)
+    {return new EditProfilePresenter(editProfilePictureUsecase, getProfilePictureUsecase, putProfileUsecase, getUserUsecase);}
 }

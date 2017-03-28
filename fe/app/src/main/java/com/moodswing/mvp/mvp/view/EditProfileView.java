@@ -1,5 +1,7 @@
 package com.moodswing.mvp.mvp.view;
 
+import com.moodswing.mvp.mvp.model.User;
+
 import okhttp3.ResponseBody;
 
 /**
@@ -13,4 +15,7 @@ public interface EditProfileView {
     void displaySavedProfile();
     void displaySaveError(String message);
     void returnFromSavedProfile();
+    void onGetUserInfoSuccess(User user);
+    void onGetUserInfoFailure();
+    void showError();
 }

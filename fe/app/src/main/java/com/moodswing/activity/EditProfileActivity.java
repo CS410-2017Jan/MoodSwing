@@ -34,6 +34,7 @@ import com.moodswing.injector.component.EditProfileComponent;
 import com.moodswing.injector.module.ActivityModule;
 import com.moodswing.injector.module.EditProfileModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
+import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.mvp.presenter.EditProfilePresenter;
 import com.moodswing.injector.component.DaggerEditProfileComponent;
 import com.moodswing.mvp.mvp.view.EditProfileView;
@@ -171,6 +172,7 @@ public class EditProfileActivity extends MoodSwingActivity implements EditProfil
 
         _displayNameText.addTextChangedListener(displayWatcher);
         _newPasswordText.addTextChangedListener(newPasswordWatcher);
+        _editProfilePresenter.getUser();
     }
 
     private void initializeProfileInformation() {
@@ -263,6 +265,21 @@ public class EditProfileActivity extends MoodSwingActivity implements EditProfil
     @Override
     public void displaySaveError(String message) {
         Toast.makeText(getBaseContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onGetUserInfoSuccess(User user) {
+        _displayNameText.setText(user.getDisplayName());
+    }
+
+    @Override
+    public void onGetUserInfoFailure(){
+
+    }
+
+    @Override
+    public void showError() {
+
     }
 
     private void savePicture() {

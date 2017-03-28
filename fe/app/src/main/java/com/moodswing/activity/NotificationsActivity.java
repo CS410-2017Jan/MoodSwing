@@ -119,7 +119,7 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
 
         String dateId = null;
         String capUsername = capture.getNotificationUsername();
-
+        
         captureIntent = new Intent(this, CaptureActivity.class);
         captureIntent.putExtra("EXTRA_TITLE", capTitle);
         captureIntent.putExtra("EXTRA_DATE", capDate);
