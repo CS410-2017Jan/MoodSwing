@@ -2,10 +2,12 @@ package com.moodswing.widget;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moodswing.R;
@@ -46,7 +48,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         public TextView _date;
         public TextView _entryTitle;
         public TextView _entryText;
-
+        public boolean hasBeenClicked;
 
         public MyViewHolder(View view) {
             super(view);
@@ -54,7 +56,12 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
             _date = (TextView) view.findViewById(R.id.notification_date);
             _entryTitle = (TextView) view.findViewById(R.id.notification_title);
             _entryText = (TextView) view.findViewById(R.id.notification_text);
+            hasBeenClicked = false;
 
+        }
+
+        public void setBeenClicked(boolean bool) {
+            hasBeenClicked = bool;
         }
     }
 
@@ -75,6 +82,8 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         this.setRowIndex(position);
 
     }
+
+
 
     @Override
     public int getItemCount() {

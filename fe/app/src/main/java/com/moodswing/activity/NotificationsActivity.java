@@ -10,6 +10,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -98,7 +99,7 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
         _nRecyclerView.setItemAnimator(new DefaultItemAnimator());
         _nRecyclerView.addItemDecoration(new DateDivider(this, R.drawable.divider));
         _nRecyclerView.setAdapter(nAdapter);
-
+        
         _nRecyclerView.addOnItemTouchListener(new CaptureTouchListener(this, _nRecyclerView, new CaptureTouchListener.ClickListener() {
 
             @Override
@@ -116,10 +117,18 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
         String capDate = capture.getDate();
         String capText = capture.getText();
         String capId = capture.getId();
-
         String dateId = null;
-        String capUsername = capture.getNotificationUsername();
-        
+
+        for (JournalEntries je: journals) {
+            String dC = je.getId();
+            for (Capture c: je.getEntry()) {
+                if (capId.equals(c.getId())) {
+                    dateId = dC;
+                    break;
+                }
+            }
+        }
+
         captureIntent = new Intent(this, CaptureActivity.class);
         captureIntent.putExtra("EXTRA_TITLE", capTitle);
         captureIntent.putExtra("EXTRA_DATE", capDate);
