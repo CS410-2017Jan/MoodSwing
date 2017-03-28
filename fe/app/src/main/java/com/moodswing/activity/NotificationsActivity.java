@@ -54,7 +54,6 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
     private List<DateBlock> dBlocks = new ArrayList<>();
     private List<Capture> captures = new ArrayList<>();
     private List<JournalEntries> journals = new ArrayList<>();
-    Context journalActivity;
     private NotificationsAdapter nAdapter;
     public static Intent captureIntent;
 
@@ -100,11 +99,12 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
         _nRecyclerView.addItemDecoration(new DateDivider(this, R.drawable.divider));
         _nRecyclerView.setAdapter(nAdapter);
 
-        _nRecyclerView.addOnItemTouchListener(new CaptureTouchListener(journalActivity, _nRecyclerView, new CaptureTouchListener.ClickListener() {
+        _nRecyclerView.addOnItemTouchListener(new CaptureTouchListener(this, _nRecyclerView, new CaptureTouchListener.ClickListener() {
 
             @Override
             public void onClick(View view, int position) {
                 view.setBackgroundColor(Color.GRAY);
+                openCapture(captures.get(position));
             }
             
         }));
@@ -116,16 +116,16 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
         String capDate = capture.getDate();
         String capText = capture.getText();
         String capId = capture.getId();
+
         String dateId = null;
         String capUsername = capture.getNotificationUsername();
 
-        captureIntent = new Intent(journalActivity, CaptureActivity.class);
-//        captureIntent.putExtra("EXTRA_TITLE", capTitle);
-//        captureIntent.putExtra("EXTRA_DATE", capDate);
-//        captureIntent.putExtra("EXTRA_TEXT", capText);
-//        captureIntent.putExtra("EXTRA_DATEID", dateId);
-//        captureIntent.putExtra("EXTRA_CAPID", capId);
-//        captureIntent.putExtra("EXTRA_DISPLAYNAME", "kenny2");
+        captureIntent = new Intent(this, CaptureActivity.class);
+        captureIntent.putExtra("EXTRA_TITLE", capTitle);
+        captureIntent.putExtra("EXTRA_DATE", capDate);
+        captureIntent.putExtra("EXTRA_TEXT", capText);
+        captureIntent.putExtra("EXTRA_DATEID", dateId);
+        captureIntent.putExtra("EXTRA_CAPID", capId);
 
         startActivity(captureIntent);
     }
@@ -149,8 +149,8 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
     @Override
     public void showEntries(List<JournalEntries> journalEntries){
         for(JournalEntries je: journalEntries){
+            journals.add(je);
             List<Capture> capture = je.getEntry();
-
             String date = je.getDate();
             String title = je.getTitle();
             String username = je.getUsername();
