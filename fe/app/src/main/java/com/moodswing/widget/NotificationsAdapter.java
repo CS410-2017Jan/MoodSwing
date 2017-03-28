@@ -65,9 +65,11 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     @Override
     public void onBindViewHolder(NotificationsAdapter.MyViewHolder holder, int position) {
         Capture capture = captures.get(position);
-        holder._displayName.setText(capture.getText());
-        holder._entryText.setText(capture.getText());
+        holder._displayName.setText(capture.getDisplayName());
         holder._date.setText(capture.getDate());
+        holder._entryTitle.setText(capture.getNotificationTitle());
+        holder._entryText.setText(capture.getText());
+
     }
 
     @Override

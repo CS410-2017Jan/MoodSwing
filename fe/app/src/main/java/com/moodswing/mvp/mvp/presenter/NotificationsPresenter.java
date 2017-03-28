@@ -110,6 +110,30 @@ public class NotificationsPresenter implements Presenter<NotificationsView> {
                     }
                 });
     }
+
+    public void getUserDisplayName(String username, final String captureID) {
+        getUserUsecase.setUsername(username);
+        notificationsSubscription = getUserUsecase.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Response<User>>() {
+                    @Override
+                    public void accept(Response<User> response) throws Exception {
+                        if (response.code() == 200) {
+                            User user = response.body();
+                            notificationsView.onGetDisplayName(user.getDisplayName(), captureID);
+                        } else {
+                            notificationsView.onGetDisplayNameFailure();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        notificationsView.showError();
+                    }
+                });
+    }
+
     public void getEntryPic(final String captureId) {
         getEntryPicUsecase.setCaptureId(captureId);
         getEntryPicUsecase.setToken(sharedPreferencesManager.getToken());

@@ -25,11 +25,4 @@
         app:itemIconTint="@color/white"
         app:itemTextColor="@color/white"
         app:menu="@menu/bottom_navigation_main" />
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/notifications_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"/>
 </RelativeLayout>

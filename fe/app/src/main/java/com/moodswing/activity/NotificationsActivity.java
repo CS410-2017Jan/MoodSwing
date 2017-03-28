@@ -55,9 +55,6 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
     @Inject2
     SharedPreferencesManager _sharedPreferencesManager;
 
-    @BindView(R.id.notifications_toolbar)
-    Toolbar toolbar;
-
     @BindView(R.id.notifications_recycler_view)
     android.support.v7.widget.RecyclerView _nRecyclerView;
 
@@ -99,8 +96,7 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
     protected void onResume() {
         super.onResume();
         if (_notificationsPresenter.isUserLoggedIn()) {
-            toolbar.setTitleTextColor(Color.WHITE);
-            setTitle(_sharedPreferencesManager.getCurrentUser() + "'s " + "MoodSwings");
+            setTitle(_sharedPreferencesManager.getCurrentUser() + "'s " + "Notifications");
             captures.clear();
             isResuming = true;
             _notificationsPresenter.getUser();
@@ -117,12 +113,16 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
         for(JournalEntries je: journalEntries){
             List<Capture> capture = je.getEntry();
 
-            String dbid = je.getId();
-            String t = je.getTitle();
-            String u = je.getUsername();
+            String date = je.getDate();
+            String title = je.getTitle();
+            String username = je.getUsername();
 
             for(Capture e: capture){
+                e.setNotifyTitle(title);
+                e.setCaptureDate(date);
                 captures.add(e);
+                _notificationsPresenter.getUserDisplayName(username, e.getId());
+
 //                _notificationsPresenter.getEntryPic(e.getId());
             }
             nAdapter.notifyDataSetChanged();
@@ -149,20 +149,21 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
             }
         }
     }
-    public String setJournalViewDateFormat(String date){
-        DateFormat firstdf = new SimpleDateFormat("dd/MM/yyyy");
-        DateFormat secdf = new SimpleDateFormat("MMM.d, yyyy");
-        Date tempDate;
-        String rDate = "";
-        try {
-            tempDate = firstdf.parse(date);
-            rDate = secdf.format(tempDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
+
+    @Override
+    public void onGetDisplayName(String displayName, String captureID) {
+        for (Capture c: captures) {
+            if (c.getId().equals(captureID)) {
+                c.setDisplayName(displayName);
+            }
         }
-        return rDate;
+        nAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onGetDisplayNameFailure() {
+
+    }
 
     @Override
     public void onGetUserInfoSuccess(User user) {

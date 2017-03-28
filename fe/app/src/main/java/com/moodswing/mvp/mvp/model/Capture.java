@@ -12,6 +12,7 @@ public class Capture {
     private String text;
     private String captureDate;
     private String _id;
+    private String notificationTitle;
     private Bitmap image;
     private Boolean hasImage = false;
 
@@ -48,8 +49,12 @@ public class Capture {
         return hasImage;
     }
 
-    public String getDisplayName(String displayName) {
+    public String getDisplayName() {
         return displayName;
+    }
+
+    public String getNotificationTitle() {
+        return notificationTitle;
     }
 
     public void setText(String t){
@@ -74,6 +79,10 @@ public class Capture {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public void setNotifyTitle(String title) {
+        this.notificationTitle = title;
     }
 
 
