@@ -82,6 +82,17 @@ describe('user creation', () => {
 			});
 	});
 
+	it('should have empty journal entries', (done) => {
+		chai.request(server)
+			.get('/users/' + newUsername + '/entries')
+			.end((err, res) => {
+				expect(res).to.have.status(HttpStatus.OK);
+				expect(res.body).to.be.an('array');
+				expect(res.body).to.be.empty;
+				done();
+			});
+	});
+
 	it('should be on user list for searching', (done) => {
 		chai.request(server)
 			.get('/users')
@@ -134,10 +145,29 @@ describe('user login and authenticated profile editing', () => {
 			});
 		});
 
+	it('should reject invalid token', (done) => {
+		chai.request(server)
+			.get('/users/self/notifications')
+			.set({'x-access-token': token + 'abc'})
+			.end((err, res) => {
+				expect(res).to.have.status(HttpStatus.FORBIDDEN);
+				done();
+		});
+	});
+
+	it('should reject without a token', (done) => {
+		chai.request(server)
+			.get('/users/self/notifications')
+			.end((err, res) => {
+				expect(res).to.have.status(HttpStatus.FORBIDDEN);
+				done();
+		});
+	});
+
 	it('should change display name and password', (done) => {
 		chai.request(server)
 			.put('/users/self')
-			.set('x-access-token', token)
+			.set({'x-access-token': token})
 			.send({username: newUsername, oldPassword: oldPassword,
 				newPassword: newPassword, newDisplayName: newDisplayName})
 			.end((err, res) => {
@@ -149,7 +179,7 @@ describe('user login and authenticated profile editing', () => {
 	it('should not change display name and password with bad authentication', (done) => {
 		chai.request(server)
 			.put('/users/self')
-			.set('x-access-token', token)
+			.set({'x-access-token': token})
 			.send({username: newUsername, oldPassword: 'wrongPassword',
 				newPassword: 'abc', newDisplayName: '123'})
 			.end((err, res) => {
@@ -179,5 +209,4 @@ describe('user login and authenticated profile editing', () => {
 			});
 	});
 });
-
 

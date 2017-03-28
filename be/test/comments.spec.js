@@ -55,8 +55,18 @@ describe('Comment on a journal entry', function() {
 			})
 	});
 
+	it('should not let user comment on nonexistent entry', (done) => {
+		chai.request(server)
+			.post('/entries/' + 'abc123' + '/comments')
+			.set({'x-access-token': tokenB})
+			.send({text: commentText})
+			.end((err, res) => {
+				expect(res).to.have.status(HttpStatus.BAD_REQUEST);
+				done();
+			});
+	});
+
 	it('should let user B comment on user As entry', (done) => {
-		console.log(tokenB);
 		chai.request(server)
 			.post('/entries/' + entryId + '/comments')
 			.set({'x-access-token': tokenB})
@@ -78,6 +88,16 @@ describe('Comment on a journal entry', function() {
 				expect(res.body[0].comments[0]).to.have.property('text').and.equal(commentText);
 				expect(res.body[0].comments[0]).to.have.property('_id');
 				commentId = res.body[0].comments[0]['_id'];
+				done();
+			});
+	});
+
+	it('should not delete nonexistent comment', (done) => {
+		chai.request(server)
+			.delete('/comments/abc123')
+			.set({'x-access-token': tokenB})
+			.end((err, res) => {
+				expect(res).to.have.status(HttpStatus.BAD_REQUEST);
 				done();
 			});
 	});

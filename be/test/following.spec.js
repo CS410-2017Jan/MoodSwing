@@ -43,6 +43,16 @@ describe('Following and Notifications', function() {
 		});
 	});
 
+	it('should not be able to follow nonexistent user', (done) => {
+		chai.request(server)
+			.post('/users/'+ 'blahuser' +'/follow')
+			.set({'x-access-token': tokenA})
+			.end((err, res) => {
+				expect(res).to.have.status(HttpStatus.BAD_REQUEST);
+				done();
+			});
+	});
+
 	it('should have user A follow user B', (done) => {
 		chai.request(server)
 			.post('/users/'+ usernameB +'/follow')
@@ -92,7 +102,36 @@ describe('Following and Notifications', function() {
 						});
 			});
 	});
+
+	it('should have user A unfollow user B', (done) => {
+		chai.request(server)
+			.post('/users/'+ usernameB +'/unfollow')
+			.set({'x-access-token': tokenA})
+			.end((err, res) => {
+				expect(res).to.have.status(HttpStatus.OK);
+				done();
+			});
+	});
+
+	it('should not have user B on user As following list after unfollow', (done) => {
+		chai.request(server)
+			.get('/users/' + usernameA)
+			.end((err, res) => {
+				expect(res).to.have.status(HttpStatus.OK);
+				expect(res.body).to.have.property('following').and.be.an('array');
+				expect(res.body.following).to.be.empty;
+				done();
+			});
+	});
+
+	it('should not have user A on user Bs followers list after unfollow', (done) => {
+		chai.request(server)
+			.get('/users/' + usernameB)
+			.end((err, res) => {
+				expect(res).to.have.status(HttpStatus.OK);
+				expect(res.body).to.have.property('followers').and.be.an('array');
+				expect(res.body.followers).to.be.empty;
+				done();
+			});
+	});
 });
-
-
-

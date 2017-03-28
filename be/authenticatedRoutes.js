@@ -27,13 +27,12 @@ router.use(/.*\/self\/.*|^\/users\/self$|^\/entries\/\w*\/comments$|^\/comments\
 		if (token) {
 			jwt.verify(token, config.secret, function(err, decoded) {
 				if (err) {
-					return res.json({ success: false, message: 'Failed to authenticate token.' });
+					return res.status(HttpStatus.FORBIDDEN).json({ success: false, message: 'Failed to authenticate token.' });
 				}
 
 				req.username = decoded.username;
 				next();
 			});
-
 		} else {
 			return res.status(HttpStatus.FORBIDDEN).send({
 				success: false,
@@ -47,12 +46,6 @@ router.use(/.*\/self\/.*|^\/users\/self$|^\/entries\/\w*\/comments$|^\/comments\
 User Information
 ---------------------------------------------------------
 */
-
-router.get('/self/hi', function(req, res) {
-	console.log(req.username); //how you get user information
-	res.json({ message: 'Welcome to the coolest API on earth!' });
-});
-
 
 var upload = multer({ storage: multer.memoryStorage({}) });
 
@@ -259,7 +252,6 @@ function notifyFollowers(username, entryId) {
 				}
 			}
 		}, function(err, stats){
-			console.log("Notified " + stats.nModified + " people");
 		});
 	});
 }
@@ -282,11 +274,6 @@ function incrementEmotionCount(username, emotion, amount=1) {
 		}
 	});
 }
-
-router.get('/users/self/entries', function(req, res) {
-	let username = req.username;
-	res.redirect('/users/' + username + '/entries');
-});
 
 router.delete('/users/self/entries/:entryId', function(req, res) {
 	let username = req.username;
@@ -313,6 +300,10 @@ router.delete('/users/self/entries/:entryId', function(req, res) {
 router.delete('/users/self/captures/:captureId', function(req, res) {
 	let username = req.username;
 	let captureId = req.params.captureId;
+
+	if (!mongoose.Types.ObjectId.isValid(captureId)) {
+		return res.status(HttpStatus.BAD_REQUEST).json({ success: false });
+	}
 
 	JournalEntry.findOne({
 		"captures._id": mongoose.Types.ObjectId(captureId)
@@ -371,6 +362,10 @@ router.put('/users/self/captures/:captureId', function(req, res) {
 	let text = req.body.text;
 	let username = req.username;
 
+	if (!mongoose.Types.ObjectId.isValid(captureId)) {
+		return res.status(HttpStatus.BAD_REQUEST).json({ success: false });
+	}
+
 	JournalEntry.findOneAndUpdate({
 		"username": username,
 		"captures._id": mongoose.Types.ObjectId(captureId)
@@ -418,6 +413,10 @@ router.post('/entries/:entryId/comments', function(req, res) {
 router.delete('/comments/:commentId', function(req, res) {
 	let commenter = req.username;
 	let commentId = req.params.commentId;
+
+	if (!mongoose.Types.ObjectId.isValid(commentId)) {
+		return res.status(HttpStatus.BAD_REQUEST).json({ success: false });
+	}
 
   JournalEntry.findOne({
 		"comments._id": mongoose.Types.ObjectId(commentId),

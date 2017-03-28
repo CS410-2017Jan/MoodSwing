@@ -10,16 +10,6 @@ const HttpStatus = require('http-status-codes');
 
 /*
 ---------------------------------------------------------
- Test public /hello
----------------------------------------------------------
-*/
-
-router.get('/hello', (req, res) => {
-  res.status(HttpStatus.OK).send('Hello World');
-});
-
-/*
----------------------------------------------------------
  Authentication
 ---------------------------------------------------------
 */
@@ -201,7 +191,7 @@ router.get('/users/:username/entries', function(req, res) {
     'captures.thumbnail': 0
   }, function(err, journalEntries) {
     if (err || !journalEntries) {
-      return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: 'No entries found'});
+      return res.status(HttpStatus.OK).json([]);
     }
 
     let sortedEntries = journalEntries.sort(function(a, b){
