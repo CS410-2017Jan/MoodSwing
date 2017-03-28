@@ -18,3 +18,9 @@ Logging in through the api /users/login will return a json web token (jwt). This
 Content-Type application/json
 x-access-token <token>
 ```
+# Backend test suite #
+```html
+cd MoodSwing/be
+sudo npm install -g mocha
+npm run test       # full coverage test
+```
