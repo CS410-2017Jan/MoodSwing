@@ -11,7 +11,8 @@ const _ = require('lodash');
 
 chai.use(chaiHttp);
 
-var newUsername;
+var usernameA;
+var usernameB;
 var password;
 var tokenA;
 var tokenB;

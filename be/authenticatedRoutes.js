@@ -20,7 +20,7 @@ const EMOTIONLIST = _.keys(User.schema.obj.emotionCount.default);
 ---------------------------------------------------------
 */
 
-router.use(/.*\/self\/.*|^\/users\/self$|^\/entries\/\w*\/comments$|^\/entries\/\w*\/comments\/\w*$|^\/users\/\w*\/(un)?follow$/,
+router.use(/.*\/self\/.*|^\/users\/self$|^\/entries\/\w*\/comments$|^\/comments\/\w*$|^\/users\/\w*\/(un)?follow$/,
 	function(req, res, next) {
 		let token = req.body.token || req.headers['x-access-token'];
 
@@ -407,7 +407,7 @@ router.post('/entries/:entryId/comments', function(req, res) {
 
 		entry.save()
 		  .then(function (doc) {
-		    return res.status(HttpStatus.OK).json({ success: true, message: 'Comment created'});
+		    return res.status(HttpStatus.CREATED).json({ success: true, message: 'Comment created'});
 		  })
 		  .catch(function(err) {
 		    return res.status(HttpStatus.BAD_REQUEST).json({ success: false });
