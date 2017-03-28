@@ -4,6 +4,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
@@ -21,8 +24,8 @@ import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.mvp.presenter.NotificationsPresenter;
 import com.moodswing.mvp.mvp.view.NotificationsView;
-import com.moodswing.widget.DateAdapter;
 import com.moodswing.widget.DateBlock;
+import com.moodswing.widget.NotificationsAdapter;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -44,6 +47,7 @@ import okhttp3.ResponseBody;
 public class NotificationsActivity extends MoodSwingActivity implements NotificationsView {
     private List<DateBlock> dBlocks = new ArrayList<>();
     private List<Capture> captures = new ArrayList<>();
+    private NotificationsAdapter nAdapter;
 
     @Inject2
     NotificationsPresenter _notificationsPresenter;
@@ -51,11 +55,11 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
     @Inject2
     SharedPreferencesManager _sharedPreferencesManager;
 
-    @BindView(R.id.toolbar)
+    @BindView(R.id.notifications_toolbar)
     Toolbar toolbar;
 
-    @BindView(R.id.date_recycler_view)
-    android.support.v7.widget.RecyclerView _dRecyclerView;
+    @BindView(R.id.notifications_recycler_view)
+    android.support.v7.widget.RecyclerView _nRecyclerView;
 
     private NotificationsComponent _notificationsComponent;
     private boolean isResuming = false;
@@ -63,7 +67,7 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notifications);
+        setContentView(R.layout.activity_notifications_main);
         ButterKnife.setDebug(true);
         ButterKnife.bind(this);
         ApplicationComponent applicationComponent = ((MoodSwingApplication) getApplication()).getApplicationComponent();
@@ -77,17 +81,27 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
 
         initializePresenter();
         initializeBottomNavigationView();
+
+        nAdapter = new NotificationsAdapter(captures);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
+        _nRecyclerView.setLayoutManager(layoutManager);
+        _nRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        _nRecyclerView.setAdapter(nAdapter);
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        _dRecyclerView.setFocusable(false);
         if (_notificationsPresenter.isUserLoggedIn()) {
             toolbar.setTitleTextColor(Color.WHITE);
             setTitle(_sharedPreferencesManager.getCurrentUser() + "'s " + "MoodSwings");
             captures.clear();
-            dBlocks.clear();
             isResuming = true;
             _notificationsPresenter.getUser();
             _notificationsPresenter.getNotifications();
@@ -103,20 +117,15 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
         for(JournalEntries je: journalEntries){
             List<Capture> capture = je.getEntry();
 
-            String sDate = setJournalViewDateFormat(je.getDate());
             String dbid = je.getId();
             String t = je.getTitle();
             String u = je.getUsername();
-            List<Comment> comments = je.getComments();
-
-            DateBlock db = new DateBlock(t, sDate, dbid, u, comments);
-            dBlocks.add(db);
 
             for(Capture e: capture){
-                e.setCaptureDate(sDate);
                 captures.add(e);
-                _notificationsPresenter.getEntryPic(e.getId());
+//                _notificationsPresenter.getEntryPic(e.getId());
             }
+            nAdapter.notifyDataSetChanged();
         }
     }
 
@@ -177,7 +186,7 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
     }
 
     @Override
-    public void onEntryFailure(){
+    public void onEntryFailure() {
         String message = "Capture fetch Failure";
         showToast(message);
     }

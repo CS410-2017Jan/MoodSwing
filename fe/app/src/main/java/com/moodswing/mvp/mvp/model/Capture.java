@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 
 public class Capture {
 
+    private String displayName;
     private String text;
     private String captureDate;
     private String _id;
@@ -47,6 +48,10 @@ public class Capture {
         return hasImage;
     }
 
+    public String getDisplayName(String displayName) {
+        return displayName;
+    }
+
     public void setText(String t){
         text = t;
     }
@@ -66,4 +71,10 @@ public class Capture {
     public void setHasImage(Boolean hasImage){
         this.hasImage = hasImage;
     }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+
 }
