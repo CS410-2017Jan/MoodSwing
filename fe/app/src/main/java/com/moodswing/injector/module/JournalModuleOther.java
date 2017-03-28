@@ -2,12 +2,14 @@ package com.moodswing.injector.module;
 
 import com.moodswing.injector.scope.PerActivity;
 import com.moodswing.mvp.domain.DeleteCaptureUsecase;
+import com.moodswing.mvp.domain.FollowUsecase;
 import com.moodswing.mvp.domain.GetEntryPicUsecase;
 import com.moodswing.mvp.domain.GetJournalsUsecase;
 import com.moodswing.mvp.domain.GetProfilePictureUsecase;
 import com.moodswing.mvp.domain.GetUserUsecase;
 import com.moodswing.mvp.domain.SearchUsecase;
 import com.moodswing.mvp.domain.SetTitleUsecase;
+import com.moodswing.mvp.domain.UnfollowUsecase;
 import com.moodswing.mvp.mvp.presenter.JournalPresenter;
 import com.moodswing.mvp.mvp.presenter.JournalPresenterOther;
 import com.moodswing.mvp.network.Repository;
@@ -63,5 +65,35 @@ public class JournalModuleOther {
 
     @PerActivity
     @Provides2
-    public JournalPresenterOther provideJournalPresenterOther(GetJournalsUsecase getJournalsUsecase, DeleteCaptureUsecase deleteCaptureUsecase, SetTitleUsecase setTitleUsecase, SearchUsecase searchUsecase, GetProfilePictureUsecase getProfilePictureUsecase, GetEntryPicUsecase getEntryPicUsecase, GetUserUsecase getUserUsecase) {return new JournalPresenterOther(getJournalsUsecase, deleteCaptureUsecase, setTitleUsecase, searchUsecase, getProfilePictureUsecase, getEntryPicUsecase, getUserUsecase);}
+    public FollowUsecase provideFollowUsecase(Repository repository) {
+        return new FollowUsecase(repository);
+    }
+
+    @PerActivity
+    @Provides2
+    public UnfollowUsecase provideUnfollowUsecase(Repository repository) {
+        return new UnfollowUsecase(repository);
+    }
+
+    @PerActivity
+    @Provides2
+    public JournalPresenterOther provideJournalPresenterOther(GetJournalsUsecase getJournalsUsecase,
+                                                              DeleteCaptureUsecase deleteCaptureUsecase,
+                                                              SetTitleUsecase setTitleUsecase,
+                                                              SearchUsecase searchUsecase,
+                                                              GetProfilePictureUsecase getProfilePictureUsecase,
+                                                              GetEntryPicUsecase getEntryPicUsecase,
+                                                              GetUserUsecase getUserUsecase,
+                                                              FollowUsecase followUsecase,
+                                                              UnfollowUsecase unfollowUsecase) {
+        return new JournalPresenterOther(getJournalsUsecase,
+                deleteCaptureUsecase,
+                setTitleUsecase,
+                searchUsecase,
+                getProfilePictureUsecase,
+                getEntryPicUsecase,
+                getUserUsecase,
+                followUsecase,
+                unfollowUsecase);
+    }
 }

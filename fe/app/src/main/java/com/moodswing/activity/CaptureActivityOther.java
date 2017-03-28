@@ -1,7 +1,6 @@
 package com.moodswing.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -9,12 +8,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -22,29 +18,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.CallbackManager;
-import com.facebook.FacebookSdk;
-import com.facebook.share.model.ShareHashtag;
-import com.facebook.share.model.SharePhoto;
-import com.facebook.share.model.SharePhotoContent;
-import com.facebook.share.widget.ShareDialog;
 import com.moodswing.MoodSwingApplication;
 import com.moodswing.R;
 import com.moodswing.injector.component.ApplicationComponent;
-import com.moodswing.injector.component.CaptureComponent;
 import com.moodswing.injector.component.CaptureComponentOther;
-import com.moodswing.injector.component.DaggerCaptureComponent;
 import com.moodswing.injector.component.DaggerCaptureComponentOther;
 import com.moodswing.injector.module.ActivityModule;
-import com.moodswing.injector.module.CaptureModule;
 import com.moodswing.injector.module.CaptureModuleOther;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.model.Comment;
-import com.moodswing.mvp.mvp.presenter.CapturePresenter;
 import com.moodswing.mvp.mvp.presenter.CapturePresenterOther;
-import com.moodswing.mvp.mvp.view.CaptureView;
 import com.moodswing.mvp.mvp.view.CaptureViewOther;
-import com.moodswing.widget.CommentAdapter;
 import com.moodswing.widget.CommentAdapterOther;
 import com.moodswing.widget.DateBlock;
 
@@ -97,11 +81,6 @@ public class CaptureActivityOther extends AppCompatActivity implements CaptureVi
 
     private CaptureComponentOther _captureComponentOther;
 
-    // Facebook
-    private CallbackManager callbackManager;
-    private ShareDialog shareDialog;
-    private Bitmap captureBitmap;
-
     String title;
     String date;
     String text;
@@ -114,7 +93,6 @@ public class CaptureActivityOther extends AppCompatActivity implements CaptureVi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.i("III", "IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_captureother);
         ButterKnife.setDebug(true);
@@ -154,13 +132,14 @@ public class CaptureActivityOther extends AppCompatActivity implements CaptureVi
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i("III", "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP");
         title = getIntent().getStringExtra("EXTRA_TITLE");
         date = getIntent().getStringExtra("EXTRA_DATE");
         text = getIntent().getStringExtra("EXTRA_TEXT");
         displayName = getIntent().getStringExtra("EXTRA_DISPLAYNAME");
         dateID = getIntent().getStringExtra("EXTRA_DATEID");
         capID = getIntent().getStringExtra("EXTRA_CAPID");
+
+        setTitle(title);
 
         _capName.setText(displayName);
         _capDate.setText(date);
@@ -215,7 +194,6 @@ public class CaptureActivityOther extends AppCompatActivity implements CaptureVi
             _capImage.setVisibility(View.GONE);
         } else {
             Bitmap bitmap = BitmapFactory.decodeStream(picture.byteStream());
-            captureBitmap = bitmap.copy(bitmap.getConfig(), true);
             _capImage.setBackgroundResource(android.R.color.transparent);
             _capImage.setImageBitmap(bitmap);
         }
@@ -264,20 +242,7 @@ public class CaptureActivityOther extends AppCompatActivity implements CaptureVi
         showToast(message);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_share, menu);
-        return true;
-    }
-
-
     private void showToast(String s) {
         Toast.makeText(CaptureActivityOther.this, s, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 }

@@ -10,5 +10,5 @@ import java.util.List;
 
 public interface SearchView extends View{
     void showError(String error);
-    void initializeListView(List<User> users);
+    void initializeListView(List<User> users, List<String> follows);
 }

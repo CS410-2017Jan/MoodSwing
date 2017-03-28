@@ -26,6 +26,7 @@ import com.moodswing.mvp.mvp.presenter.JournalPresenterOther;
 import com.moodswing.mvp.mvp.view.FollowingView;
 import com.moodswing.widget.SearchAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject2;
@@ -82,7 +83,7 @@ public class FollowingActivity extends MoodSwingActivity implements FollowingVie
     }
 
     @Override
-    public void initializeListView(List<User> following) {
+    public void initializeListView(final List<User> following) {
         searchAdapter = new SearchAdapter(following, FollowingActivity.this);
         listView.setAdapter(searchAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -92,9 +93,12 @@ public class FollowingActivity extends MoodSwingActivity implements FollowingVie
                 Intent intent = new Intent(getApplicationContext(), JournalActivityOther.class);
                 intent.putExtra("USER_DISPLAYNAME", user.getDisplayName());
                 intent.putExtra("USER_USERNAME", user.getUsername());
-                List<String> following = user.getFollowing();
                 if (following != null) {
-                    String[] followingArr = user.getFollowing().toArray(new String[user.getFollowing().size()]);
+                    List<String> followingString = new ArrayList<>();
+                    for (User u : following) {
+                        followingString.add(u.getUsername());
+                    }
+                    String[] followingArr = followingString.toArray(new String[followingString.size()]);
                     intent.putExtra("USER_FOLLOWING", followingArr);
                 }
                 startActivity(intent);

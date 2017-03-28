@@ -42,6 +42,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -97,6 +98,7 @@ public class JournalActivityOther extends MoodSwingActivity implements JournalVi
     private boolean isResuming = false;
     private String displayName;
     private String username;
+    private List<String> follows;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +141,11 @@ public class JournalActivityOther extends MoodSwingActivity implements JournalVi
         isResuming = true;
         displayName = getIntent().getStringExtra("USER_DISPLAYNAME");
         username = getIntent().getStringExtra("USER_USERNAME");
+        follows = new ArrayList<>();
+        String[] followsArr = getIntent().getStringArrayExtra("USER_FOLLOWING");
+        if (followsArr != null && followsArr.length > 0) {
+            follows.addAll(Arrays.asList(followsArr));
+        }
         toolbar.setTitleTextColor(Color.WHITE);
         setTitle(username + "'s " + "MoodSwings");
         _journalPresenterOther.getUser(username);
@@ -364,6 +371,11 @@ public class JournalActivityOther extends MoodSwingActivity implements JournalVi
     }
 
     @Override
+    public void showError(String message) {
+        showToast(message);
+    }
+
+    @Override
     public void onBackPressed() {
         Intent intent = new Intent(getApplicationContext(), JournalActivity.class);
         startActivity(intent);
@@ -390,6 +402,37 @@ public class JournalActivityOther extends MoodSwingActivity implements JournalVi
             e.printStackTrace();
         }
         return rDate;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_follow, menu);
+        if (follows != null && follows.contains(username)) {
+            menu.findItem(R.id.action_follow).setIcon(R.drawable.ic_star_followed);
+        } else {
+            menu.findItem(R.id.action_follow).setIcon(R.drawable.ic_star_unfollowed);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.action_follow:
+                if (follows != null && follows.contains(username)) {
+                    menuItem.setIcon(R.drawable.ic_star_unfollowed);
+                    _journalPresenterOther.unfollow(username);
+                    follows.remove(username);
+                } else {
+                    menuItem.setIcon(R.drawable.ic_star_followed);
+                    _journalPresenterOther.follow(username);
+                    follows.add(username);
+                }
+                break;
+            default:
+                return true;
+        }
+        return true;
     }
 }
 

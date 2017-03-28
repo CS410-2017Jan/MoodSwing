@@ -19,6 +19,14 @@ public class UnfollowUsecase implements Usecase<Response<FollowResponse>> {
 
     @Override
     public Observable<Response<FollowResponse>> execute() {
-        return repository.follow(accessToken, username);
+        return repository.unfollow(accessToken, username);
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

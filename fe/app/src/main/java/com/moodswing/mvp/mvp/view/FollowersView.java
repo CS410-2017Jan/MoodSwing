@@ -10,5 +10,5 @@ import java.util.List;
 
 public interface FollowersView extends View {
     void showError(String error);
-    void initializeListView(List<User> followers);
+    void initializeListView(List<User> followers, List<String> follows);
 }

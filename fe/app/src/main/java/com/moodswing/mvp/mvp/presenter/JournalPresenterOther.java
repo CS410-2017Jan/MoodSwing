@@ -5,22 +5,26 @@ import android.widget.Toast;
 
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.DeleteCaptureUsecase;
+import com.moodswing.mvp.domain.FollowUsecase;
 import com.moodswing.mvp.domain.GetEntryPicUsecase;
 import com.moodswing.mvp.domain.GetJournalsUsecase;
 import com.moodswing.mvp.domain.GetProfilePictureUsecase;
 import com.moodswing.mvp.domain.GetUserUsecase;
 import com.moodswing.mvp.domain.SearchUsecase;
 import com.moodswing.mvp.domain.SetTitleUsecase;
+import com.moodswing.mvp.domain.UnfollowUsecase;
 import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
+import com.moodswing.mvp.mvp.model.response.FollowResponse;
 import com.moodswing.mvp.mvp.model.response.SetTitleResponse;
 import com.moodswing.mvp.mvp.model.Title;
 import com.moodswing.mvp.mvp.view.JournalView;
 import com.moodswing.mvp.mvp.view.JournalViewOther;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -40,10 +44,20 @@ public class JournalPresenterOther implements Presenter<JournalViewOther> {
     private GetProfilePictureUsecase getProfilePictureUsecase;
     private GetEntryPicUsecase getEntryPicUsecase;
     private GetUserUsecase getUserUsecase;
+    private FollowUsecase followUsecase;
+    private UnfollowUsecase unfollowUsecase;
     private Disposable getJournalsSubscription;
     private SharedPreferencesManager sharedPreferencesManager;
 
-    public JournalPresenterOther(GetJournalsUsecase getJournalsUsecase, DeleteCaptureUsecase deleteCaptureUsecase, SetTitleUsecase setTitleUsecase, SearchUsecase searchUsecase, GetProfilePictureUsecase getProfilePictureUsecase, GetEntryPicUsecase getEntryPicUsecase, GetUserUsecase getUserUsecase) {
+    public JournalPresenterOther(GetJournalsUsecase getJournalsUsecase,
+                                 DeleteCaptureUsecase deleteCaptureUsecase,
+                                 SetTitleUsecase setTitleUsecase,
+                                 SearchUsecase searchUsecase,
+                                 GetProfilePictureUsecase getProfilePictureUsecase,
+                                 GetEntryPicUsecase getEntryPicUsecase,
+                                 GetUserUsecase getUserUsecase,
+                                 FollowUsecase followUsecase,
+                                 UnfollowUsecase unfollowUsecase) {
         this.getJournalsUsecase = getJournalsUsecase;
         this.deleteCaptureUsecase = deleteCaptureUsecase;
         this.setTitleUsecase = setTitleUsecase;
@@ -51,6 +65,8 @@ public class JournalPresenterOther implements Presenter<JournalViewOther> {
         this.getProfilePictureUsecase = getProfilePictureUsecase;
         this.getEntryPicUsecase = getEntryPicUsecase;
         this.getUserUsecase = getUserUsecase;
+        this.followUsecase = followUsecase;
+        this.unfollowUsecase = unfollowUsecase;
     }
 
     @Override
@@ -71,6 +87,14 @@ public class JournalPresenterOther implements Presenter<JournalViewOther> {
     @Override
     public void onPause() {
 
+    }
+
+    public void attachSharedPreferencesManager(SharedPreferencesManager sharedPreferencesManager) {
+        this.sharedPreferencesManager = sharedPreferencesManager;
+    }
+
+    public boolean isUserLoggedIn() {
+        return sharedPreferencesManager.isUserLoggedIn();
     }
 
     @Override
@@ -216,14 +240,54 @@ public class JournalPresenterOther implements Presenter<JournalViewOther> {
 
     }
 
-
-
-    public void attachSharedPreferencesManager(SharedPreferencesManager sharedPreferencesManager) {
-        this.sharedPreferencesManager = sharedPreferencesManager;
+    public void follow(String username) {
+        followUsecase.setUsername(username);
+        followUsecase.setAccessToken(sharedPreferencesManager.getToken());
+        Disposable followSubcription = followUsecase.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Response<FollowResponse>>() {
+                    @Override
+                    public void accept(Response<FollowResponse> followResponseResponse) throws Exception {
+                        if (followResponseResponse.code() == 200) {
+                            if (!followResponseResponse.isSuccessful()) {
+                                throw new Exception("Server encountered an error");
+                            }
+                        } else {
+                            throw new Exception("Server responded with " + followResponseResponse.code());
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        journalView.showError("Error during follow: " + throwable.getMessage());
+                    }
+                });
     }
 
-    public boolean isUserLoggedIn() {
-        return sharedPreferencesManager.isUserLoggedIn();
+    public void unfollow(String username) {
+        unfollowUsecase.setUsername(username);
+        unfollowUsecase.setAccessToken(sharedPreferencesManager.getToken());
+        Disposable followSubcription = unfollowUsecase.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Response<FollowResponse>>() {
+                    @Override
+                    public void accept(Response<FollowResponse> followResponseResponse) throws Exception {
+                        if (followResponseResponse.code() == 200) {
+                            if (!followResponseResponse.isSuccessful()) {
+                                throw new Exception("Server encountered an error");
+                            }
+                        } else {
+                            throw new Exception("Server responded with " + followResponseResponse.code());
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        journalView.showError("Error during unfollow: " + throwable.getMessage());
+                    }
+                });
     }
 }
 

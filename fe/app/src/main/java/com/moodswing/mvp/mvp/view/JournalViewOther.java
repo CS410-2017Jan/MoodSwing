@@ -22,4 +22,5 @@ public interface JournalViewOther extends View {
     void onGetUserInfoFailure();
     void getPicture(ResponseBody picture);
     void showError();
+    void showError(String error);
 }

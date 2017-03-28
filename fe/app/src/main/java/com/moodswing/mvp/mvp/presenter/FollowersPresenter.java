@@ -95,7 +95,7 @@ public class FollowersPresenter implements Presenter<FollowersView> {
                             if (response.code() == 200) {
                                 followerUsers.add(user);
                                 if (followerUsers.size() == size) {
-                                    followersView.initializeListView(followerUsers);
+                                    getFollows(followerUsers);
                                 }
                             } else {
                                 followersView.showError("Unable to retrieve user info.");
@@ -108,5 +108,29 @@ public class FollowersPresenter implements Presenter<FollowersView> {
                         }
                     });
         }
+    }
+
+    public void getFollows(final List<User> followerUsers) {
+        getUserUsecase.setUsername(sharedPreferencesManager.getCurrentUser());
+        Disposable getFollowsSubscription = getUserUsecase.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Response<User>>() {
+                    @Override
+                    public void accept(Response<User> response) throws Exception {
+                        if (response.code() == 200) {
+                            List<String> follows = response.body().getFollowing();
+                            followersView.initializeListView(followerUsers, follows);
+                        } else {
+                            followersView.showError("Server encountered an error");
+                        }
+
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        followersView.showError("Server encountered an error " + throwable.getMessage());
+                    }
+                });
     }
 }

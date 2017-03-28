@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import com.moodswing.activity.SearchActivity;
 import com.moodswing.mvp.data.SharedPreferencesManager;
+import com.moodswing.mvp.domain.GetUserUsecase;
 import com.moodswing.mvp.domain.SearchUsecase;
 import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.mvp.view.SearchView;
@@ -25,10 +26,12 @@ public class SearchPresenter implements Presenter<SearchView> {
     private SearchView searchView;
     private SharedPreferencesManager sharedPreferencesManager;
     private SearchUsecase searchUsecase;
+    private GetUserUsecase getUserUsecase;
     private Disposable searchSubscription;
 
-    public SearchPresenter(SearchUsecase searchUsecase) {
+    public SearchPresenter(SearchUsecase searchUsecase, GetUserUsecase getUserUsecase) {
         this.searchUsecase = searchUsecase;
+        this.getUserUsecase = getUserUsecase;
     }
 
     @Override
@@ -66,7 +69,7 @@ public class SearchPresenter implements Presenter<SearchView> {
                         String currentUser = sharedPreferencesManager.getCurrentUser();
                         List<User> users = listResponse.body();
                         if (listResponse.code() == 200) {
-                            searchView.initializeListView(users);
+                            getFollows(users);
                         } else {
                             searchView.showError("Server responded with: " + listResponse.errorBody());
                         }
@@ -77,5 +80,29 @@ public class SearchPresenter implements Presenter<SearchView> {
                         searchView.showError(throwable.getMessage());
                     }
                 });
+    }
+
+    public void getFollows(final List<User> users) {
+        getUserUsecase.setUsername(sharedPreferencesManager.getCurrentUser());
+       Disposable getFollowsSubscription = getUserUsecase.execute()
+               .subscribeOn(Schedulers.io())
+               .observeOn(AndroidSchedulers.mainThread())
+               .subscribe(new Consumer<Response<User>>() {
+                   @Override
+                   public void accept(Response<User> response) throws Exception {
+                       if (response.code() == 200) {
+                           List<String> follows = response.body().getFollowing();
+                           searchView.initializeListView(users, follows);
+                       } else {
+                           searchView.showError("Server encountered an error");
+                       }
+
+                   }
+               }, new Consumer<Throwable>() {
+                   @Override
+                   public void accept(Throwable throwable) throws Exception {
+                       searchView.showError("Server encountered an error " + throwable.getMessage());
+                   }
+               });
     }
 }

@@ -1,6 +1,7 @@
 package com.moodswing.injector.module;
 
 import com.moodswing.injector.scope.PerActivity;
+import com.moodswing.mvp.domain.GetUserUsecase;
 import com.moodswing.mvp.domain.SearchUsecase;
 import com.moodswing.mvp.mvp.presenter.SearchPresenter;
 import com.moodswing.mvp.network.Repository;
@@ -23,5 +24,14 @@ public class SearchModule {
 
     @PerActivity
     @Provides2
-    public SearchPresenter provideSearchPresenter(SearchUsecase searchUsecase) {return new SearchPresenter(searchUsecase);}
+    public GetUserUsecase provideGetUserUsecase (Repository repository) {
+        return new GetUserUsecase(repository);
+    }
+
+    @PerActivity
+    @Provides2
+    public SearchPresenter provideSearchPresenter(SearchUsecase searchUsecase,
+                                                  GetUserUsecase getUserUsecase) {
+        return new SearchPresenter(searchUsecase, getUserUsecase);
+    }
 }

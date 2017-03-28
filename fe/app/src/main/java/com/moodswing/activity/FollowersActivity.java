@@ -45,8 +45,8 @@ public class FollowersActivity extends MoodSwingActivity implements FollowersVie
     ListView listView;
 
     private SearchAdapter searchAdapter;
-
     private FollowersComponent _followersComponent;
+    private List<String> following;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +80,8 @@ public class FollowersActivity extends MoodSwingActivity implements FollowersVie
     }
 
     @Override
-    public void initializeListView(List<User> following) {
-        searchAdapter = new SearchAdapter(following, FollowersActivity.this);
+    public void initializeListView(final List<User> followers, final List<String> following) {
+        searchAdapter = new SearchAdapter(followers, FollowersActivity.this);
         listView.setAdapter(searchAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -90,9 +90,8 @@ public class FollowersActivity extends MoodSwingActivity implements FollowersVie
                 Intent intent = new Intent(getApplicationContext(), JournalActivityOther.class);
                 intent.putExtra("USER_DISPLAYNAME", user.getDisplayName());
                 intent.putExtra("USER_USERNAME", user.getUsername());
-                List<String> following = user.getFollowing();
                 if (following != null) {
-                    String[] followingArr = user.getFollowing().toArray(new String[user.getFollowing().size()]);
+                    String[] followingArr = following.toArray(new String[following.size()]);
                     intent.putExtra("USER_FOLLOWING", followingArr);
                 }
                 startActivity(intent);

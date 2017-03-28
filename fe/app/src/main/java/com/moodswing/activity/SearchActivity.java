@@ -2,8 +2,6 @@ package com.moodswing.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.MenuItemCompat;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,7 +19,6 @@ import com.moodswing.injector.module.ActivityModule;
 import com.moodswing.injector.module.SearchModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.model.User;
-import com.moodswing.mvp.mvp.presenter.JournalPresenterOther;
 import com.moodswing.mvp.mvp.presenter.SearchPresenter;
 import com.moodswing.mvp.mvp.view.SearchView;
 import com.moodswing.widget.SearchViewAdapter;
@@ -48,8 +45,8 @@ public class SearchActivity extends MoodSwingActivity implements SearchView {
     ListView listView;
 
     private SearchViewAdapter searchViewAdapter;
-
     private SearchComponent _searchComponent;
+    private List<String> follows;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +75,7 @@ public class SearchActivity extends MoodSwingActivity implements SearchView {
     }
 
     @Override
-    public void initializeListView(List<User> users) {
+    public void initializeListView(List<User> users, final List<String> following) {
         searchViewAdapter = new SearchViewAdapter(users, SearchActivity.this, _sharedPreferencesManager);
         listView.setAdapter(searchViewAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -88,9 +85,8 @@ public class SearchActivity extends MoodSwingActivity implements SearchView {
                 Intent intent = new Intent(getApplicationContext(), JournalActivityOther.class);
                 intent.putExtra("USER_DISPLAYNAME", user.getDisplayName());
                 intent.putExtra("USER_USERNAME", user.getUsername());
-                List<String> following = user.getFollowing();
                 if (following != null) {
-                    String[] followingArr = user.getFollowing().toArray(new String[user.getFollowing().size()]);
+                    String[] followingArr = following.toArray(new String[following.size()]);
                     intent.putExtra("USER_FOLLOWING", followingArr);
                 }
                 startActivity(intent);

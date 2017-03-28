@@ -21,4 +21,12 @@ public class FollowUsecase implements Usecase<Response<FollowResponse>> {
     public Observable<Response<FollowResponse>> execute() {
         return repository.follow(accessToken, username);
     }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }
