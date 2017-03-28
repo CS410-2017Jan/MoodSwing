@@ -82,51 +82,8 @@ public class DateAdapterOther extends RecyclerView.Adapter<DateAdapterOther.MyVi
                     DateBlock dateBlock = dBlocks.get(cAdapter.getRowIndex());
                     openCapture(capture, dateBlock);
                 }
-
-                @Override
-                public void onLongClick(final View view, final int position) {
-                    capturePos = getCaptureIndexInDateBlock(cAdapter, position);
-                    final Capture capture = captures.get(capturePos);
-
-                    PopupMenu popup = new PopupMenu(jActivityOther, view);
-                    popup.getMenuInflater().inflate(R.menu.entry_popup_menu, popup.getMenu());
-
-                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        public boolean onMenuItemClick(MenuItem item) {
-                            if(item.getTitle().equals("Delete")){
-                                displayDeleteWarning("Are you sure you want to delete your post?", capture);
-                            }else{
-                                Toast.makeText(jActivityOther, item.getTitle(), Toast.LENGTH_SHORT).show();
-                            }
-                            return true;
-                        }
-                    });
-                    popup.show();
-                }
             }));
         }
-
-
-        private void displayDeleteWarning(String s, final Capture capture) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(jActivityOther);
-            builder.setTitle("Warning");
-            builder.setMessage(s);
-            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    _journalPresenter.deleteCapture(capture);
-                }
-            });
-            AlertDialog alert = builder.create();
-            alert.show();
-        }
-
-
     }
 
 
