@@ -20,7 +20,7 @@ var text;
 var captureDate;
 var captureId;
 
-describe('Profile picture', function() {
+describe('Create capture with a photo', function() {
 	this.timeout(10000);
 
   before((done) => {
