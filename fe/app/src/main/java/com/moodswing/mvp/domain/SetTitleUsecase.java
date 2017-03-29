@@ -1,7 +1,7 @@
 package com.moodswing.mvp.domain;
 
-import com.moodswing.mvp.mvp.model.response.SetTitleResponse;
 import com.moodswing.mvp.mvp.model.Title;
+import com.moodswing.mvp.mvp.model.response.SimpleResponse;
 import com.moodswing.mvp.network.Repository;
 
 import io.reactivex.Observable;
@@ -10,7 +10,7 @@ import io.reactivex.Observable;
  * Created by Matthew on 2017-03-15.
  */
 
-public class SetTitleUsecase implements Usecase<SetTitleResponse>{
+public class SetTitleUsecase implements Usecase<SimpleResponse>{
     private Repository repository;
     private String entryId;
     private String accessToken;
@@ -27,7 +27,7 @@ public class SetTitleUsecase implements Usecase<SetTitleResponse>{
     }
 
     @Override
-    public Observable<SetTitleResponse> execute() {
+    public Observable<SimpleResponse> execute() {
         return repository.setTitle(accessToken, entryId, title);
     }
 }

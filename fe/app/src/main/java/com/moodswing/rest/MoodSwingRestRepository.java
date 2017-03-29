@@ -6,19 +6,12 @@ import com.moodswing.mvp.mvp.model.LoginRequest;
 import com.moodswing.mvp.mvp.model.SignupRequest;
 import com.moodswing.mvp.mvp.model.Comment;
 import com.moodswing.mvp.mvp.model.Text;
-import com.moodswing.mvp.mvp.model.response.ChangeProfileResponse;
-import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
-import com.moodswing.mvp.mvp.model.response.EditEntryResponse;
-import com.moodswing.mvp.mvp.model.response.FollowResponse;
 import com.moodswing.mvp.mvp.model.response.LoginResponse;
-import com.moodswing.mvp.mvp.model.response.NewEntryResponse;
-import com.moodswing.mvp.mvp.model.response.PostCommentResponse;
-import com.moodswing.mvp.mvp.model.response.SetTitleResponse;
 import com.moodswing.mvp.mvp.model.response.SignupResponse;
-import com.moodswing.mvp.mvp.model.response.ProfilePictureResponse;
 import com.moodswing.mvp.mvp.model.Title;
 import com.moodswing.mvp.mvp.model.User;
+import com.moodswing.mvp.mvp.model.response.SimpleResponse;
 import com.moodswing.mvp.network.Repository;
 import com.moodswing.widget.DateBlock;
 
@@ -54,27 +47,27 @@ public class MoodSwingRestRepository implements Repository {
     }
 
     @Override
-    public Observable<SetTitleResponse> setTitle(String accessToken, String entryId, Title title){
+    public Observable<SimpleResponse> setTitle(String accessToken, String entryId, Title title){
         return apiService.setTitle(accessToken, entryId, title);
     }
 
     @Override
-    public Observable<EditEntryResponse> editEntryText(String accessToken, String id, Text text){
+    public Observable<SimpleResponse> editEntryText(String accessToken, String id, Text text){
         return apiService.editEntryText(accessToken, id, text);
     }
 
     @Override
-    public Observable<PostCommentResponse> postComment(String accessToken, String entryId, Comment comment){
+    public Observable<SimpleResponse> postComment(String accessToken, String entryId, Comment comment){
         return apiService.postComment(accessToken, entryId, comment);
     }
 
     @Override
-    public Observable<NewEntryResponse> postNewEntry(String accessToken, MultipartBody.Part data, RequestBody entryText, RequestBody entryDate, RequestBody emotion) {
+    public Observable<SimpleResponse> postNewEntry(String accessToken, MultipartBody.Part data, RequestBody entryText, RequestBody entryDate, RequestBody emotion) {
         return apiService.postNewEntry(accessToken, data, entryText, entryDate, emotion);
     }
 
     @Override
-    public Observable<NewEntryResponse> postNewEntryNoPic(Capture capture, String accessToken) {
+    public Observable<SimpleResponse> postNewEntryNoPic(Capture capture, String accessToken) {
         return apiService.postNewEntryNoPic(capture, accessToken);
     }
 
@@ -89,7 +82,7 @@ public class MoodSwingRestRepository implements Repository {
     }
 
     @Override
-    public Observable<ProfilePictureResponse> postProfilePicture(String token, MultipartBody.Part picture) {
+    public Observable<SimpleResponse> postProfilePicture(String token, MultipartBody.Part picture) {
         return apiService.postProfilePicture(token, picture);
     }
 
@@ -114,12 +107,12 @@ public class MoodSwingRestRepository implements Repository {
     }
 
     @Override
-    public Observable<DeleteCaptureResponse> deleteCapture(String _id, String token) {
+    public Observable<SimpleResponse> deleteCapture(String _id, String token) {
         return apiService.deleteCapture(_id, token);
     }
 
     @Override
-    public Observable<Response<ChangeProfileResponse>> changeUser(String accessToken, ChangeProfileRequest changeProfileRequest){
+    public Observable<Response<SimpleResponse>> changeUser(String accessToken, ChangeProfileRequest changeProfileRequest){
         return apiService.changeUser(accessToken, changeProfileRequest);
     }
 
@@ -129,12 +122,12 @@ public class MoodSwingRestRepository implements Repository {
     }
 
     @Override
-    public Observable<Response<FollowResponse>> follow(String accessToken, String username) {
+    public Observable<Response<SimpleResponse>> follow(String accessToken, String username) {
         return apiService.follow(accessToken, username);
     }
 
     @Override
-    public Observable<Response<FollowResponse>> unfollow(String accessToken, String username) {
+    public Observable<Response<SimpleResponse>> unfollow(String accessToken, String username) {
         return apiService.unfollow(accessToken, username);
     }
 
@@ -142,9 +135,4 @@ public class MoodSwingRestRepository implements Repository {
     public Observable<List<JournalEntries>> getNotifications(String accessToken) {
         return apiService.getNotifications(accessToken);
     }
-
-//    @Override
-//    public Observable<PostCommentResponse> getCaptureData(Capture capture, String accessToken) {
-//        return apiService.getCaptureData(capture, accessToken);
-//    }
 }

@@ -10,10 +10,8 @@ import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.CaptureUsecase;
 import com.moodswing.mvp.domain.GetCommentsUsecase;
 import com.moodswing.mvp.domain.GetEntryPicHighResUsecase;
-import com.moodswing.mvp.domain.GetEntryPicUsecase;
 import com.moodswing.mvp.mvp.model.Comment;
-import com.moodswing.mvp.mvp.model.response.PostCommentResponse;
-import com.moodswing.mvp.mvp.view.CaptureView;
+import com.moodswing.mvp.mvp.model.response.SimpleResponse;
 import com.moodswing.mvp.mvp.view.CaptureViewOther;
 import com.moodswing.widget.DateBlock;
 
@@ -80,9 +78,9 @@ public class CapturePresenterOther implements Presenter<CaptureViewOther> {
         captureSubscription = captureUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<PostCommentResponse>() {
+                .subscribe(new Consumer<SimpleResponse>() {
                     @Override
-                    public void accept(PostCommentResponse postCommentResponse) throws Exception {
+                    public void accept(SimpleResponse postCommentResponse) throws Exception {
                         progressDialog.dismiss();
                         if (postCommentResponse.isSuccessful()) {
                             captureView.onPostCommentSuccess();

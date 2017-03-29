@@ -7,7 +7,7 @@ import com.moodswing.R;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.EditEntryUsecase;
 import com.moodswing.mvp.mvp.model.Text;
-import com.moodswing.mvp.mvp.model.response.EditEntryResponse;
+import com.moodswing.mvp.mvp.model.response.SimpleResponse;
 import com.moodswing.mvp.mvp.view.EditEntryView;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -68,9 +68,9 @@ public class EditEntryPresenter implements Presenter<EditEntryView> {
         editEntrySubscription = editEntryUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<EditEntryResponse>() {
+                .subscribe(new Consumer<SimpleResponse>() {
                     @Override
-                    public void accept(EditEntryResponse editEntryResponse) throws Exception {
+                    public void accept(SimpleResponse editEntryResponse) throws Exception {
                         progressDialog.dismiss();
                         if (editEntryResponse.isSuccessful()) {
                             editEntryView.onEditEntrySuccess();

@@ -1,7 +1,7 @@
 package com.moodswing.mvp.domain;
 
 import com.moodswing.mvp.mvp.model.Text;
-import com.moodswing.mvp.mvp.model.response.EditEntryResponse;
+import com.moodswing.mvp.mvp.model.response.SimpleResponse;
 import com.moodswing.mvp.network.Repository;
 
 import io.reactivex.Observable;
@@ -10,7 +10,7 @@ import io.reactivex.Observable;
  * Created by Matthew on 2017-03-21.
  */
 
-public class EditEntryUsecase implements Usecase<EditEntryResponse> {
+public class EditEntryUsecase implements Usecase<SimpleResponse> {
 
     private Repository repository;
     private Text text;
@@ -32,7 +32,7 @@ public class EditEntryUsecase implements Usecase<EditEntryResponse> {
     }
 
     @Override
-    public Observable<EditEntryResponse> execute() {
+    public Observable<SimpleResponse> execute() {
         return repository.editEntryText(accessToken, id, text);
     }
 }

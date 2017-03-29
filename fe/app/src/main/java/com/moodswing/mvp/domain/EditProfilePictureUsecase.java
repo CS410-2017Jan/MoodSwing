@@ -1,6 +1,6 @@
 package com.moodswing.mvp.domain;
 
-import com.moodswing.mvp.mvp.model.response.ProfilePictureResponse;
+import com.moodswing.mvp.mvp.model.response.SimpleResponse;
 import com.moodswing.mvp.network.Repository;
 
 import io.reactivex.Observable;
@@ -10,7 +10,7 @@ import okhttp3.MultipartBody;
  * Created by Kenny on 2017-03-04.
  */
 
-public class EditProfilePictureUsecase implements Usecase<ProfilePictureResponse> {
+public class EditProfilePictureUsecase implements Usecase<SimpleResponse> {
     private Repository repository;
     private String token;
     private MultipartBody.Part profilePicture;
@@ -26,7 +26,7 @@ public class EditProfilePictureUsecase implements Usecase<ProfilePictureResponse
     }
 
     @Override
-    public Observable<ProfilePictureResponse> execute() {
+    public Observable<SimpleResponse> execute() {
         return repository.postProfilePicture(token, profilePicture);
     }
 }

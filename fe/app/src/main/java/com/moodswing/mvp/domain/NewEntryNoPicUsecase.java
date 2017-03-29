@@ -1,7 +1,7 @@
 package com.moodswing.mvp.domain;
 
 import com.moodswing.mvp.mvp.model.Capture;
-import com.moodswing.mvp.mvp.model.response.NewEntryResponse;
+import com.moodswing.mvp.mvp.model.response.SimpleResponse;
 import com.moodswing.mvp.network.Repository;
 
 import io.reactivex.Observable;
@@ -10,7 +10,7 @@ import io.reactivex.Observable;
  * Created by Matthew on 2017-03-23.
  */
 
-public class NewEntryNoPicUsecase implements Usecase<NewEntryResponse> {
+public class NewEntryNoPicUsecase implements Usecase<SimpleResponse> {
 
         private Repository repository;
         private Capture capture;
@@ -25,7 +25,7 @@ public class NewEntryNoPicUsecase implements Usecase<NewEntryResponse> {
     }
 
     @Override
-    public Observable<NewEntryResponse> execute() {
+    public Observable<SimpleResponse> execute() {
         return repository.postNewEntryNoPic(capture, accessToken);
     }
 }

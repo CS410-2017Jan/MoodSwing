@@ -9,8 +9,7 @@ import com.moodswing.mvp.domain.GetUserUsecase;
 import com.moodswing.mvp.domain.PutProfileUsecase;
 import com.moodswing.mvp.mvp.model.ChangeProfileRequest;
 import com.moodswing.mvp.mvp.model.User;
-import com.moodswing.mvp.mvp.model.response.ChangeProfileResponse;
-import com.moodswing.mvp.mvp.model.response.ProfilePictureResponse;
+import com.moodswing.mvp.mvp.model.response.SimpleResponse;
 import com.moodswing.mvp.mvp.view.EditProfileView;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -80,9 +79,9 @@ public class EditProfilePresenter implements Presenter<EditProfileView> {
         newProfilePictureSubscription = editProfilePictureUseCase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<ProfilePictureResponse>() {
+                .subscribe(new Consumer<SimpleResponse>() {
                     @Override
-                    public void accept(ProfilePictureResponse profilePictureResponse) throws Exception {
+                    public void accept(SimpleResponse profilePictureResponse) throws Exception {
                         Log.v("PROFILE_PICTURE", "SUCCESS");
                         editProfileView.returnFromSavedProfile();
                     }
@@ -126,9 +125,9 @@ public class EditProfilePresenter implements Presenter<EditProfileView> {
         putProfileSubscription = putProfileUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Response<ChangeProfileResponse>>() {
+                .subscribe(new Consumer<Response<SimpleResponse>>() {
                     @Override
-                    public void accept(Response<ChangeProfileResponse> response) throws Exception {
+                    public void accept(Response<SimpleResponse> response) throws Exception {
                         if (response.code() == 200) {
                             editProfileView.displaySavedProfile();
                         } else {

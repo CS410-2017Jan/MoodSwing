@@ -1,7 +1,6 @@
 package com.moodswing.mvp.mvp.presenter;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.DeleteCaptureUsecase;
@@ -15,16 +14,12 @@ import com.moodswing.mvp.domain.SetTitleUsecase;
 import com.moodswing.mvp.domain.UnfollowUsecase;
 import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.User;
-import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
-import com.moodswing.mvp.mvp.model.response.FollowResponse;
-import com.moodswing.mvp.mvp.model.response.SetTitleResponse;
 import com.moodswing.mvp.mvp.model.Title;
-import com.moodswing.mvp.mvp.view.JournalView;
+import com.moodswing.mvp.mvp.model.response.SimpleResponse;
 import com.moodswing.mvp.mvp.view.JournalViewOther;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -156,9 +151,9 @@ public class JournalPresenterOther implements Presenter<JournalViewOther> {
         getJournalsSubscription = deleteCaptureUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<DeleteCaptureResponse>() {
+                .subscribe(new Consumer<SimpleResponse>() {
                     @Override
-                    public void accept(DeleteCaptureResponse deleteCaptureResponse) throws Exception {
+                    public void accept(SimpleResponse deleteCaptureResponse) throws Exception {
                         if (deleteCaptureResponse.isSuccessful()) {
                             journalView.onDeletionSuccess();
                         } else {
@@ -181,9 +176,9 @@ public class JournalPresenterOther implements Presenter<JournalViewOther> {
         getJournalsSubscription = setTitleUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<SetTitleResponse>() {
+                .subscribe(new Consumer<SimpleResponse>() {
                     @Override
-                    public void accept(SetTitleResponse setTitleResponse) throws Exception {
+                    public void accept(SimpleResponse setTitleResponse) throws Exception {
                         if (setTitleResponse.isSuccessful()) {
                             journalView.onSetTitleSuccess();
                         } else {
@@ -246,9 +241,9 @@ public class JournalPresenterOther implements Presenter<JournalViewOther> {
         Disposable followSubcription = followUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Response<FollowResponse>>() {
+                .subscribe(new Consumer<Response<SimpleResponse>>() {
                     @Override
-                    public void accept(Response<FollowResponse> followResponseResponse) throws Exception {
+                    public void accept(Response<SimpleResponse> followResponseResponse) throws Exception {
                         if (followResponseResponse.code() == 200) {
                             if (!followResponseResponse.isSuccessful()) {
                                 throw new Exception("Server encountered an error");
@@ -271,9 +266,9 @@ public class JournalPresenterOther implements Presenter<JournalViewOther> {
         Disposable followSubcription = unfollowUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Response<FollowResponse>>() {
+                .subscribe(new Consumer<Response<SimpleResponse>>() {
                     @Override
-                    public void accept(Response<FollowResponse> followResponseResponse) throws Exception {
+                    public void accept(Response<SimpleResponse> followResponseResponse) throws Exception {
                         if (followResponseResponse.code() == 200) {
                             if (!followResponseResponse.isSuccessful()) {
                                 throw new Exception("Server encountered an error");

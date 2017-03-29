@@ -6,19 +6,12 @@ import com.moodswing.mvp.mvp.model.LoginRequest;
 import com.moodswing.mvp.mvp.model.SignupRequest;
 import com.moodswing.mvp.mvp.model.Comment;
 import com.moodswing.mvp.mvp.model.Text;
-import com.moodswing.mvp.mvp.model.response.ChangeProfileResponse;
-import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
-import com.moodswing.mvp.mvp.model.response.EditEntryResponse;
-import com.moodswing.mvp.mvp.model.response.FollowResponse;
 import com.moodswing.mvp.mvp.model.response.LoginResponse;
-import com.moodswing.mvp.mvp.model.response.NewEntryResponse;
-import com.moodswing.mvp.mvp.model.response.PostCommentResponse;
-import com.moodswing.mvp.mvp.model.response.SetTitleResponse;
 import com.moodswing.mvp.mvp.model.response.SignupResponse;
-import com.moodswing.mvp.mvp.model.response.ProfilePictureResponse;
 import com.moodswing.mvp.mvp.model.Title;
 import com.moodswing.mvp.mvp.model.User;
+import com.moodswing.mvp.mvp.model.response.SimpleResponse;
 import com.moodswing.widget.DateBlock;
 
 import java.util.List;
@@ -36,25 +29,24 @@ import retrofit2.http.Part;
  */
 
 public interface Repository {
-    Observable<NewEntryResponse> postNewEntry(String accessToken, @Part MultipartBody.Part data, RequestBody entryText, RequestBody entryDate, RequestBody entryEmotion);
-    Observable<NewEntryResponse> postNewEntryNoPic(Capture capture, String accessToken);
-    Observable<SetTitleResponse> setTitle(String accessToken, String entryId, Title title);
-    Observable<EditEntryResponse> editEntryText(String accessToken, String id, Text text);
-    Observable<DeleteCaptureResponse> deleteCapture(String _id, String accessToken);
+    Observable<SimpleResponse> postNewEntry(String accessToken, @Part MultipartBody.Part data, RequestBody entryText, RequestBody entryDate, RequestBody entryEmotion);
+    Observable<SimpleResponse> postNewEntryNoPic(Capture capture, String accessToken);
+    Observable<SimpleResponse> setTitle(String accessToken, String entryId, Title title);
+    Observable<SimpleResponse> editEntryText(String accessToken, String id, Text text);
+    Observable<SimpleResponse> deleteCapture(String _id, String accessToken);
     Observable<List<JournalEntries>> getJournalEntries(String username);
     Observable<DateBlock> getComments(String entryId);
     Observable<SignupResponse> postSignupRequest(SignupRequest signupRequest);
     Observable<LoginResponse> postLogin(LoginRequest loginRequest);
-    Observable<ProfilePictureResponse> postProfilePicture(String token, @Part MultipartBody.Part picture);
+    Observable<SimpleResponse> postProfilePicture(String token, @Part MultipartBody.Part picture);
     Observable<ResponseBody> getProfilePicture(String username);
     Observable<ResponseBody> getEntryPic(String token, String captureId);
     Observable<ResponseBody> getEntryPicHighRes(String token, String captureId);
-//    Observable<PostCommentResponse> getCaptureData(Capture capture, String accessToken);
     Observable<Response<List<User>>> getUsers();
-    Observable<PostCommentResponse> postComment(String accessToken, String entryId, Comment comment);
-    Observable<Response<ChangeProfileResponse>> changeUser(String accessToken, ChangeProfileRequest changeProfileRequest);
+    Observable<SimpleResponse> postComment(String accessToken, String entryId, Comment comment);
+    Observable<Response<SimpleResponse>> changeUser(String accessToken, ChangeProfileRequest changeProfileRequest);
     Observable<List<JournalEntries>> getNotifications(String accessToken);
     Observable<Response<User>> getUser(String username);
-    Observable<Response<FollowResponse>> follow(String accessToken, String username);
-    Observable<Response<FollowResponse>> unfollow(String accessToken, String username);
+    Observable<Response<SimpleResponse>> follow(String accessToken, String username);
+    Observable<Response<SimpleResponse>> unfollow(String accessToken, String username);
 }

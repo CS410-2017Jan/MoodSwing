@@ -3,7 +3,6 @@ package com.moodswing.mvp.mvp.presenter;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.moodswing.R;
 import com.moodswing.mvp.data.SharedPreferencesManager;
@@ -16,10 +15,9 @@ import com.moodswing.mvp.domain.SearchUsecase;
 import com.moodswing.mvp.domain.SetTitleUsecase;
 import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.User;
-import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
-import com.moodswing.mvp.mvp.model.response.SetTitleResponse;
 import com.moodswing.mvp.mvp.model.Title;
+import com.moodswing.mvp.mvp.model.response.SimpleResponse;
 import com.moodswing.mvp.mvp.view.JournalView;
 
 import java.util.List;
@@ -45,7 +43,13 @@ public class JournalPresenter implements Presenter<JournalView> {
     private Disposable getJournalsSubscription;
     private SharedPreferencesManager sharedPreferencesManager;
 
-    public JournalPresenter(GetJournalsUsecase getJournalsUsecase, DeleteCaptureUsecase deleteCaptureUsecase, SetTitleUsecase setTitleUsecase, SearchUsecase searchUsecase, GetProfilePictureUsecase getProfilePictureUsecase, GetEntryPicUsecase getEntryPicUsecase, GetUserUsecase getUserUsecase) {
+    public JournalPresenter(GetJournalsUsecase getJournalsUsecase,
+                            DeleteCaptureUsecase deleteCaptureUsecase,
+                            SetTitleUsecase setTitleUsecase,
+                            SearchUsecase searchUsecase,
+                            GetProfilePictureUsecase getProfilePictureUsecase,
+                            GetEntryPicUsecase getEntryPicUsecase,
+                            GetUserUsecase getUserUsecase) {
         this.getJournalsUsecase = getJournalsUsecase;
         this.deleteCaptureUsecase = deleteCaptureUsecase;
         this.setTitleUsecase = setTitleUsecase;
@@ -139,9 +143,9 @@ public class JournalPresenter implements Presenter<JournalView> {
         getJournalsSubscription = deleteCaptureUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<DeleteCaptureResponse>() {
+                .subscribe(new Consumer<SimpleResponse>() {
                     @Override
-                    public void accept(DeleteCaptureResponse deleteCaptureResponse) throws Exception {
+                    public void accept(SimpleResponse deleteCaptureResponse) throws Exception {
                         progressDialog.dismiss();
                         if (deleteCaptureResponse.isSuccessful()) {
                             journalView.onDeletionSuccess();
@@ -171,9 +175,9 @@ public class JournalPresenter implements Presenter<JournalView> {
         getJournalsSubscription = setTitleUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<SetTitleResponse>() {
+                .subscribe(new Consumer<SimpleResponse>() {
                     @Override
-                    public void accept(SetTitleResponse setTitleResponse) throws Exception {
+                    public void accept(SimpleResponse setTitleResponse) throws Exception {
                         progressDialog.dismiss();
                         if (setTitleResponse.isSuccessful()) {
                             journalView.onSetTitleSuccess();

@@ -2,14 +2,14 @@ package com.moodswing.mvp.domain;
 
 import io.reactivex.Observable;
 
-import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
+import com.moodswing.mvp.mvp.model.response.SimpleResponse;
 import com.moodswing.mvp.network.Repository;
 
 /**
  * Created by Matthew on 2017-03-14.
  */
 
-public class DeleteCaptureUsecase implements Usecase<DeleteCaptureResponse> {
+public class DeleteCaptureUsecase implements Usecase<SimpleResponse> {
     private Repository repository;
     private String _id;
     private String accessToken;
@@ -23,7 +23,7 @@ public class DeleteCaptureUsecase implements Usecase<DeleteCaptureResponse> {
     }
 
     @Override
-    public Observable<DeleteCaptureResponse> execute() {
+    public Observable<SimpleResponse> execute() {
         return repository.deleteCapture(_id, accessToken);
     }
 }

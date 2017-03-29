@@ -11,9 +11,8 @@ import com.moodswing.mvp.domain.NewEntryUsecase;
 import com.moodswing.mvp.domain.SetTitleUsecase;
 import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.JournalEntries;
-import com.moodswing.mvp.mvp.model.response.NewEntryResponse;
-import com.moodswing.mvp.mvp.model.response.SetTitleResponse;
 import com.moodswing.mvp.mvp.model.Title;
+import com.moodswing.mvp.mvp.model.response.SimpleResponse;
 import com.moodswing.mvp.mvp.view.NewEntryView;
 
 import java.util.List;
@@ -86,9 +85,9 @@ public class NewEntryPresenter implements Presenter<NewEntryView> {
         newEntrySubscription = newEntryUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<NewEntryResponse>() {
+                .subscribe(new Consumer<SimpleResponse>() {
                     @Override
-                    public void accept(NewEntryResponse newEntryResponse) throws Exception {
+                    public void accept(SimpleResponse newEntryResponse) throws Exception {
                         progressDialog.dismiss();
                         if (newEntryResponse.isSuccessful()) {
                             newEntryView.onNewEntrySuccess();
@@ -117,9 +116,9 @@ public class NewEntryPresenter implements Presenter<NewEntryView> {
         newEntrySubscription = newEntryNoPicUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<NewEntryResponse>() {
+                .subscribe(new Consumer<SimpleResponse>() {
                     @Override
-                    public void accept(NewEntryResponse newEntryResponse) throws Exception {
+                    public void accept(SimpleResponse newEntryResponse) throws Exception {
                         progressDialog.dismiss();
                         if (newEntryResponse.isSuccessful()) {
                             newEntryView.onNewEntrySuccess();
@@ -144,9 +143,9 @@ public class NewEntryPresenter implements Presenter<NewEntryView> {
         newEntrySubscription = setTitleUsecase.execute()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<SetTitleResponse>() {
+                .subscribe(new Consumer<SimpleResponse>() {
                     @Override
-                    public void accept(SetTitleResponse setTitleResponse) throws Exception {
+                    public void accept(SimpleResponse setTitleResponse) throws Exception {
                         if (setTitleResponse.isSuccessful()) {
                             newEntryView.onSetTitleSuccess();
                         } else {

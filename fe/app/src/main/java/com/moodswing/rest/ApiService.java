@@ -6,19 +6,12 @@ import com.moodswing.mvp.mvp.model.LoginRequest;
 import com.moodswing.mvp.mvp.model.SignupRequest;
 import com.moodswing.mvp.mvp.model.Comment;
 import com.moodswing.mvp.mvp.model.Text;
-import com.moodswing.mvp.mvp.model.response.ChangeProfileResponse;
-import com.moodswing.mvp.mvp.model.response.DeleteCaptureResponse;
 import com.moodswing.mvp.mvp.model.JournalEntries;
-import com.moodswing.mvp.mvp.model.response.EditEntryResponse;
-import com.moodswing.mvp.mvp.model.response.FollowResponse;
 import com.moodswing.mvp.mvp.model.response.LoginResponse;
-import com.moodswing.mvp.mvp.model.response.NewEntryResponse;
-import com.moodswing.mvp.mvp.model.response.PostCommentResponse;
-import com.moodswing.mvp.mvp.model.response.ProfilePictureResponse;
-import com.moodswing.mvp.mvp.model.response.SetTitleResponse;
 import com.moodswing.mvp.mvp.model.response.SignupResponse;
 import com.moodswing.mvp.mvp.model.Title;
 import com.moodswing.mvp.mvp.model.User;
+import com.moodswing.mvp.mvp.model.response.SimpleResponse;
 import com.moodswing.widget.DateBlock;
 
 import java.util.List;
@@ -54,12 +47,12 @@ public interface ApiService {
 
     @Headers("Content-Type: application/json")
     @POST("users/self/captures")
-    Observable<NewEntryResponse> postNewEntryNoPic(@Body Capture capture,
-                                              @Header("x-access-token") String accessToken);
+    Observable<SimpleResponse> postNewEntryNoPic(@Body Capture capture,
+                                                 @Header("x-access-token") String accessToken);
 
     @Multipart
     @POST("users/self/captures")
-    Observable<NewEntryResponse> postNewEntry(@Header("x-access-token") String accessToken,
+    Observable<SimpleResponse> postNewEntry(@Header("x-access-token") String accessToken,
                                               @Part MultipartBody.Part image,
                                               @Part("text")RequestBody entryText,
                                               @Part("captureDate")RequestBody captureDate,
@@ -67,25 +60,25 @@ public interface ApiService {
 
     @Headers("Content-Type: application/json")
     @PUT("users/self/entries/{entryId}")
-    Observable<SetTitleResponse> setTitle(@Header("x-access-token") String accessToken,
+    Observable<SimpleResponse> setTitle(@Header("x-access-token") String accessToken,
                                               @Path("entryId") String entryId,
                                               @Body Title title);
 
     @Headers("Content-Type: application/json")
     @PUT("users/self/captures/{captureId}")
-    Observable<EditEntryResponse> editEntryText(@Header("x-access-token") String accessToken,
+    Observable<SimpleResponse> editEntryText(@Header("x-access-token") String accessToken,
                                                 @Path("captureId") String captureId,
                                                 @Body Text text);
 
     @Headers("Content-Type: application/json")
     @POST("entries/{entryId}/comments")
-    Observable<PostCommentResponse> postComment(@Header("x-access-token") String accessToken,
+    Observable<SimpleResponse> postComment(@Header("x-access-token") String accessToken,
                                                 @Path("entryId") String entryId,
                                                 @Body Comment comment);
 
     @Headers("Content-Type: application/json")
     @DELETE("users/self/captures/{captureId}")
-    Observable<DeleteCaptureResponse> deleteCapture(@Path("captureId") String captureId,
+    Observable<SimpleResponse> deleteCapture(@Path("captureId") String captureId,
                                                     @Header("x-access-token") String accessToken);
 
     @Headers("Content-Type: application/json")
@@ -98,7 +91,7 @@ public interface ApiService {
 
     @Multipart
     @POST("users/self/picture")
-    Observable<ProfilePictureResponse> postProfilePicture(@Header("x-access-token") String token,
+    Observable<SimpleResponse> postProfilePicture(@Header("x-access-token") String token,
                                                           @Part MultipartBody.Part picture);
 
     @GET("users/{username}/thumbnail")
@@ -114,7 +107,7 @@ public interface ApiService {
 
     @Headers("Content-Type: application/json")
     @PUT("users/self")
-    Observable<Response<ChangeProfileResponse>>  changeUser(@Header("x-access-token") String token,
+    Observable<Response<SimpleResponse>>  changeUser(@Header("x-access-token") String token,
                                                   @Body ChangeProfileRequest changeProfileRequest);
 
     @Headers("Content-Type: application/json")
@@ -129,8 +122,8 @@ public interface ApiService {
     Observable<Response<User>> getUser(@Path("username") String username);
 
     @POST("users/{username}/follow")
-    Observable<Response<FollowResponse>> follow(@Header("x-access-token") String token, @Path("username") String username);
+    Observable<Response<SimpleResponse>> follow(@Header("x-access-token") String token, @Path("username") String username);
 
     @POST("users/{username}/unfollow")
-    Observable<Response<FollowResponse>> unfollow(@Header("x-access-token") String token, @Path("username") String username);
+    Observable<Response<SimpleResponse>> unfollow(@Header("x-access-token") String token, @Path("username") String username);
 }
