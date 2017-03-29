@@ -53,6 +53,10 @@ router.post('/users/self/picture', upload.single('profilePicture'), (req, res) =
 
   let username = req.username;
 
+  if (!req.file) {
+  	return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: 'Did not attach image' });
+  }
+
 	if (req.file.size > 16*MB) {
 		return res.status(HttpStatus.BAD_REQUEST).json({ success: false, message: 'File too large' });
 	}
@@ -89,7 +93,7 @@ router.post('/users/self/picture', upload.single('profilePicture'), (req, res) =
 
 				user.save()
 			    .then(function (doc) {
-			      return res.status(HttpStatus.OK).json({ success: true });
+			      return res.status(HttpStatus.CREATED).json({ success: true });
 			    })
 			    .catch(function(err) {
 			      return res.status(HttpStatus.BAD_REQUEST).json({ success: false });
