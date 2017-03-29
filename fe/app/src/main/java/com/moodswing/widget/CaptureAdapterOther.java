@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -78,11 +79,21 @@ public class CaptureAdapterOther extends RecyclerView.Adapter<RecyclerView.ViewH
         }else{
             holder.entryPic.setVisibility(View.GONE);
             ViewGroup.LayoutParams params = holder.text.getLayoutParams();
-            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            holder.text.setPadding(0,50,0,50);
+            if (capture.getText().length() > 200){
+                params.height = dpToPx(92);
+                holder.text.setPadding(0,0,0,0);
+            } else{
+                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                holder.text.setPadding(0,50,0,50);
+            }
             holder.text.setLayoutParams(params);
         }
         holder.itemView.setTag(position);
+    }
+
+    private int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = jActivityOther.getResources().getDisplayMetrics();
+        return (int)((dp * displayMetrics.density) + 0.5);
     }
 
     @Override

@@ -136,10 +136,8 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView {
 
         setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
-//        initializeBottomNavigationView();
 
         initializePresenter();
-
         initializePostComment();
 
         // Facebook

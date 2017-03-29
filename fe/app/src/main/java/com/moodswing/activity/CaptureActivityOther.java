@@ -10,7 +10,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -122,10 +121,8 @@ public class CaptureActivityOther extends AppCompatActivity implements CaptureVi
 
         setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
-//        initializeBottomNavigationView();
 
         initializePresenter();
-
         initializePostComment();
     }
 
