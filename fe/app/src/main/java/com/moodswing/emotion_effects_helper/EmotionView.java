@@ -428,31 +428,40 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
             int nextAnimationResource = -1;
             switch (dominantEmoji) {
                 case "RELAXED":
+                    nextAnimationResource = R.drawable.relaxed_animation;
                     break;
                 case "SMILEY":
                     nextAnimationResource = R.drawable.smiley_animation;
                     break;
                 case "LAUGHING":
+                    nextAnimationResource = R.drawable.laughing_animation;
                     break;
                 case "WINK":
+                    nextAnimationResource = R.drawable.wink_animation;
                     break;
                 case "SMIRK":
+                    nextAnimationResource = R.drawable.smirk_animation;
                     break;
                 case "KISSING":
                     nextAnimationResource = R.drawable.kissing_animation;
                     break;
                 case "STUCK_OUT_TONGUE":
+                    nextAnimationResource = R.drawable.stuck_out_tongue_animation;
                     break;
                 case "STUCK_OUT_TONGUE_WINKING_EYE":
+                    nextAnimationResource = R.drawable.tonguewink_animation;
                     break;
                 case "DISAPPOINTED":
                     nextAnimationResource = R.drawable.disappointed_animation;
                     break;
                 case "RAGE":
+                    nextAnimationResource = R.drawable.rage_animation;
                     break;
                 case "SCREAM":
+                    nextAnimationResource = R.drawable.scream_animation;
                     break;
                 case "FLUSHED":
+                    nextAnimationResource = R.drawable.flushed_animation;
                     break;
                 default:
                     nextAnimationResource = -1;

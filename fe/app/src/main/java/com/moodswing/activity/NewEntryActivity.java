@@ -127,7 +127,7 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
         initializePresenter();
         initializeShareButton();
         initializeDateButton();
-        initializePictureListener();
+        //initializePictureListener();
         initializeDate();
         initializeBottomNavigationView();
         checkIntent();
