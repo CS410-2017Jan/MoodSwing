@@ -154,6 +154,10 @@ public class DateAdapterOther extends RecyclerView.Adapter<DateAdapterOther.MyVi
         String capText = capture.getText();
         String dateId = dBlock.getId();
         String capId = capture.getId();
+        String capEmotion = capture.getEmotion();
+        if (capEmotion == null){
+            capEmotion = "UNKNOWN";
+        }
         capUsername = dBlock.getUsername();
         captureIntent = new Intent(jActivityOther, CaptureActivityOther.class);
         captureIntent.putExtra("EXTRA_TITLE", capTitle);
@@ -161,6 +165,7 @@ public class DateAdapterOther extends RecyclerView.Adapter<DateAdapterOther.MyVi
         captureIntent.putExtra("EXTRA_TEXT", capText);
         captureIntent.putExtra("EXTRA_DATEID", dateId);
         captureIntent.putExtra("EXTRA_CAPID", capId);
+        captureIntent.putExtra("EXTRA_CAPEMOTION", capEmotion);
 
         _journalPresenter.getUser(capUsername);
     }

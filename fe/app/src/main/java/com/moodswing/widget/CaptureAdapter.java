@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -56,13 +58,14 @@ public class CaptureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView text;
-        private ImageView entryPic;
+        private ImageView entryPic, entryEmotion;
         private ImageButton _options;
 
         public MyViewHolder(View view) {
             super(view);
             text = (TextView) view.findViewById(R.id.description);
             entryPic = (ImageView) view.findViewById(R.id.listViewImage);
+            entryEmotion = (ImageView) view.findViewById(R.id.listViewEmotion);
             _options = (ImageButton) view.findViewById(R.id.entry_options);
 
             _options.setOnLongClickListener(new View.OnLongClickListener() {
@@ -131,10 +134,18 @@ public class CaptureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         holder.text.setText(capture.getText());
         holder.text.setTag(position);
         if (capture.getHasImage()){
+            String emotion = capture.getEmotion();
+            if (emotion.equals("UNKNOWN")){
+                holder.entryEmotion.setVisibility(View.GONE);
+            }else{
+                holder.entryEmotion.setVisibility(View.VISIBLE);
+                holder.entryEmotion.setBackground(setEmoji(emotion));
+            }
             holder.entryPic.setVisibility(View.VISIBLE);
             holder.entryPic.setImageBitmap(capture.getImage());
             holder.text.setPadding(0,0,0,0);
         }else{
+            holder.entryEmotion.setVisibility(View.GONE);
             holder.entryPic.setVisibility(View.GONE);
             ViewGroup.LayoutParams params = holder.text.getLayoutParams();
             if (capture.getText().length() > 200){
@@ -161,5 +172,36 @@ public class CaptureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public int getRowIndex() {
         return blockIndex;
+    }
+
+    public Drawable setEmoji(String emotion) {
+        switch (emotion) {
+            case "RELAXED":
+                return ResourcesCompat.getDrawable(jActivity.getResources(), R.drawable.relaxed_emoji, null);
+            case "SMILEY":
+                return ResourcesCompat.getDrawable(jActivity.getResources(), R.drawable.smiley_emoji, null);
+            case "LAUGHING":
+                return ResourcesCompat.getDrawable(jActivity.getResources(), R.drawable.laughing_emoji, null);
+            case "WINK":
+                return ResourcesCompat.getDrawable(jActivity.getResources(), R.drawable.wink_emoji, null);
+            case "SMIRK":
+                return ResourcesCompat.getDrawable(jActivity.getResources(), R.drawable.smirk_emoji, null);
+            case "KISSING":
+                return ResourcesCompat.getDrawable(jActivity.getResources(), R.drawable.kissing_emoji, null);
+            case "STUCK_OUT_TONGUE":
+                return ResourcesCompat.getDrawable(jActivity.getResources(), R.drawable.stuck_out_tongue_emoji, null);
+            case "STUCK_OUT_TONGUE_WINKING_EYE":
+                return ResourcesCompat.getDrawable(jActivity.getResources(), R.drawable.stuck_out_tongue_winking_eye_emoji, null);
+            case "DISAPPOINTED":
+                return ResourcesCompat.getDrawable(jActivity.getResources(), R.drawable.disappointed_emoji, null);
+            case "RAGE":
+                return ResourcesCompat.getDrawable(jActivity.getResources(), R.drawable.rage_emoji, null);
+            case "SCREAM":
+                return ResourcesCompat.getDrawable(jActivity.getResources(), R.drawable.scream_emoji, null);
+            case "FLUSHED":
+                return ResourcesCompat.getDrawable(jActivity.getResources(), R.drawable.flushed_emoji, null);
+            default: // UNKNOWN
+                return ResourcesCompat.getDrawable(jActivity.getResources(), R.drawable.blank_emoji, null);
+        }
     }
 }

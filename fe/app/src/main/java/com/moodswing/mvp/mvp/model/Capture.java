@@ -16,6 +16,7 @@ public class Capture {
     private String notificationUsername;
     private Bitmap image;
     private Boolean hasImage = false;
+    private String emotion;
 
     public Capture(){}
 
@@ -24,10 +25,11 @@ public class Capture {
         this.captureDate = captureDate;
     }
 
-    public Capture(String text, String captureDate, String _id){
+    public Capture(String text, String captureDate, String _id, String emotion){
         this.text = text;
         this.captureDate = captureDate;
         this._id = _id;
+        this.emotion = emotion;
     }
 
     public String getText(){
@@ -40,6 +42,10 @@ public class Capture {
 
     public String getId(){
         return _id;
+    }
+
+    public String getEmotion(){
+        return emotion;
     }
 
     public Bitmap getImage(){

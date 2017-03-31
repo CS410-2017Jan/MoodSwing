@@ -15,6 +15,13 @@
         android:background="#FFFFFF"
         android:layout_alignParentLeft="true" />
 
+    <ImageView
+        android:id="@+id/listViewEmotion"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:background="#FFFFFF"
+        android:layout_alignParentLeft="true" />
+
     <TextView
         android:id="@+id/description"
         android:layout_width="match_parent"

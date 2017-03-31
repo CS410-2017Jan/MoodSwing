@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -50,12 +52,13 @@ public class CaptureAdapterOther extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView text;
-        private ImageView entryPic;
+        private ImageView entryPic, entryEmotion;
 
         public MyViewHolder(View view) {
             super(view);
             text = (TextView) view.findViewById(R.id.descriptionother);
             entryPic = (ImageView) view.findViewById(R.id.listViewImageother);
+            entryEmotion = (ImageView) view.findViewById(R.id.listViewEmotionother);
         }
     }
 
@@ -73,6 +76,13 @@ public class CaptureAdapterOther extends RecyclerView.Adapter<RecyclerView.ViewH
         holder.text.setText(capture.getText());
         holder.text.setTag(position);
         if (capture.getHasImage()){
+            String emotion = capture.getEmotion();
+            if (emotion.equals("UNKNOWN")){
+                holder.entryEmotion.setVisibility(View.GONE);
+            }else{
+                holder.entryEmotion.setVisibility(View.VISIBLE);
+                holder.entryEmotion.setBackground(setEmoji(emotion));
+            }
             holder.entryPic.setVisibility(View.VISIBLE);
             holder.entryPic.setImageBitmap(capture.getImage());
             holder.text.setPadding(0,0,0,0);
@@ -103,5 +113,36 @@ public class CaptureAdapterOther extends RecyclerView.Adapter<RecyclerView.ViewH
 
     public int getRowIndex() {
         return blockIndex;
+    }
+
+    public Drawable setEmoji(String emotion) {
+        switch (emotion) {
+            case "RELAXED":
+                return ResourcesCompat.getDrawable(jActivityOther.getResources(), R.drawable.relaxed_emoji, null);
+            case "SMILEY":
+                return ResourcesCompat.getDrawable(jActivityOther.getResources(), R.drawable.smiley_emoji, null);
+            case "LAUGHING":
+                return ResourcesCompat.getDrawable(jActivityOther.getResources(), R.drawable.laughing_emoji, null);
+            case "WINK":
+                return ResourcesCompat.getDrawable(jActivityOther.getResources(), R.drawable.wink_emoji, null);
+            case "SMIRK":
+                return ResourcesCompat.getDrawable(jActivityOther.getResources(), R.drawable.smirk_emoji, null);
+            case "KISSING":
+                return ResourcesCompat.getDrawable(jActivityOther.getResources(), R.drawable.kissing_emoji, null);
+            case "STUCK_OUT_TONGUE":
+                return ResourcesCompat.getDrawable(jActivityOther.getResources(), R.drawable.stuck_out_tongue_emoji, null);
+            case "STUCK_OUT_TONGUE_WINKING_EYE":
+                return ResourcesCompat.getDrawable(jActivityOther.getResources(), R.drawable.stuck_out_tongue_winking_eye_emoji, null);
+            case "DISAPPOINTED":
+                return ResourcesCompat.getDrawable(jActivityOther.getResources(), R.drawable.disappointed_emoji, null);
+            case "RAGE":
+                return ResourcesCompat.getDrawable(jActivityOther.getResources(), R.drawable.rage_emoji, null);
+            case "SCREAM":
+                return ResourcesCompat.getDrawable(jActivityOther.getResources(), R.drawable.scream_emoji, null);
+            case "FLUSHED":
+                return ResourcesCompat.getDrawable(jActivityOther.getResources(), R.drawable.flushed_emoji, null);
+            default: // UNKNOWN
+                return ResourcesCompat.getDrawable(jActivityOther.getResources(), R.drawable.blank_emoji, null);
+        }
     }
 }

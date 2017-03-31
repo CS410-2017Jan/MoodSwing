@@ -4,7 +4,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -57,6 +59,9 @@ public class CaptureActivityOther extends AppCompatActivity implements CaptureVi
     @BindView(R.id.captureImageother)
     ImageView _capImage;
 
+    @BindView(R.id.captureEmotionother)
+    ImageView _capEmoji;
+
     @BindView(R.id.cap_nameother)
     TextView _capName;
 
@@ -86,6 +91,8 @@ public class CaptureActivityOther extends AppCompatActivity implements CaptureVi
     String displayName;
     String dateID;
     String capID;
+    String capEmotion;
+    String isEmotionNull;
     private List<Comment> commentList = new ArrayList<>();
     private RecyclerView commentRecyclerView;
     private CommentAdapterOther commentAdapter;
@@ -135,6 +142,14 @@ public class CaptureActivityOther extends AppCompatActivity implements CaptureVi
         displayName = getIntent().getStringExtra("EXTRA_DISPLAYNAME");
         dateID = getIntent().getStringExtra("EXTRA_DATEID");
         capID = getIntent().getStringExtra("EXTRA_CAPID");
+        capEmotion = getIntent().getStringExtra("EXTRA_CAPEMOTION");
+
+        if (capEmotion.isEmpty() || capEmotion.equals("UNKNOWN")){
+            _capEmoji.setVisibility(View.GONE);
+        }else{
+            _capEmoji.setVisibility(View.VISIBLE);
+            _capEmoji.setBackground(setEmoji(capEmotion));
+        }
 
         setTitle(title);
 
@@ -241,5 +256,36 @@ public class CaptureActivityOther extends AppCompatActivity implements CaptureVi
 
     private void showToast(String s) {
         Toast.makeText(CaptureActivityOther.this, s, Toast.LENGTH_LONG).show();
+    }
+
+    public Drawable setEmoji(String emotion) {
+        switch (emotion) {
+            case "RELAXED":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.relaxed_emoji, null);
+            case "SMILEY":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.smiley_emoji, null);
+            case "LAUGHING":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.laughing_emoji, null);
+            case "WINK":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.wink_emoji, null);
+            case "SMIRK":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.smirk_emoji, null);
+            case "KISSING":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.kissing_emoji, null);
+            case "STUCK_OUT_TONGUE":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.stuck_out_tongue_emoji, null);
+            case "STUCK_OUT_TONGUE_WINKING_EYE":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.stuck_out_tongue_winking_eye_emoji, null);
+            case "DISAPPOINTED":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.disappointed_emoji, null);
+            case "RAGE":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.rage_emoji, null);
+            case "SCREAM":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.scream_emoji, null);
+            case "FLUSHED":
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.flushed_emoji, null);
+            default: // UNKNOWN
+                return ResourcesCompat.getDrawable(getResources(), R.drawable.blank_emoji, null);
+        }
     }
 }
