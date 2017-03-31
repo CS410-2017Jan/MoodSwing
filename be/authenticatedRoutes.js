@@ -73,8 +73,7 @@ router.post('/users/self/picture', upload.single('profilePicture'), (req, res) =
 	}
 
 	gm(req.file.buffer, 'thumbnail.jpg')
-		.resize(200, 200)
-		.extent(200, 200)
+		.resize(200, 250)
 		.toBuffer('JPEG',function (err, thumbnailBuffer) {
 
 		  if (err || !thumbnailBuffer) {
