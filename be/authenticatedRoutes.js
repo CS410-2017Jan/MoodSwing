@@ -176,8 +176,7 @@ router.post('/users/self/captures', upload.single('image'), function(req, res) {
 		newCapture.image = {data: req.file.buffer, contentType: req.file.mimetype};
 
 		gm(req.file.buffer, 'thumbnail.jpg')
-			.resize(200, 200)
-			.extent(200, 200)
+			.resize(200, 250)
 			.toBuffer('JPEG',function (err, thumbnailBuffer) {
 				if (err || !thumbnailBuffer) {
 					return status(HttpStatus.BAD_REQUEST).json({success: false, message: 'Could not make thumbnail'});
