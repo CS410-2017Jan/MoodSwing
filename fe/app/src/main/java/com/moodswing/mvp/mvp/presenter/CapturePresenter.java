@@ -142,7 +142,7 @@ public class CapturePresenter implements Presenter<CaptureView> {
 
     }
 
-    public void getPic(final String captureId) {
+    public void getPic(final String captureId, final ProgressDialog progressDialog) {
         getEntryPicHighResUsecase.setCaptureId(captureId);
         getEntryPicHighResUsecase.setToken(sharedPreferencesManager.getToken());
 
@@ -152,7 +152,7 @@ public class CapturePresenter implements Presenter<CaptureView> {
                 .subscribe(new Consumer<ResponseBody>() {
                     @Override
                     public void accept(ResponseBody picture) throws Exception {
-                        captureView.showEntryPic(picture);
+                        captureView.showEntryPic(picture, progressDialog);
                     }
 
                 }, new Consumer<Throwable>() {

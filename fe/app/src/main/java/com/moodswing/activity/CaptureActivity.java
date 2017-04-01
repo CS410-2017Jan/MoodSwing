@@ -1,11 +1,13 @@
 package com.moodswing.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +23,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,6 +71,9 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView {
 
     @Inject2
     SharedPreferencesManager _sharedPreferencesManager;
+
+    @BindView(R.id.gadientlayout)
+    RelativeLayout _gradient;
 
     @BindView(R.id.captureImage)
     ImageView _capImage;
@@ -167,19 +173,17 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView {
         capID = getIntent().getStringExtra("EXTRA_CAPID");
         capEmotion = getIntent().getStringExtra("EXTRA_CAPEMOTION");
 
-        if (capEmotion.isEmpty() || capEmotion.equals("UNKNOWN")){
-            _capEmoji.setVisibility(View.GONE);
-        }else{
-            _capEmoji.setVisibility(View.VISIBLE);
-            _capEmoji.setBackground(setEmoji(capEmotion));
-        }
-
         _capName.setText(displayName);
         _capDate.setText(date);
         _capTitle.setText(title);
         _capText.setText(text);
         _comment.setHint("Write a comment...");
-        getPic();
+
+        final ProgressDialog progressDialog = new ProgressDialog(this, R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
+
+        getPic(progressDialog);
         getComments();
     }
 
@@ -217,19 +221,27 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView {
         _capturePresenter.getComments(dateID);
     }
 
-    private void getPic(){
-        _capturePresenter.getPic(capID);
+    private void getPic(final ProgressDialog progressDialog){
+        _capturePresenter.getPic(capID, progressDialog);
     }
 
     @Override
-    public void showEntryPic(ResponseBody picture){
+    public void showEntryPic(ResponseBody picture, final ProgressDialog progressDialog){
+        progressDialog.dismiss();
         if (picture.contentLength() == 0) {
             _capImage.setVisibility(View.GONE);
         } else {
+            if (capEmotion.isEmpty() || capEmotion.equals("UNKNOWN")){
+                _capEmoji.setVisibility(View.GONE);
+            }else{
+                _capEmoji.setVisibility(View.VISIBLE);
+                _capEmoji.setBackground(setEmoji(capEmotion));
+            }
             Bitmap bitmap = BitmapFactory.decodeStream(picture.byteStream());
             captureBitmap = bitmap.copy(bitmap.getConfig(), true);
             _capImage.setBackgroundResource(android.R.color.transparent);
             _capImage.setImageBitmap(bitmap);
+            setBackgroundGradient();
         }
     }
 
@@ -381,6 +393,46 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView {
                 return ResourcesCompat.getDrawable(getResources(), R.drawable.flushed_emoji, null);
             default: // UNKNOWN
                 return ResourcesCompat.getDrawable(getResources(), R.drawable.blank_emoji, null);
+        }
+    }
+
+    public void setBackgroundGradient(){
+        int e1Color = setColor(capEmotion);
+        GradientDrawable gd = new GradientDrawable(GradientDrawable.Orientation.TL_BR, new int[] {e1Color, 0xFFFFFFFF});
+        gd.setGradientType(GradientDrawable.RADIAL_GRADIENT);
+        gd.setGradientRadius(700.0f);
+        gd.setGradientCenter(0.5f, 0.57f);
+        _gradient.setBackgroundDrawable(gd);
+    }
+
+    public int setColor(String emotion) {
+        switch (emotion) {
+            case "RELAXED":
+                return 0xFFFFF696;
+            case "SMILEY":
+                return 0xFFFCEF62;
+            case "LAUGHING":
+                return 0xFFFFAB5A;
+            case "WINK":
+                return 0xFF8AC980;
+            case "SMIRK":
+                return 0xFFB26731;
+            case "KISSING":
+                return 0xFFFF9696;
+            case "STUCK_OUT_TONGUE":
+                return 0xFFEA9550;
+            case "STUCK_OUT_TONGUE_WINKING_EYE":
+                return 0xFFEA9550;
+            case "DISAPPOINTED":
+                return 0xFFBFFCFF;
+            case "RAGE":
+                return 0xFFFF912D;
+            case "SCREAM":
+                return 0xFFD39EFF;
+            case "FLUSHED":
+                return 0xFFFF3F3F;
+            default: // UNKNOWN
+                return 0xFFFFFFFF;
         }
     }
 }
