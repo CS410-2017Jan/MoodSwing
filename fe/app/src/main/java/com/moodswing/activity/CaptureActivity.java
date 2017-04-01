@@ -39,6 +39,7 @@ import com.moodswing.injector.component.DaggerCaptureComponent;
 import com.moodswing.injector.module.ActivityModule;
 import com.moodswing.injector.module.CaptureModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
+import com.moodswing.mvp.mvp.model.Capture;
 import com.moodswing.mvp.mvp.model.Comment;
 import com.moodswing.mvp.mvp.presenter.CapturePresenter;
 import com.moodswing.mvp.mvp.view.CaptureView;
@@ -245,8 +246,29 @@ public class CaptureActivity extends AppCompatActivity implements CaptureView {
     public void showComments(DateBlock dateBlock) {
         List<Comment> comments = dateBlock.getComments();
         for(Comment c: comments){
-            Comment comment = new Comment(c.getDisplayName(), c.getText());
-            commentList.add(comment);
+            commentList.add(c);
+            _capturePresenter.getProfilePic(c.getCommenter(), c.getId());
+        }
+    }
+
+    @Override
+    public void showProfPic(ResponseBody picture, String commentId){
+        Boolean hasImage = true;
+        Bitmap bitmap = null;
+        if (picture.contentLength() == 0) {
+            hasImage = false;
+        } else {
+            bitmap = BitmapFactory.decodeStream(picture.byteStream());
+        }
+        updatePicture(bitmap, commentId, hasImage);
+    }
+
+    private void updatePicture(Bitmap bitmap, String commentId, Boolean hasImage) {
+        for(Comment c: commentList){
+            if (c.getId().equals(commentId)){
+                c.setImage(bitmap);
+                c.setHasImage(hasImage);
+            }
         }
         commentAdapter.notifyDataSetChanged();
     }

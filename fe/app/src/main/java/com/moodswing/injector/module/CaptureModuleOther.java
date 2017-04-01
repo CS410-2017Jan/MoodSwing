@@ -5,6 +5,7 @@ import com.moodswing.mvp.domain.CaptureUsecase;
 import com.moodswing.mvp.domain.GetCommentsUsecase;
 import com.moodswing.mvp.domain.GetEntryPicHighResUsecase;
 import com.moodswing.mvp.domain.GetEntryPicUsecase;
+import com.moodswing.mvp.domain.GetProfilePictureUsecase;
 import com.moodswing.mvp.domain.SearchUsecase;
 import com.moodswing.mvp.mvp.presenter.CapturePresenter;
 import com.moodswing.mvp.mvp.presenter.CapturePresenterOther;
@@ -40,6 +41,12 @@ public class CaptureModuleOther {
 
     @PerActivity
     @Provides2
-    public CapturePresenterOther provideCapturePresenterOther(CaptureUsecase captureUsecase, GetCommentsUsecase getCommentsUsecase, GetEntryPicHighResUsecase getEntryPicHighResUsecase) {return new CapturePresenterOther(captureUsecase, getCommentsUsecase, getEntryPicHighResUsecase);}
+    public GetProfilePictureUsecase provideGetProfilePictureUsecase(Repository repository) {
+        return new GetProfilePictureUsecase(repository);
+    }
+
+    @PerActivity
+    @Provides2
+    public CapturePresenterOther provideCapturePresenterOther(CaptureUsecase captureUsecase, GetCommentsUsecase getCommentsUsecase, GetEntryPicHighResUsecase getEntryPicHighResUsecase, GetProfilePictureUsecase getProfilePictureUsecase) {return new CapturePresenterOther(captureUsecase, getCommentsUsecase, getEntryPicHighResUsecase, getProfilePictureUsecase);}
 
 }

@@ -10,6 +10,7 @@ import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.domain.CaptureUsecase;
 import com.moodswing.mvp.domain.GetCommentsUsecase;
 import com.moodswing.mvp.domain.GetEntryPicHighResUsecase;
+import com.moodswing.mvp.domain.GetProfilePictureUsecase;
 import com.moodswing.mvp.mvp.model.Comment;
 import com.moodswing.mvp.mvp.model.response.SimpleResponse;
 import com.moodswing.mvp.mvp.view.CaptureViewOther;
@@ -30,13 +31,15 @@ public class CapturePresenterOther implements Presenter<CaptureViewOther> {
     private CaptureUsecase captureUsecase;
     private GetCommentsUsecase getCommentsUsecase;
     private GetEntryPicHighResUsecase getEntryPicHighResUsecase;
+    private GetProfilePictureUsecase getProfilePictureUsecase;
     private Disposable captureSubscription;
     private SharedPreferencesManager sharedPreferencesManager;
 
-    public CapturePresenterOther(CaptureUsecase captureUsecase, GetCommentsUsecase getCommentsUsecase, GetEntryPicHighResUsecase getEntryPicHighResUsecase) {
+    public CapturePresenterOther(CaptureUsecase captureUsecase, GetCommentsUsecase getCommentsUsecase, GetEntryPicHighResUsecase getEntryPicHighResUsecase, GetProfilePictureUsecase getProfilePictureUsecase) {
         this.captureUsecase = captureUsecase;
         this.getCommentsUsecase = getCommentsUsecase;
         this.getEntryPicHighResUsecase = getEntryPicHighResUsecase;
+        this.getProfilePictureUsecase = getProfilePictureUsecase;
     }
 
     @Override
@@ -118,6 +121,25 @@ public class CapturePresenterOther implements Presenter<CaptureViewOther> {
                         captureView.showError2();
                     }
                 });
+    }
+
+    public void getProfilePic(String username, final String id) {
+        getProfilePictureUsecase.setToken(username);
+        captureSubscription = getProfilePictureUsecase.execute()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseBody>() {
+                    @Override
+                    public void accept(ResponseBody picture) throws Exception {
+                        captureView.showProfPic(picture, id);
+                    }
+
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                    }
+                });
+
     }
 
     public void getPic(final String captureId) {

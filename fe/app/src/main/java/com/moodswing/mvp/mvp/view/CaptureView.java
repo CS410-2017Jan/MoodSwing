@@ -16,6 +16,7 @@ public interface CaptureView extends View {
     void onPostCommentSuccess();
     void showComments(DateBlock dateBlock);
     void showEntryPic(ResponseBody picture);
+    void showProfPic(ResponseBody picture, String id);
     void onPostCommentFailure();
     void onGetCommentFailure();
     void showError1();

@@ -1,5 +1,7 @@
 package com.moodswing.mvp.mvp.model;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by Matthew on 2017-03-18.
  */
@@ -9,6 +11,8 @@ public class Comment {
     private String text;
     private String _id;
     private String displayName;
+    private Bitmap image;
+    private Boolean hasImage = false;
 
     public Comment() {
     }
@@ -33,6 +37,18 @@ public class Comment {
         return text;
     }
 
+    public String getId() {
+        return _id;
+    }
+
+    public String getCommenter() {
+        return commenter;
+    }
+
+    public Boolean getHasImage(){
+        return hasImage;
+    }
+
     public void setText(String t) {
         this.text = t;
     }
@@ -43,5 +59,17 @@ public class Comment {
 
     public void setName(String n) {
         this.displayName = n;
+    }
+
+    public void setHasImage(Boolean hasImage){
+        this.hasImage = hasImage;
+    }
+
+    public void setImage(Bitmap image){
+        this.image = image;
+    }
+
+    public Bitmap getImage(){
+        return image;
     }
 }

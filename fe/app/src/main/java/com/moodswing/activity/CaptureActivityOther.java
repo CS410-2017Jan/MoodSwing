@@ -224,8 +224,29 @@ public class CaptureActivityOther extends AppCompatActivity implements CaptureVi
     public void showComments(DateBlock dateBlock) {
         List<Comment> comments = dateBlock.getComments();
         for(Comment c: comments){
-            Comment comment = new Comment(c.getDisplayName(), c.getText());
-            commentList.add(comment);
+            commentList.add(c);
+            _capturePresenter.getProfilePic(c.getCommenter(), c.getId());
+        }
+    }
+
+    @Override
+    public void showProfPic(ResponseBody picture, String commentId){
+        Boolean hasImage = true;
+        Bitmap bitmap = null;
+        if (picture.contentLength() == 0) {
+            hasImage = false;
+        } else {
+            bitmap = BitmapFactory.decodeStream(picture.byteStream());
+        }
+        updatePicture(bitmap, commentId, hasImage);
+    }
+
+    private void updatePicture(Bitmap bitmap, String commentId, Boolean hasImage) {
+        for(Comment c: commentList){
+            if (c.getId().equals(commentId)){
+                c.setImage(bitmap);
+                c.setHasImage(hasImage);
+            }
         }
         commentAdapter.notifyDataSetChanged();
     }
