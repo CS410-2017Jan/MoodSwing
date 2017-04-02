@@ -17,6 +17,7 @@ public class Capture {
     private Bitmap image;
     private Boolean hasImage = false;
     private String emotion;
+    private Boolean waitingForImageResponse = true;
 
     public Capture(){}
 
@@ -56,6 +57,10 @@ public class Capture {
         return hasImage;
     }
 
+    public Boolean getWaitingForImageResponse(){
+        return waitingForImageResponse;
+    }
+
     public String getDisplayName() {
         return displayName;
     }
@@ -86,6 +91,10 @@ public class Capture {
 
     public void setHasImage(Boolean hasImage){
         this.hasImage = hasImage;
+    }
+
+    public void setWaitingForImageResponse(Boolean waitingForImageResponse){
+        this.waitingForImageResponse = waitingForImageResponse;
     }
 
     public void setDisplayName(String displayName) {

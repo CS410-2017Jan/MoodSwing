@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,6 +60,7 @@ public class CaptureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView text;
         private ImageView entryPic, entryEmotion;
+        private ProgressBar progressBar;
         private ImageButton _options;
 
         public MyViewHolder(View view) {
@@ -66,6 +68,7 @@ public class CaptureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             text = (TextView) view.findViewById(R.id.description);
             entryPic = (ImageView) view.findViewById(R.id.listViewImage);
             entryEmotion = (ImageView) view.findViewById(R.id.listViewEmotion);
+            progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
             _options = (ImageButton) view.findViewById(R.id.entry_options);
 
             _options.setOnLongClickListener(new View.OnLongClickListener() {
@@ -133,29 +136,36 @@ public class CaptureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         Capture capture = captures.get(position);
         holder.text.setText(capture.getText());
         holder.text.setTag(position);
-        if (capture.getHasImage()){
-            String emotion = capture.getEmotion();
-            if (emotion.equals("UNKNOWN")){
-                holder.entryEmotion.setVisibility(View.GONE);
-            }else{
-                holder.entryEmotion.setVisibility(View.VISIBLE);
-                holder.entryEmotion.setBackground(setEmoji(emotion));
-            }
-            holder.entryPic.setVisibility(View.VISIBLE);
-            holder.entryPic.setImageBitmap(capture.getImage());
-            holder.text.setPadding(0,0,0,0);
+        if (capture.getWaitingForImageResponse()){
+            holder.progressBar.setVisibility(View.VISIBLE);
+            holder.entryPic.setVisibility(View.INVISIBLE);
         }else{
-            holder.entryEmotion.setVisibility(View.GONE);
-            holder.entryPic.setVisibility(View.GONE);
-            ViewGroup.LayoutParams params = holder.text.getLayoutParams();
-            if (capture.getText().length() > 200){
-                params.height = dpToPx(92);
+            holder.progressBar.setVisibility(View.GONE);
+            if (capture.getHasImage()){
+                String emotion = capture.getEmotion();
+                if (emotion.equals("UNKNOWN")){
+                    holder.entryEmotion.setVisibility(View.GONE);
+                }else{
+                    holder.entryEmotion.setVisibility(View.VISIBLE);
+                    holder.entryEmotion.setBackground(setEmoji(emotion));
+                }
+                holder.progressBar.setVisibility(View.INVISIBLE);
+                holder.entryPic.setVisibility(View.VISIBLE);
+                holder.entryPic.setImageBitmap(capture.getImage());
                 holder.text.setPadding(0,0,0,0);
-            } else{
-                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                holder.text.setPadding(0,50,0,50);
+            }else{
+                holder.entryEmotion.setVisibility(View.GONE);
+                holder.entryPic.setVisibility(View.GONE);
+                ViewGroup.LayoutParams params = holder.text.getLayoutParams();
+                if (capture.getText().length() > 200){
+                    params.height = dpToPx(92);
+                    holder.text.setPadding(0,0,0,0);
+                } else{
+                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    holder.text.setPadding(0,50,0,50);
+                }
+                holder.text.setLayoutParams(params);
             }
-            holder.text.setLayoutParams(params);
         }
         holder.itemView.setTag(position);
     }

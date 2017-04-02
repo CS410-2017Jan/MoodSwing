@@ -206,6 +206,7 @@ public class JournalActivityOther extends Journal implements JournalViewOther {
             if (c.getId().equals(captureId)){
                 c.setImage(bitmap);
                 c.setHasImage(hasImage);
+                c.setWaitingForImageResponse(false);
             }
         }
         dAdapter.notifyDataSetChanged();

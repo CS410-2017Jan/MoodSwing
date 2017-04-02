@@ -219,6 +219,7 @@ public class JournalActivity extends Journal implements JournalView {
             if (c.getId().equals(captureId)){
                 c.setImage(bitmap);
                 c.setHasImage(hasImage);
+                c.setWaitingForImageResponse(false);
             }
         }
         dAdapter.notifyDataSetChanged();
