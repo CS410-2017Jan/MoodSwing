@@ -163,10 +163,12 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
         //restore the camera type settings
         String cameraTypeName = _sharedPreferencesManager.getCameraType();
 
-        if (cameraTypeName.equals(CameraDetector.CameraType.CAMERA_FRONT.name())) {
+        if (cameraTypeName.isEmpty() || cameraTypeName.equals(CameraDetector.CameraType.CAMERA_FRONT.name())) {
             cameraType = CameraDetector.CameraType.CAMERA_FRONT;
+            _sharedPreferencesManager.setCameraType(cameraType.name());
         } else {
             cameraType = CameraDetector.CameraType.CAMERA_BACK;
+            _sharedPreferencesManager.setCameraType(cameraType.name());
         }
     }
 
@@ -228,7 +230,6 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
                     Log.e(LOG_TAG, "Unknown camera type selected");
             }
             detector.setCameraType(cameraType);
-            _sharedPreferencesManager.setCameraType(cameraType.name());
         }
     }
 
@@ -394,12 +395,11 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
     }
 
     private void initializeCameraDetector() {
-        detector = new CameraDetector(this, cameraType, cameraPreview, MAX_SUPPORTED_FACES, Detector.FaceDetectorMode.LARGE_FACES);
         detector = new CameraDetector(this, CameraDetector.CameraType.CAMERA_FRONT, cameraPreview, MAX_SUPPORTED_FACES, Detector.FaceDetectorMode.LARGE_FACES);
         detector.setImageListener(this);
         detector.setFaceListener(this);
         detector.setOnCameraEventListener(this);
-
+        _sharedPreferencesManager.setCameraType(cameraType.name());
     }
 
     @Override
@@ -594,17 +594,22 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
                 }).setNeutralButton("Share", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        previewImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                        byte[] byteArray = stream.toByteArray();
+                        try {
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                            Log.d("********", ""+finalScreenshot.compress(Bitmap.CompressFormat.PNG, 100, stream));
+                            byte[] byteArray = stream.toByteArray();
 
-                        faceBitmap.recycle();
-                        finalScreenshot.recycle();
-                        previewImage.recycle();
 
-                        String current = new String(currentEmoji);
-                        if (!emotionEffectsEnabled) current = "UNKNOWN";
-                        forwardBitmap(byteArray, current);
+                            faceBitmap.recycle();
+                            finalScreenshot.recycle();
+                            previewImage.recycle();
+
+                            String current = new String(currentEmoji);
+                            if (!emotionEffectsEnabled) current = "UNKNOWN";
+                            forwardBitmap(byteArray, current);
+                        } catch (Throwable t) {
+                            Log.d("MoodSwing","Share capture error: " + t.getMessage());
+                        }
                     }
                 }).setPositiveButton("Discard", new DialogInterface.OnClickListener() {
                     @Override
