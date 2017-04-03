@@ -23,6 +23,7 @@ import com.moodswing.injector.module.ActivityModule;
 import com.moodswing.injector.module.NotificationsModule;
 import com.moodswing.mvp.data.SharedPreferencesManager;
 import com.moodswing.mvp.mvp.model.Capture;
+import com.moodswing.mvp.mvp.model.CaptureDivider;
 import com.moodswing.mvp.mvp.model.JournalEntries;
 import com.moodswing.mvp.mvp.model.User;
 import com.moodswing.mvp.mvp.presenter.NotificationsPresenter;
@@ -91,7 +92,7 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
 
         _nRecyclerView.setLayoutManager(layoutManager);
         _nRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        _nRecyclerView.addItemDecoration(new DateDivider(this, R.drawable.divider));
+        _nRecyclerView.addItemDecoration(new CaptureDivider(this, LinearLayoutManager.VERTICAL));
         _nRecyclerView.setAdapter(nAdapter);
         
         _nRecyclerView.addOnItemTouchListener(new CaptureTouchListener(this, _nRecyclerView, new CaptureTouchListener.ClickListener() {
