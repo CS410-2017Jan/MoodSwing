@@ -603,6 +603,7 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
                         previewImage.recycle();
 
                         String current = new String(currentEmoji);
+                        if (!emotionEffectsEnabled) current = "UNKNOWN";
                         forwardBitmap(byteArray, current);
                     }
                 }).setPositiveButton("Discard", new DialogInterface.OnClickListener() {

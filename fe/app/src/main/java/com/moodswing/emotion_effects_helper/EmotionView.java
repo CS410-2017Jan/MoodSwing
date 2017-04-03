@@ -423,7 +423,6 @@ public class EmotionView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         private void drawEmotionAnimation(Canvas c, Face face) {
-            // TODO
             String dominantEmoji = face.emojis.getDominantEmoji().name();
             int nextAnimationResource = -1;
             switch (dominantEmoji) {
