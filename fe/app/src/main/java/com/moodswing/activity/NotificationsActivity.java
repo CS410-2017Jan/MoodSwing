@@ -123,12 +123,18 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
             }
         }
 
+        String capEmotion = capture.getEmotion();
+        if (capEmotion == null){
+            capEmotion = "UNKNOWN";
+        }
+
         captureIntent = new Intent(this, CaptureActivityOther.class);
         captureIntent.putExtra("EXTRA_TITLE", capTitle);
         captureIntent.putExtra("EXTRA_DATE", capDate);
         captureIntent.putExtra("EXTRA_TEXT", capText);
         captureIntent.putExtra("EXTRA_DATEID", dateId);
         captureIntent.putExtra("EXTRA_CAPID", capId);
+        captureIntent.putExtra("EXTRA_CAPEMOTION", capEmotion);
 
         startActivity(captureIntent);
     }

@@ -14,6 +14,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -206,10 +207,14 @@ public class CaptureActivityOther extends AppCompatActivity implements CaptureVi
 
     @Override
     public void showEntryPic(ResponseBody picture, final ProgressDialog progressDialog){
+        Log.i("***", capID + "***" + text + "***********");
         progressDialog.dismiss();
         if (picture.contentLength() == 0) {
+
+            Log.i("***", capID + "***" + text + "111111111");
             _capImage.setVisibility(View.GONE);
         } else {
+            Log.i("***", capID + "***" + text + "22222222222");
             if (capEmotion.isEmpty() || capEmotion.equals("UNKNOWN")){
                 _capEmoji.setVisibility(View.GONE);
             }else{

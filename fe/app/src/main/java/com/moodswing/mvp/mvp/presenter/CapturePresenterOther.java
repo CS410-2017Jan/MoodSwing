@@ -159,6 +159,7 @@ public class CapturePresenterOther implements Presenter<CaptureViewOther> {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         Log.i("", "****GET " + captureId + " ERROR****");
+                        Log.i("", "****GET " + throwable.getMessage() + " ERROR****");
                     }
                 });
 
