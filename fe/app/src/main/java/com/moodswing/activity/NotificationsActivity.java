@@ -99,12 +99,9 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
 
             @Override
             public void onClick(View view, int position) {
-                view.setBackgroundColor(Color.GRAY);
                 openCapture(captures.get(position));
             }
-            
         }));
-
     }
 
     private void openCapture(Capture capture){
@@ -113,6 +110,7 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
         String capText = capture.getText();
         String capId = capture.getId();
         String dateId = null;
+        String displayName = capture.getDisplayName();
 
         for (JournalEntries je: journals) {
             String dC = je.getId();
@@ -136,6 +134,7 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
         captureIntent.putExtra("EXTRA_DATEID", dateId);
         captureIntent.putExtra("EXTRA_CAPID", capId);
         captureIntent.putExtra("EXTRA_CAPEMOTION", capEmotion);
+        captureIntent.putExtra("EXTRA_DISPLAYNAME", displayName);
 
         startActivity(captureIntent);
     }
