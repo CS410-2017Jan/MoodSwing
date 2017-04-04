@@ -151,7 +151,6 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
         if(activityIntent.equals("CAMERA_ACTIVITY")) {
             byteArray = getIntent().getByteArrayExtra("CAPTURE");
             currentEmoji = getIntent().getStringExtra("CURRENT_EMOJI");
-            Log.i("***" + currentEmoji, "************************************");
             if (byteArray != null) {
                 capture = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
                 _postImage.setImageBitmap(capture);
