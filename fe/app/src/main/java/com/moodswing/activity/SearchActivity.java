@@ -3,6 +3,7 @@ package com.moodswing.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,7 +35,7 @@ import butterknife.ButterKnife;
  * Created by daniel on 16/03/17.
  */
 
-public class SearchActivity extends MoodSwingActivity implements SearchView {
+public class SearchActivity extends AppCompatActivity implements SearchView {
     @Inject2
     SearchPresenter _searchPresenter;
 
@@ -65,8 +66,6 @@ public class SearchActivity extends MoodSwingActivity implements SearchView {
         initializePresenter();
         // Fetch users
         _searchPresenter.search();
-
-        initializeBottomNavigationView();
     }
 
     private void initializePresenter() {

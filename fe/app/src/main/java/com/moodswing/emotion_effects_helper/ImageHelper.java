@@ -162,7 +162,6 @@ public class ImageHelper {
      * We should just be able to call frame.getBitmap() and have it return a bitmap no matter what type
      * of frame it is.  If any conversion between file types needs to take place, it needs to happen
      * inside the SDK layer and put the onus on the developer to know how to convert between YUV and ARGB.
-     * TODO: See above
      *
      * @param frame - The Frame containing the desired image
      * @return - The Bitmap representation of the image

@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,7 +34,11 @@ import com.moodswing.widget.DateBlock;
 import com.moodswing.widget.DateDivider;
 import com.moodswing.widget.NotificationsAdapter;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject2;
@@ -160,7 +165,7 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
         for(JournalEntries je: journalEntries){
             journals.add(je);
             List<Capture> capture = je.getEntry();
-            String date = je.getDate();
+            String date = setJournalViewDateFormat(je.getDate());
             String title = je.getTitle();
             String username = je.getUsername();
 
@@ -262,5 +267,19 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
                 return true;
             }
         });
+    }
+
+    public String setJournalViewDateFormat(String date){
+        DateFormat firstdf = new SimpleDateFormat("dd/MM/yyyy");
+        DateFormat secdf = new SimpleDateFormat("MMM.d, yyyy");
+        Date tempDate;
+        String rDate = "";
+        try {
+            tempDate = firstdf.parse(date);
+            rDate = secdf.format(tempDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return rDate;
     }
 }

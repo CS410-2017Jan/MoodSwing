@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,7 +38,7 @@ import butterknife.ButterKnife;
 /**
  * Created by daniel on 23/03/17.
  */
-public class FollowingActivity extends MoodSwingActivity implements FollowingView {
+public class FollowingActivity extends AppCompatActivity implements FollowingView {
     @Inject2
     FollowingPresenter _followingPresenter;
 
@@ -67,7 +68,6 @@ public class FollowingActivity extends MoodSwingActivity implements FollowingVie
         _followingComponent.inject(this);
 
         initializePresenter();
-        initializeBottomNavigationView();
 
         _followingPresenter.getFollowing();
     }
@@ -153,31 +153,5 @@ public class FollowingActivity extends MoodSwingActivity implements FollowingVie
             return true;
         }
         return super.onOptionsItemSelected(menuItem);
-    }
-
-    @Override
-    public void initializeBottomNavigationView() {
-        bottomNavigationView.setOnNavigationItemSelectedListener( new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_notifications:
-                        Intent intent1 = new Intent(getApplicationContext(), NotificationsActivity.class);
-                        startActivity(intent1);
-                        break;
-                    case R.id.action_camera:
-                        Intent intent2 = new Intent(getApplicationContext(), CameraActivity.class);
-                        startActivity(intent2);
-                        break;
-                    case R.id.action_follows:
-                        // Do nothing
-                        break;
-                    default:
-                        return false;
-                }
-                return true;
-            }
-        });
     }
 }

@@ -3,6 +3,7 @@ package com.moodswing.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,7 +35,7 @@ import butterknife.ButterKnife;
  * Created by daniel on 24/03/17.
  */
 
-public class FollowersActivity extends MoodSwingActivity implements FollowersView {
+public class FollowersActivity extends AppCompatActivity implements FollowersView {
     @Inject2
     FollowersPresenter _followersPresenter;
 
@@ -64,7 +65,6 @@ public class FollowersActivity extends MoodSwingActivity implements FollowersVie
         _followersComponent.inject(this);
 
         initializePresenter();
-        initializeBottomNavigationView();
 
         _followersPresenter.getFollowers();
     }
