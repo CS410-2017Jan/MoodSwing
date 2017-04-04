@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.moodswing.MoodSwingApplication;
 import com.moodswing.R;
+import com.moodswing.emotion_effects_helper.ImageHelper;
 import com.moodswing.injector.component.ApplicationComponent;
 import com.moodswing.injector.component.DaggerNewEntryComponent;
 import com.moodswing.injector.component.NewEntryComponent;
@@ -138,7 +139,6 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
         String activityIntent = getIntent().getStringExtra("NEW_ENTRY_INTENT");
         if (activityIntent.equals("FULL_SCREEN_IMAGE_ACTIVITY")) {
             String uri = getIntent().getStringExtra("CAPTURE_URI");
-            String type[] = uri.split("/");
             Uri uriPicture = Uri.parse(uri);
             if (uriPicture != null) {
                 _postImage.setImageURI(uriPicture);
@@ -149,9 +149,15 @@ public class NewEntryActivity extends MoodSwingActivity implements NewEntryView,
         }
 
         if(activityIntent.equals("CAMERA_ACTIVITY")) {
-            byteArray = getIntent().getByteArrayExtra("CAPTURE");
             currentEmoji = getIntent().getStringExtra("CURRENT_EMOJI");
-            Log.i("***" + currentEmoji, "************************************");
+            // read bitmap from disk
+            capture = ImageHelper.loadBitmapFromInternalStorage(getApplicationContext(), "captureBitmap");
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            capture.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byteArray = stream.toByteArray();
+            // delete temp bitmap
+            ImageHelper.deleteImageFile(getApplicationContext(), "captureBitmap");
+
             if (byteArray != null) {
                 capture = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
                 _postImage.setImageBitmap(capture);

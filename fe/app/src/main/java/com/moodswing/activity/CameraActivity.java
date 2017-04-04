@@ -594,22 +594,15 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
                 }).setNeutralButton("Share", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        try {
-                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                            Log.d("********", ""+finalScreenshot.compress(Bitmap.CompressFormat.PNG, 100, stream));
-                            byte[] byteArray = stream.toByteArray();
+                        ImageHelper.saveBitmapToInternalStorage(getApplicationContext(), finalScreenshot, "captureBitmap");
 
+                        faceBitmap.recycle();
+                        finalScreenshot.recycle();
+                        previewImage.recycle();
 
-                            faceBitmap.recycle();
-                            finalScreenshot.recycle();
-                            previewImage.recycle();
-
-                            String current = new String(currentEmoji);
-                            if (!emotionEffectsEnabled) current = "UNKNOWN";
-                            forwardBitmap(byteArray, current);
-                        } catch (Throwable t) {
-                            Log.d("MoodSwing","Share capture error: " + t.getMessage());
-                        }
+                        String current = new String(currentEmoji);
+                        if (!emotionEffectsEnabled) current = "UNKNOWN";
+                        forwardBitmap(current);
                     }
                 }).setPositiveButton("Discard", new DialogInterface.OnClickListener() {
                     @Override
@@ -632,9 +625,8 @@ public class CameraActivity extends AppCompatActivity implements Detector.ImageL
         dialog.show();
     }
 
-    private void forwardBitmap(byte[] byteArray, String currentEmoji) {
+    private void forwardBitmap(String currentEmoji) {
         Intent intent = new Intent(this, NewEntryActivity.class);
-        intent.putExtra("CAPTURE", byteArray);
         intent.putExtra("CURRENT_EMOJI", currentEmoji);
         intent.putExtra("NEW_ENTRY_INTENT", "CAMERA_ACTIVITY");
         startActivity(intent);

@@ -144,7 +144,7 @@ public class NotificationsActivity extends MoodSwingActivity implements Notifica
     protected void onResume() {
         super.onResume();
         if (_notificationsPresenter.isUserLoggedIn()) {
-            setTitle(_sharedPreferencesManager.getCurrentUser() + "'s " + "Notifications");
+            setTitle("Recent Posts");
             captures.clear();
             isResuming = true;
             _notificationsPresenter.getUser();
