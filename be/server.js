@@ -25,9 +25,15 @@ mongoose.connect(config.database, function(err, db) {
     console.log('Unable to connect to the server. Please start the server. Error:', err);
     return;
   }
-  app.listen(port, () => {
+  var server = app.listen(port, () => {
     console.log('listening on ' + port);
   });
+  server.timeout = 20000;
+});
+
+//for demo purposes
+process.on('uncaughtException', function (err) {
+  console.log('Caught exception: ' + err);
 });
 
 module.exports = app;

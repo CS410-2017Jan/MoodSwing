@@ -195,6 +195,17 @@ function makeEntry(req, res, newCapture) {
 	let captureDate = req.body.captureDate;
 	let dominantEmotion = req.body.emotion || '';
 
+	let date = captureDate.split('/');
+
+	if (date[0][0] == "0") {
+		date[0] = date[0][1];
+	}
+	if (date[1][0] == "0") {
+		date[1] = date[1][1];
+	}
+
+	captureDate = date.join('/');
+
   JournalEntry.findOne({
 		username: username,
 		entryDate: captureDate
