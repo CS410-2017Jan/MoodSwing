@@ -3,6 +3,8 @@ MoodSwing
 
 ***INSPIRED BY WHAT MAKES YOU, YOU***
 
+Watch the app in action here: https://www.youtube.com/watch?v=u3tSfSOaO3k
+
 # Running the Server Locally #
 ```html
 cd MoodSwing/be
